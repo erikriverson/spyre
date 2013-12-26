@@ -1,5 +1,3 @@
-var socket;
-
 try {
     var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");
 
@@ -9,38 +7,34 @@ try {
         document.getElementById("statustd").style.backgroundColor = "#40f300";
     });
 
+    w_socket.bind('objects', function(msg) {
+        console.log(msg);
+        make_rects(msg);
+    });
 
-
-    w_socket.onmessage = function got_packet(msg) {
-        var payload = JSON.parse(msg.data);
+    w_socket.bind('default', function(msg) {
+        show_default(msg.summary);
         
-        if(payload.key == "objects") {
-            make_rects(payload.value);
-        } else if (payload.key == "default") {
-            console.log(payload.key + payload.summary);
-            show_default(payload.summary);
+        var t_data = {
+            "xScale": "ordinal",
+            "yScale": "linear",
+            "yMin": 0,
+            "main": [
+                {
+                    "data": msg.value
+                }
+            ]
+        };
+        t_data.main[0].className = "." + Math.random().toString(36).substring(7);
+        
+        var myChart = new xChart('bar', t_data, '#plot');
+    });
 
-            var t_data = {
-                "xScale": "ordinal",
-                "yScale": "linear",
-                "yMin": 0,
-                "main": [
-                    {
-                        "data": payload.value
-                    }
-                ]
-            };
-            t_data.main[0].className = "." + Math.random().toString(36).substring(7);
-
-            var myChart = new xChart('bar', t_data, '#plot');
-        }
-    };
-
-    w_socket.onclose = function(){
+    w_socket.bind('close',  function(){
         document.getElementById("wsdi_status").textContent =
-            " webw_socket connection CLOSED ";
+            " websocket connection CLOSED ";
         document.getElementById("statustd").style.backgroundColor = "#ff4040";
-    };
+    });
 }
 
 catch(ex) {document.getElementById("output").textContent = "Error: " + ex;}
@@ -51,7 +45,7 @@ var send_object = function(object_name) {
 };
 
 var show_default = function(value) {
-    //    console.log(value);
+    console.log(value);
     d3.select("p").remove();
     var text = d3.select("#output").append("p");
     text.selectAll("pre")
@@ -63,6 +57,7 @@ var show_default = function(value) {
 };
 
 var make_rects = function (objects) {
+    console.log(objects);
     d3.select("svg").remove();
     var svg = d3.select("#objects").append("svg");
 
@@ -70,7 +65,7 @@ var make_rects = function (objects) {
         .data(objects)
         .enter()
         .append("rect")
-        .attr("x", 100)
+        .attr("x", 0)
         .attr("y", function(d, i) { return((i) * 25);})
         .attr("width", 200)
         .attr("height", 15)
@@ -94,7 +89,7 @@ var make_rects = function (objects) {
         .enter()
         .append("text")
         .text(function(d) {return (d);})
-        .attr("x", 140)
+        .attr("x", 0)
         .attr("y", function(d, i) { return((i) * 25 + 11);})
         .attr("fill", "black")
         .style("pointer-events", "none");
