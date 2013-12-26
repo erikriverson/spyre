@@ -1,16 +1,18 @@
 var socket;
 
 try {
-    socket = new WebSocket("ws://127.0.0.1:7681", "chat");
+    var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");
 
-    socket.onopen = function() {
-      document.getElementById("statustd").textContent =
-      "Connected to R session at " + socket.url;
-      document.getElementById("statustd").style.backgroundColor = "#40f300";
-    };
+    w_socket.bind('open', function() {
+        document.getElementById("statustd").textContent =
+            "Connected to R session at " + w_socket.socket.url;
+        document.getElementById("statustd").style.backgroundColor = "#40f300";
+    });
 
-    socket.onmessage = function got_packet(msg) {
-        payload = JSON.parse(msg.data);
+
+
+    w_socket.onmessage = function got_packet(msg) {
+        var payload = JSON.parse(msg.data);
         
         if(payload.key == "objects") {
             make_rects(payload.value);
@@ -34,24 +36,24 @@ try {
         }
     };
 
-    socket.onclose = function(){
+    w_socket.onclose = function(){
         document.getElementById("wsdi_status").textContent =
-            " websocket connection CLOSED ";
+            " webw_socket connection CLOSED ";
         document.getElementById("statustd").style.backgroundColor = "#ff4040";
     };
 }
 
 catch(ex) {document.getElementById("output").textContent = "Error: " + ex;}
 
-send_object = function(object_name) {
-    socket.send(object_name);
+var send_object = function(object_name) {
+    w_socket.send("request_objects", object_name);
     return(0);
 };
 
-show_default = function(value) {
-//    console.log(value);
+var show_default = function(value) {
+    //    console.log(value);
     d3.select("p").remove();
-    text = d3.select("#output").append("p");
+    var text = d3.select("#output").append("p");
     text.selectAll("pre")
         .data(value)
         .enter()
@@ -60,9 +62,9 @@ show_default = function(value) {
 
 };
 
-make_rects = function (objects) {
+var make_rects = function (objects) {
     d3.select("svg").remove();
-    svg = d3.select("#objects").append("svg");
+    var svg = d3.select("#objects").append("svg");
 
     svg.selectAll("rect")
         .data(objects)

@@ -5,8 +5,8 @@
 #   Purpose:          Testbed for websocket functionality
 ################################################################################
 
-library(websockets)
-library(jsonlite)
+require(websockets)
+require(jsonlite)
 
 setupTestServer <- function(file = "../../client/index.html") {
   w <- create_server(webpage = static_file_service2(file))
