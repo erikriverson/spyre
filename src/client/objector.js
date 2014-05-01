@@ -8,11 +8,9 @@ try {
     });
 
     w_socket.bind('objects', function(msg) {
-        console.log(msg);
-        make_rects(msg);
-    });
-
-    w_socket.bind('default', function(msg) {
+        draw_objects(msg);
+    })
+    .bind('default', function(msg) {
         show_default(msg.summary);
         
         var t_data = {
@@ -56,7 +54,7 @@ var show_default = function(value) {
 
 };
 
-var make_rects = function (objects) {
+var draw_objects = function (objects) {
     console.log(objects);
     d3.select("svg").remove();
     var svg = d3.select("#objects").append("svg");

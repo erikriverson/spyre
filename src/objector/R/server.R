@@ -62,7 +62,10 @@ static_file_service2 <- function(fn)
 }
 
 getCurrentObjects <- function(a, b, c, d) {
-  objects <- objects(".GlobalEnv")
+  my_objects <- objects(".GlobalEnv")
+  expel <- c("getCurrentObjects", "setupTestServer", "spyre", "spyre.data.frame",
+             "spyre.default", "spyre.factor", "spyre.function", "static_file_service2", "w")
+  objects <- setdiff(my_objects, expel)
   ret_list <- list(event = "objects", data = objects)
   websocket_broadcast(jsonlite::toJSON(ret_list), w)
   TRUE
