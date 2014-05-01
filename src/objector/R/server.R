@@ -5,61 +5,8 @@
 #   Purpose:          Testbed for websocket functionality
 ################################################################################
 
-require(websockets)
+require(httpuv)
 require(jsonlite)
-
-setupTestServer <- function(file = "../../client/index.html") {
-  w <- create_server(webpage = static_file_service2(file))
-  w$DEBUG <- TRUE
-
-  f <- function(DATA, WS, ...) {
-      D <- jsonlite::fromJSON(rawToChar(DATA))$data
-      websocket_write(DATA = jsonlite::toJSON(spyre(get(D))), WS = WS)
-  }
-  
-  set_callback('receive',f,w)
-  
-  cl <- function(WS) {
-    message("Websocket client socket ",WS$socket," has closed.\n")
-  }
-
-  set_callback('closed',cl,w)
-  
-  es <- function(WS) {
-    message("Websocket client socket ",WS$socket," has been established.\n")
-    getCurrentObjects()
-  }
-  
-  set_callback('established',es,w)
-  return(w)
-}
-
-static_file_service2 <- function(fn)
-{
-  file_name <- fn
-  f <- file(fn)
-  file_content <- paste(readLines(f),collapse="\n")
-  originalTime <- file.info(fn)$mtime
-  
-  close(f)
-  
-  function(socket, header) {
-    finf <- file.info(fn)
-    if(difftime(finf[,"mtime"], originalTime, units="secs") > 0){
-      f <- file(fn)
-      file_content <<- paste(readLines(f),collapse="\n")
-      close(f)
-    }
-    if(is.null(header$RESOURCE))
-      return(websockets:::.http_400(socket))
-    if(header$RESOURCE == "/favicon.ico") {
-      websockets:::.http_200(socket,"image/x-icon", .html5ico)
-    }
-    else {
-      websockets:::.http_200(socket, content = file_content)
-    }
-  }
-}
 
 getCurrentObjects <- function(a, b, c, d) {
   my_objects <- objects(".GlobalEnv")
@@ -71,10 +18,23 @@ getCurrentObjects <- function(a, b, c, d) {
   TRUE
 }
 
+spyre_call <- function(req) {
+    message("spyre_call")
+}
 
-if(exists("w"))
-    websocket_close(w)
-w <- setupTestServer()
-daemonize(w)
+spyre_onWSOpen <- function(ws) {
+    message("spyre_onWSOpen")
+    str(ws)
+    ws$onMessage(function(x) message(x))
+}
+
+app <- list(call = spyre_call,
+            onWSOpen = spyre_onWSOpen)
+
+if(exists("handle")) {
+    stopDaemonizedServer(handle)
+}
+handle <- startDaemonizedServer("127.0.0.1", 7681, app = app)
+
 removeTaskCallback(1)
 addTaskCallback(getCurrentObjects)
