@@ -1,40 +1,64 @@
 ################################################################################
 #   Program Name:     spyre/server.R
 #   Author:           Erik Iverson
-#   Created:          2013-11-18
-#   Purpose:          Testbed for websocket functionality
+#   Purpose:          httpuv implementation of spyre
 ################################################################################
 
 require(httpuv)
 require(jsonlite)
-
-getCurrentObjects <- function(a, b, c, d) {
-  my_objects <- objects(".GlobalEnv")
-  expel <- c("getCurrentObjects", "setupTestServer", "spyre", "spyre.data.frame",
-             "spyre.default", "spyre.factor", "spyre.function", "static_file_service2", "w")
-  objects <- setdiff(my_objects, expel)
-  ret_list <- list(event = "objects", data = objects)
-  websocket_broadcast(jsonlite::toJSON(ret_list), w)
-  TRUE
-}
 
 spyre_call <- function(req) {
     message("spyre_call")
 }
 
 spyre_onWSOpen <- function(ws) {
-    message("spyre_onWSOpen")
-    str(ws)
-    ws$onMessage(function(x) message(x))
+
+    cleanup <- function() {
+        removeTaskCallback(1)
+    }
+
+    getCurrentObjects <- function(a, b, c, d) {
+        my_objects <- objects(".GlobalEnv")
+        expel <- c("getCurrentObjects", "setupTestServer", "spyre", "spyre.data.frame",
+                   "spyre.default", "spyre.factor", "spyre.function", "static_file_service2", "w")
+        objects <- setdiff(my_objects, expel)
+        ret_list <- list(event = "objects", data = objects)
+        ws$send(jsonlite::toJSON(ret_list))
+        TRUE
+    }
+
+    addTaskCallback(getCurrentObjects)
+
+    receive_data <- function(binary_flag, data) {
+        message(binary_flag)
+        message(data)
+        D <- jsonlite::fromJSON(data)$data
+        send_data(jsonlite::toJSON(spyre(get(D))))
+    }
+
+    send_data <- function(msg) {
+        ws$send(msg)
+    }
+
+##    message("spyre_onWSOpen")
+    ws$onMessage(receive_data)
+    ws$onClose(cleanup)
 }
 
-app <- list(call = spyre_call,
-            onWSOpen = spyre_onWSOpen)
+start_spyre <- function(app) {
+    app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
+    startDaemonizedServer("127.0.0.1", 7681, app = app)
+}
 
-if(exists("handle")) {
+stop_spyre <- function(handle) {
     stopDaemonizedServer(handle)
 }
-handle <- startDaemonizedServer("127.0.0.1", 7681, app = app)
 
-removeTaskCallback(1)
-addTaskCallback(getCurrentObjects)
+if(exists("handle"))
+    stop_spyre(handle)
+handle <- start_spyre()
+
+
+
+ 
+
