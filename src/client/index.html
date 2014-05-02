@@ -2,28 +2,29 @@
 <html ng-app>
   <head>
     <title>Spyre BrowseR</title>
-    
-    <link rel="stylesheet" type="text/css" 
-          href="http://tenxer.github.io/xcharts/css/master.css" />
-
+    <link rel="stylesheet" type="text/css" href="http://tenxer.github.io/xcharts/css/master.css" />
+    <link rel="stylesheet" type="text/css" href="spyre.css" />
   </head>
 
   <body>
-
     <h1 class="main_title">Spyre BrowseR</h1>
-    
     <h4>
       <span id="statustd">Not Connected</span>
     </h4>
     
-    <div id="container" style="width: 100%;">
-      <div id="objects" style="float:left; width: 20%">
+    <div id="container" ng-controller="MainController">
+      <div id="objects" ng-controller="ObjectController">
         <h4>Object List</h4>
+        <ul>
+          <li ng-repeat="object in test">
+            {{ object }}
+          </li>
+        </ul>
       </div>
-      <div id="output" style="float:left; width:60%;height:150px;">
+      <div id="output">
         <h4>Output Summary</h4>
       </div>
-      <div id="plot" style="float:left; width:60%;height:300px;">
+      <div id="plot">
         <h4>Graphical Output</h4>
       </div>
     </div>
