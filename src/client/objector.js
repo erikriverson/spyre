@@ -8,7 +8,7 @@ try {
     });
 
     w_socket.bind('objects', function(msg) {
-        draw_objects(msg);
+        update_objects(msg);
     })
     .bind('default', function(msg) {
         show_default(msg.summary);
@@ -54,46 +54,8 @@ var show_default = function(value) {
 
 };
 
-var draw_objects = function (objects) {
-    console.log(objects);
-    d3.select("svg").remove();
-    var svg = d3.select("#objects").append("svg");
-
-    svg.selectAll("rect")
-        .data(objects)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", function(d, i) { return((i) * 25);})
-        .attr("width", 200)
-        .attr("height", 15)
-        .attr("fill", "lightblue")
-        .on("mouseover", function() {
-            d3.select(this)
-                .transition()
-                .duration(300)
-                .attr("fill", "orange");
-        })
-        .on("mouseout", function() {
-            d3.select(this)
-                .transition()
-                .duration(300)
-                .attr("fill", "lightblue");
-        })
-        .on("click", function(d) {send_object(d);});
-
-    svg.selectAll("text")
-        .data(objects)
-        .enter()
-        .append("text")
-        .text(function(d) {return (d);})
-        .attr("x", 0)
-        .attr("y", function(d, i) { return((i) * 25 + 11);})
-        .attr("fill", "black")
-        .style("pointer-events", "none");
-
-
-
+var update_objects = function(msg) {
+  console.log(msg);  
 };
 
 

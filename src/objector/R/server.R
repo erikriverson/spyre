@@ -1,7 +1,7 @@
 ################################################################################
-#   Program Name:     spyre/server.R
-#   Author:           Erik Iverson
-#   Purpose:          httpuv implementation of spyre
+#   Program Name:     server.R
+#   Author:           Erik Iverson <erik@sigmafield.org>
+#   Purpose:          httpuv implementation of spyre server
 ################################################################################
 
 require(httpuv)
@@ -27,7 +27,7 @@ spyre_onWSOpen <- function(ws) {
         TRUE
     }
 
-    addTaskCallback(getCurrentObjects)
+
 
     receive_data <- function(binary_flag, data) {
         message(binary_flag)
@@ -40,24 +40,29 @@ spyre_onWSOpen <- function(ws) {
         ws$send(msg)
     }
 
-##    message("spyre_onWSOpen")
     ws$onMessage(receive_data)
     ws$onClose(cleanup)
+
+    addTaskCallback(getCurrentObjects)
+    ## initial list
+    getCurrentObjects(NULL, NULL, NULL, NULL)
 }
 
+#' @export
 start_spyre <- function(app) {
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
     startDaemonizedServer("127.0.0.1", 7681, app = app)
 }
 
+#' @export
 stop_spyre <- function(handle) {
     stopDaemonizedServer(handle)
 }
 
+## bootstrap
 if(exists("handle"))
     stop_spyre(handle)
 handle <- start_spyre()
-
 
 
  
