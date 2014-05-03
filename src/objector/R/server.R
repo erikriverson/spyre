@@ -12,8 +12,10 @@ spyre_call <- function(req) {
 }
 
 spyre_onWSOpen <- function(ws) {
+    message("WS connection opened!")
 
     cleanup <- function() {
+        message("WS connection closed!")
         removeTaskCallback(1)
     }
 
@@ -35,7 +37,14 @@ spyre_onWSOpen <- function(ws) {
         message(binary_flag)
         message(data)
         D <- jsonlite::fromJSON(data)$data
-        send_data(jsonlite::toJSON(spyre(get(D))))
+
+        ## hack until .close is figured out from client
+        if(D == ".CLOSING.") {
+            cleanup()
+        }
+        else {
+            send_data(jsonlite::toJSON(spyre(get(D))))
+        }
     }
 
     send_data <- function(msg) {

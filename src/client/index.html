@@ -38,11 +38,11 @@
       
     </div>
       
-    <div id="container" >
-      <div id="objects" ng-controller="ObjectController">
+    <div id="container">
+      <div id="objectlist" ng-controller="ObjectController">
         <h4>Object List</h4>
         <ul>
-          <li ng-repeat="object in test">
+          <li ng-repeat="object in objects">
             {{ object }}
           </li>
         </ul>

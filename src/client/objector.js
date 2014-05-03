@@ -1,17 +1,12 @@
 var iconController = function($scope) {
-    $scope.isConnected = false;
-
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            $scope.ws.socket.close();
-            $scope.isConnected = false;
+            $scope.send_object(".CLOSING.");
+            console.log('isConnected is now: ' + $scope.isConnected);
         } else {
             $scope.connect();
-            // need a valid check here to make sure this is true...
-            $scope.isConnected = true;
         }
     };
-
 };
 
 var ObjectController = function($scope) {
@@ -23,6 +18,7 @@ var ObjectController = function($scope) {
 
 
 var MainController = function($scope) {
+    $scope.isConnected = false;
 
     $scope.connect = function() {
         try {
@@ -30,6 +26,7 @@ var MainController = function($scope) {
             var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");        
 
             w_socket.bind('objects', function(msg) {
+                console.log(msg);
                 $scope.test = msg;
             })
                 .bind('default', function(msg) {
@@ -50,15 +47,24 @@ var MainController = function($scope) {
                     
                     var myChart = new xChart('bar', t_data, '#plot');
                 });
+
             $scope.ws = w_socket; 
+            $scope.isConnected = true;
+            console.log('isConnected is now: ' + $scope.isConnected);
         }
 
-        catch(ex) {document.getElementById("output").textContent = "Error: " + ex;}
-
+        catch(ex) { 
+            console.log("Caught exception!");
+            $scope.isConnected = false; 
+        };
     };
 
     $scope.send_object = function(object_name) {
-        w_socket.send("request_objects", object_name);
+        $scope.ws.send("request_objects", object_name);
+        
+        if(object_name === ".CLOSING.") {
+            $scope.isConnected = false;
+        }
         return(0);
     };
 
