@@ -2,7 +2,6 @@ var iconController = function($scope) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
             $scope.send_object(".CLOSING.");
-            console.log('isConnected is now: ' + $scope.isConnected);
         } else {
             $scope.connect();
         }
@@ -28,9 +27,13 @@ var MainController = function($scope) {
             w_socket.bind('objects', function(msg) {
                 console.log(msg);
                 $scope.test = msg;
+                $scope.$apply();
             })
                 .bind('default', function(msg) {
-                    show_default(msg.summary);
+                    console.log(msg);
+                    // why is summary now an array?
+                    $scope.object_summary = msg.summary[0];
+                    $scope.$apply();
                     
                     var t_data = {
                         "xScale": "ordinal",
@@ -50,7 +53,6 @@ var MainController = function($scope) {
 
             $scope.ws = w_socket; 
             $scope.isConnected = true;
-            console.log('isConnected is now: ' + $scope.isConnected);
         }
 
         catch(ex) { 
@@ -68,17 +70,6 @@ var MainController = function($scope) {
         return(0);
     };
 
-    $scope.show_default = function(value) {
-        console.log(value);
-        d3.select("p").remove();
-        var text = d3.select("#output").append("p");
-        text.selectAll("pre")
-            .data(value)
-            .enter()
-            .append("pre")
-            .text(function(d) { return(d); });
-        
-    };
     
 };
 

@@ -23,32 +23,39 @@
                ng-class="isConnected ? 'wsOn' : 'wsOff'"
                ng-controller="iconController" ng-click="toggle_connect()">
           </div>
+
         </div>
+
         <div class="navbar-collapse collapse">
+
           <a class="navbar-brand" href="#">Spyre</a>
+          <form class="navbar-form navbar-left">
+            <input type="text" class="form-control" placeholder="Eval ...">
+          </form>
+
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">About</a></li>
             <li><a href="#">Help</a></li>
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
         </div>
       </div>
       
     </div>
       
     <div id="container">
-      <div id="objectlist" ng-controller="ObjectController">
+      <div id="objectlist">
         <h4>Object List</h4>
         <ul>
-          <li ng-repeat="object in objects">
-            {{ object }}
+          <li ng-repeat="object in test" ng-click="send_object(object)">
+            <a>{{ object }}</a>
           </li>
         </ul>
       </div>
       <div id="output">
         <h4>Output Summary</h4>
+        <pre>
+        {{object_summary}}
+        </pre>
       </div>
       <div id="plot">
         <h4>Graphical Output</h4>
