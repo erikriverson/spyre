@@ -1,0 +1,37 @@
+#objectlist {
+    float:left;
+    width: 20%;
+}
+
+#output {
+    float:left;
+    width:60%;
+    height:150px;
+    font-family:monospace;
+}
+
+#container {
+    width:100%;
+}
+
+#plot {
+    float:left;
+    width:60%;
+    height:300px;
+}
+
+.glyphicon-link {
+    font-size: 3.2em;
+}
+
+.glyphicon-link:hover {
+    cursor:pointer;
+}
+
+.wsOn {
+    color:green;
+} 
+
+.wsOff {
+    color:red;
+} 
