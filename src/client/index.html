@@ -19,8 +19,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div id="statustd" class="glyphicon glyphicon-link" 
-               ng-controller="iconController" ng-click="connect()"></div>
+          <div id="status" class="glyphicon glyphicon-link" 
+               ng-class="isConnected ? 'wsOn' : 'wsOff'"
+               ng-controller="iconController" ng-click="toggle_connect()">
+          </div>
         </div>
         <div class="navbar-collapse collapse">
           <a class="navbar-brand" href="#">Spyre</a>
