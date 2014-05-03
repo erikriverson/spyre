@@ -1,4 +1,10 @@
+var iconController = function($scope) {
 
+    $scope.connect = function() {
+        $scope.ws.socket.close();
+    };
+
+};
 
 var ObjectController = function($scope) {
     $scope.$watch('test', 
@@ -11,12 +17,10 @@ var ObjectController = function($scope) {
 
 var MainController = function($scope) {
     try {
-        var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");
 
+        var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");        
         w_socket.bind('open', function() {
-            document.getElementById("statustd").textContent =
-                "Connected to R session at " + w_socket.socket.url;
-            document.getElementById("statustd").style.backgroundColor = "#40f300";
+            document.getElementById("statustd").style.color = "#40f300";
         });
 
         w_socket.bind('objects', function(msg) {
@@ -43,9 +47,7 @@ var MainController = function($scope) {
             });
 
         w_socket.bind('close',  function(){
-            document.getElementById("wsdi_status").textContent =
-                " websocket connection CLOSED ";
-            document.getElementById("statustd").style.backgroundColor = "#ff4040";
+            document.getElementById("statustd").style.color = "#ff4040";
         });
         
         $scope.ws = w_socket; 

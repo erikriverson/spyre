@@ -19,8 +19,10 @@ spyre_onWSOpen <- function(ws) {
 
     getCurrentObjects <- function(a, b, c, d) {
         my_objects <- objects(".GlobalEnv")
-        expel <- c("getCurrentObjects", "setupTestServer", "spyre", "spyre.data.frame",
-                   "spyre.default", "spyre.factor", "spyre.function", "static_file_service2", "w")
+        expel <- c("getCurrentObjects", "setupTestServer", "spyre",
+                   "spyre.data.frame",
+                   "spyre.default", "spyre.factor", "spyre.function",
+                   "static_file_service2", "w")
         objects <- setdiff(my_objects, expel)
         ret_list <- list(event = "objects", data = objects)
         ws$send(jsonlite::toJSON(ret_list))
@@ -63,7 +65,3 @@ stop_spyre <- function(handle) {
 if(exists("handle"))
     stop_spyre(handle)
 handle <- start_spyre()
-
-
- 
-
