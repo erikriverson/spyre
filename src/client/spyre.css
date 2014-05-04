@@ -1,12 +1,12 @@
 #objectlist {
     float:left;
-    width: 20%;
+    width: 30%;
 }
 
 #output {
     float:left;
     width:60%;
-    height:150px;
+    height:300px;
     font-family:monospace;
 }
 
@@ -35,3 +35,7 @@
 .wsOff {
     color:red;
 } 
+
+#input_eval {
+    font-family:monospace;
+}

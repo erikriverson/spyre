@@ -41,5 +41,3 @@ A_spyre_factor_test <- as.factor(sample(c("male", "female"), 20,
 A_spyre_factor_test2 <- as.factor(sample(c("male", "female"), 200,
                                         replace = TRUE))
 
-
-
