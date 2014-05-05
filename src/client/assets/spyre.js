@@ -1,11 +1,15 @@
-var evalController = function($scope) {
+var app = angular.module('spyre', ['angularBootstrapNavTree']);
+
+app.controller('evalController', function($scope) {
     $scope.eval_me = function() {
         $scope.send_eval_string($scope.eval_string);
         $scope.eval_string = ""; 
     };
-};
+});
+               
 
-var iconController = function($scope) {
+
+app.controller('iconController',  function($scope) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
             $scope.send_object(".CLOSING.");
@@ -13,14 +17,9 @@ var iconController = function($scope) {
             $scope.connect();
         }
     };
-};
+});
 
-var ObjectController = function($scope) {
-    $scope.$watch('test', 
-                  function() {
-                      $scope.objects = $scope.test;
-                  });
-};
+
 
 var drawBar = function(msg) {
     var t_data = {
@@ -39,8 +38,11 @@ var drawBar = function(msg) {
     var myChart = new xChart('bar', t_data, '#plot');
 };
 
-var MainController = function($scope) {
+app.controller('MainController', function($scope) {
+    // really need the app/app.controller stuff.
     $scope.isConnected = false;
+    // so tree does not complain about no data
+    $scope.objects = [{label:'hi'}, {label:'bye'}];
 
     $scope.connect = function() {
         try {
@@ -50,7 +52,16 @@ var MainController = function($scope) {
                 .bind('objects', function(msg) {
                     console.log(msg);
 
-                    $scope.test = msg;
+                    $scope.objects = msg;
+                    console.log(msg);
+
+                    $scope.objects_tree = 
+                        msg.reduce(function(o, v, i) {
+                            o[i] = v.name;
+                            return o;
+                        }, {});
+                    console.log($scope.objects_tree);
+
                     $scope.$apply();
                 })
                 .bind('default', function(msg) {
@@ -88,5 +99,5 @@ var MainController = function($scope) {
         return(0);
     };
 
-    
-};
+});
+

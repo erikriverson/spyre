@@ -1,11 +1,12 @@
 <!doctype html>
-<html ng-app>
+<html ng-app="spyre">
   <head>
     <title>Spyre</title>
     <link rel="stylesheet" type="text/css" href="http://tenxer.github.io/xcharts/css/master.css" />
     <link rel="stylesheet" type="text/css" href="./assets/spyre.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./assets/angular-bootstrap-nav-tree/dist/abn_tree.css">
   </head>
 
   <body ng-controller="MainController">
@@ -33,7 +34,7 @@
           <form class="navbar-form navbar-left" ng-controller="evalController"
                 ng-submit="eval_me()">
             <input type="text" class="form-control" placeholder="Eval ..."
-                   ng-model="eval_string" id = "input_eval">
+                   ng-model="eval_string" id = "input_eval"></input>
           </form>
 
           <ul class="nav navbar-nav navbar-right">
@@ -46,25 +47,11 @@
     </div>
       
     <div id="container">
-      <div id="objectlist">
+      <div id="objectlist"> 
         <h4>Object List</h4>
-        <table id="object_table" class="table table-collapsed">
-          <thead>
-            <td>Name</td>
-            <td>Class</td>
-            <td>Dim</td>
-            <td>Size (kb)</td>
-          </thead>
-          
-          <tbody>
-          <tr ng-repeat="object in test" ng-click="send_object(object.name)">
-            <td><a> {{ object.name }}</a> </td>
-            <td><a> {{ object.class }}</a> </td>
-            <td><a> {{ object.dim }}</a> </td>
-            <td><a> {{ object.size }}</a> </td>
-          </tbody>
-        </table>
+        <abn-tree tree-data="objects"></abn-tree>
       </div>
+
       <div id="output">
         <h4>Output Summary</h4>
         <pre>
@@ -76,11 +63,14 @@
       </div>
     </div>
 
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="http://tenxer.github.io/xcharts/js/xcharts.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.7/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.7/angular-animate.js"></script>
+    <script src="./assets/angular-bootstrap-nav-tree/dist/abn_tree_directive.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="//tenxer.github.io/xcharts/js/xcharts.min.js"></script>
     <script src="./assets/ws_events_dispatcher.js"></script>
     <script src="./assets/spyre.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.7/angular.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"</script?
+
   </body>
 </html>
