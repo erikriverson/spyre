@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="./assets/angular-bootstrap-nav-tree/dist/abn_tree.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   </head>
 
   <body ng-controller="MainController">
@@ -31,8 +32,10 @@
         <div class="navbar-collapse collapse">
 
           <a class="navbar-brand" href="#">Spyre</a>
+
           <form class="navbar-form navbar-left" ng-controller="evalController"
                 ng-submit="eval_me()">
+            <i class="fa fa-terminal fa-2x fa-inverse"></i>
             <input type="text" class="form-control" placeholder="Eval ..."
                    ng-model="eval_string" id = "input_eval"></input>
           </form>
@@ -45,13 +48,29 @@
       </div>
       
     </div>
+
       
     <div id="container">
+
+
       <div id="objectlist"> 
         <h4>Object List</h4>
-        <abn-tree tree-data="objects"></abn-tree>
+        <!-- <div ng-repeat="object in objects_tree">  -->
+          <abn-tree tree-data="objects_tree" tree-control="tree_control_test" 
+                    on-select="tree_control_test(branch)" icon-leaf="" 
+                    icon-expand="fa fa-plus-square" icon-collapse="fa fa-minus-square"></abn-tree>
+        <!-- </div> -->
       </div>
 
+      <div ng-controller="tabsController">
+        <tabset>
+          <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+            {{tab.content}}
+          </tab>
+        </tabset>
+      </div>
+
+      
       <div id="output">
         <h4>Output Summary</h4>
         <pre>
@@ -66,7 +85,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.7/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.7/angular-animate.js"></script>
     <script src="./assets/angular-bootstrap-nav-tree/dist/abn_tree_directive.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script> -->
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="//tenxer.github.io/xcharts/js/xcharts.min.js"></script>
     <script src="./assets/ws_events_dispatcher.js"></script>

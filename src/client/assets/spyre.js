@@ -1,4 +1,12 @@
-var app = angular.module('spyre', ['angularBootstrapNavTree']);
+var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap']);
+
+app.controller('tabsController', function($scope) {
+    $scope.tabs = [{title:'Object Explorer', content:'stuff'}, 
+                   {title:'Data Explorer', content:'stuff'}, 
+                   {title:'Plotting', content:'stuff'}, 
+                   {title:'Regression', content:'stuff'}, 
+                   {title:'Console',content:'more stuff'}];
+});
 
 app.controller('evalController', function($scope) {
     $scope.eval_me = function() {
@@ -42,7 +50,7 @@ app.controller('MainController', function($scope) {
     // really need the app/app.controller stuff.
     $scope.isConnected = false;
     // so tree does not complain about no data
-    $scope.objects = [{label:'hi'}, {label:'bye'}];
+    $scope.objects_tree = [];
 
     $scope.connect = function() {
         try {
@@ -50,17 +58,17 @@ app.controller('MainController', function($scope) {
 
             w_socket
                 .bind('objects', function(msg) {
+                    console.log("Object of Objects:");
                     console.log(msg);
 
                     $scope.objects = msg;
-                    console.log(msg);
 
                     $scope.objects_tree = 
                         msg.reduce(function(o, v, i) {
-                            o[i] = v.name;
+                            o[i] = {label: v.name[0],
+                                    children: v.names};
                             return o;
-                        }, {});
-                    console.log($scope.objects_tree);
+                        }, []);
 
                     $scope.$apply();
                 })
@@ -97,6 +105,11 @@ app.controller('MainController', function($scope) {
     $scope.send_eval_string = function(eval_string) {
         $scope.ws.send("eval_string", eval_string);
         return(0);
+    };
+
+    $scope.tree_control_test = function(branch) {
+        console.log(branch.label);
+        $scope.send_object(branch.label);
     };
 
 });

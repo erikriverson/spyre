@@ -19,28 +19,38 @@ spyre_onWSOpen <- function(ws) {
 
     getCurrentObjects <- function(a, b, c, d) {
         objects <- objects(".GlobalEnv")
-        objects_df <- data.frame(name = objects(".GlobalEnv"),
-                                 class = sapply(objects,
-                                     function(x) class(get(x))),
-                                 dim = sapply(objects,
-                                     function(x) {
-                                         nr <- nrow(get(x))
-                                         if(is.null(nr))
-                                             nr <- length(get(x))
-                                         nr
-                                     }),
-                                 size = sapply(objects,
-                                     function(x) object.size(get(x))))
-                                 
-        ret_list <- list(event = "objects", data = objects_df)
+
+        objects_list <-lapply(objects, function(x) {
+            list(name = x,
+                 class = class(get(x)),
+                 dim  = {
+                     nr <- nrow(get(x))
+                     if(is.null(nr))
+                         nr <- length(get(x))
+                     nr },
+                 size = as.character(object.size(get(x))),
+                 names = {if(!is.null(names(get(x)))) 
+                                        names(get(x)) }) })
+
+        ## remove children that don't exist
+        objects_list <- lapply(objects_list, function(x) {
+
+            if(length(x$names) == 0) {
+                x$names <- NULL
+            }
+            return(x)})
+
+        ret_list <- list(event = "objects", data = objects_list)
         ws$send(jsonlite::toJSON(ret_list))
+        if(FALSE) {
+            message(prettify(jsonlite::toJSON(ret_list)))
+        }
         TRUE
     }
 
     receive_data <- function(binary_flag, data) {
         E <- jsonlite::fromJSON(data)$event
         D <- jsonlite::fromJSON(data)$data
-        message("D: ", D)
         
         ## hack until .close is figured out from client
         if(D == ".CLOSING.") {
@@ -50,7 +60,6 @@ spyre_onWSOpen <- function(ws) {
         } else {
             event <- "default"
             data <- capture.output(eval_string(D))
-            message(data)
             send_data(jsonlite::toJSON(list(event = event,
                                             data = list(summary = data))))
         }
@@ -59,6 +68,16 @@ spyre_onWSOpen <- function(ws) {
     send_data <- function(msg) {
         ws$send(msg)
     }
+
+    eval_string <- function(string) {
+        ## save the value to return
+        ret <- tryCatch(eval(parse(text = string), env = .GlobalEnv), error =
+                        function(e) as.character(e))
+        ## in case objects get created
+        getCurrentObjects(NULL, NULL, NULL, NULL)
+        ret
+}
+
 
     ws$onMessage(receive_data)
     ws$onClose(cleanup)
@@ -79,10 +98,6 @@ stop_spyre <- function(handle) {
     stopDaemonizedServer(handle)
 }
 
-eval_string <- function(string) {
-    tryCatch(eval(parse(text = string)), error =
-             function(e) as.character(e))
-}
 
 ## bootstrap
 if(exists("handle"))
