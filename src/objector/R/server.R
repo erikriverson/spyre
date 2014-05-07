@@ -58,7 +58,7 @@ spyre_onWSOpen <- function(ws) {
         } else if(E == "request_objects") {
             send_data(jsonlite::toJSON(spyre(get(D))))
         } else {
-            event <- "default"
+            event <- "object"           #NB: temporary, needs own type
             data <- capture.output(eval_string(D))
             send_data(jsonlite::toJSON(list(event = event,
                                             data = list(summary = data))))

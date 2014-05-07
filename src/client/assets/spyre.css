@@ -1,10 +1,15 @@
 #objectlist {
     float:left;
-    width: 30%;
+    width: 20%;
+}
+
+#tabslist {
+    float:left;
+    width:60%
 }
 
 #output {
-    float:left;
+    float:left;                 
     width:60%;
     height:300px;
     font-family:monospace;
@@ -21,7 +26,7 @@
 }
 
 .glyphicon-link {
-    font-size: 3.2em;
+    font-size: 2.8em;
 }
 
 .glyphicon-link:hover {

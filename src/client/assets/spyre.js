@@ -1,5 +1,10 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap']);
 
+app.controller('plotController', function($scope) {
+
+
+});
+
 app.controller('tabsController', function($scope) {
     $scope.tabs = [{title:'Object Explorer', content:'stuff'}, 
                    {title:'Data Explorer', content:'stuff'}, 
@@ -29,23 +34,6 @@ app.controller('iconController',  function($scope) {
 
 
 
-var drawBar = function(msg) {
-    var t_data = {
-        "xScale": "ordinal",
-        "yScale": "linear",
-        "yMin": 0,
-        "main": [
-            {
-                "data": msg.value
-            }
-        ]
-    };
-    t_data.main[0].className = "." + 
-        Math.random().toString(36).substring(7);
-                    
-    var myChart = new xChart('bar', t_data, '#plot');
-};
-
 app.controller('MainController', function($scope) {
     // really need the app/app.controller stuff.
     $scope.isConnected = false;
@@ -72,17 +60,22 @@ app.controller('MainController', function($scope) {
 
                     $scope.$apply();
                 })
-                .bind('default', function(msg) {
-                    console.log(msg);
-
+                .bind('object', function(msg) {
+                    console.log('message from object explorer');
+                    console.log(JSON.parse(msg.value));
+                    
+                    ggvis.getPlot("ggvis_univariate").
+                        parseSpec(JSON.parse(msg.value));
+                    
                     $scope.object_summary = msg.summary[0];
                     $scope.$apply();
-                    
-                    drawBar(msg);
+                })
+                .bind('plotter', function(msg) {
+                    console.log('message from plotter');
                     
                 });
         }
-
+                     
         catch(ex) { 
             console.log("Caught exception!");
             $scope.isConnected = false; 
