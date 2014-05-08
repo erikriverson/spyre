@@ -99,6 +99,8 @@ app.controller('MainController', function($scope) {
         $scope.ws.send("eval_string", eval_string);
         return(0);
     };
+    
+    $scope.tree_control = {};
 
     $scope.tree_control_test = function(branch) {
         console.log(branch.label);

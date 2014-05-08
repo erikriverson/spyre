@@ -54,7 +54,7 @@
       <div id="objectlist"> 
         <h4>Object List</h4>
         <!-- <div ng-repeat="object in objects_tree">  -->
-          <abn-tree tree-data="objects_tree" tree-control="tree_control_test" 
+          <abn-tree tree-data="objects_tree" tree-control="tree_control" 
                     on-select="tree_control_test(branch)" icon-leaf="" 
                     icon-expand="fa fa-plus-square" icon-collapse="fa fa-minus-square"></abn-tree>
         <!-- </div> -->
@@ -71,6 +71,7 @@
                       {{object_summary}}
                     </pre>
                   </div>
+
                   <div id="plot">
                     <h4>ggvis</h4>
 
