@@ -7,28 +7,18 @@
 require(httpuv)
 require(jsonlite)
 
-spyre_call <- function(req) {
-    message("spyre_call")
-}
-
-spyre_onWSOpen <- function(ws) {
-
-    cleanup <- function() {
-        removeTaskCallback(1)
-    }
-
     generate_tree_data <- function(object, index = 1, parent, object_names) {
 
         if(missing(parent)) {
             obj_name <- object
             object <- get(object)
             
-            parent <- list(label = obj_name,
+            parent <- list(label = unbox(obj_name),
                            data = list(root_object = obj_name,
                                object_index = list(obj_name)))
             
         } else {
-            parent <- list(label = object_names[index],
+            parent <- list(label = unbox(object_names[index]),
                            data= list(root_object = parent$data$root_object,
                                object_index = c(parent$data$object_index,
                                    object_names[[index]])))
@@ -51,11 +41,33 @@ spyre_onWSOpen <- function(ws) {
                            MoreArgs = list(parent = parent,
                                object_names = ifelse(named, names(object),
                                    seq_along(object))),
-                           SIMPLIFY = FALSE)
+                           SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
         c(parent, children = list(children))
     }
 
+`%i%` <- function(object, index_list) {
+    if(length(index_list) == 0)
+        return(object)
+    object <- do.call("[[", list(object, index_list[[1]]))
+    object %i% index_list[-1]
+}
+
+iget <- function(object_name, index_list) {
+    obj <- get(object_name)
+    obj %i% index_list
+}
+
+
+spyre_call <- function(req) {
+    message("spyre_call")
+}
+
+spyre_onWSOpen <- function(ws) {
+
+    cleanup <- function() {
+        removeTaskCallback(1)
+    }
 
     getCurrentObjects <- function(a, b, c, d) {
         objects <- objects(".GlobalEnv")
@@ -71,16 +83,30 @@ spyre_onWSOpen <- function(ws) {
 
     receive_data <- function(binary_flag, data) {
         E <- jsonlite::fromJSON(data)$event
-        D <- jsonlite::fromJSON(data)$data
-        
+        D <- as.list(jsonlite::fromJSON(data)$data)
+        message(str(D))
         ## hack until .close is figured out from client
-        if(D == ".CLOSING.") {
+        if(D[[1]] == ".CLOSING.") {
             cleanup()
         } else if(E == "request_objects") {
-            send_data(jsonlite::toJSON(spyre(get(D))))
+            if(length(D) > 1)
+                D <- iget(D[[1]], D[2:length(D)])
+            else
+                D <- get(D[[1]])
+            send_data(jsonlite::toJSON(spyre(D)))
+        } else if(E == "multivariate") {
+            if(length(D[[1]]) > 1)
+                D1 <- iget(D[[1]][[1]], D[[1]][2:length(D[[1]])])
+            else
+                D1 <- get(D[[1]][[1]])
+            if(length(D[[2]]) > 1)
+                D2 <- iget(D[[2]][[1]], D[[2]][2:length(D[[2]])])
+            else
+                D2 <- get(D[[2]][[1]])
+            send_data(jsonlite::toJSON(multivariate(D1, D2)))
         } else {
             event <- "object"           #NB: temporary, needs own type
-            data <- capture.output(eval_string(D))
+            data <- capture.output(eval_string(D[[1]]))
             send_data(jsonlite::toJSON(list(event = event,
                                             data = list(summary = data))))
         }

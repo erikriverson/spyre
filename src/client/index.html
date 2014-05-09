@@ -102,6 +102,40 @@
           </tab>
 
           <tab heading="Multivariate Explorer" ng-controller="plotController">
+                  <div id="output">
+                    <h4>Summary</h4>
+                    <pre>
+                      {{object_summary}}
+                    </pre>
+                  </div>
+
+                  <div id="plot">
+                    <h4>ggvis</h4>
+
+                    <div id="ggvis_multivariate-container" class="ggvis-output-container">
+                      <div id="ggvis_multivariate" class="ggvis-output"></div>
+                      <div class="plot-gear-icon">
+                        <nav class="ggvis-control">
+                          <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
+                          <ul class="ggvis-dropdown">
+                            <li>
+                              Renderer: 
+                              <a id="ggvis_multivariate_renderer_svg" class="ggvis-renderer-button" 
+                                 data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
+                              | 
+                              <a id="ggvis_multivariate_renderer_canvas" class="ggvis-renderer-button" 
+                                 data-plot-id="ggvis_multivariate" data-renderer="canvas">Canvas</a>
+                            </li>
+                            <li>
+                              <a id="ggvis_multivariate_download" class="ggvis-download" 
+                                 data-plot-id="ggvis_multivariate">Download</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                    
+                  </div> <!-- plot -->
 
 
             

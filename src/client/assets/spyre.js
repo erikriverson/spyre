@@ -50,21 +50,7 @@ app.controller('MainController', function($scope) {
                     console.log(msg);
 
                     $scope.objects = msg;
-                    
-
-                    $scope.objects_tree = 
-                        msg.reduce(function(o, v, i) {
-
-                            o[i] = {label: v.name[0],
-                                    children: v.names,
-                                    data: v.name[0]
-                                   };
-
-                            return o;
-                        }, []);
-
-                    console.log("TREE:");
-                    console.log($scope.objects_tree);
+                    $scope.objects_tree = msg;
                     
                     $scope.$apply();
                 })
@@ -80,7 +66,10 @@ app.controller('MainController', function($scope) {
                 })
                 .bind('plotter', function(msg) {
                     console.log('message from plotter');
-                    
+
+                    ggvis.getPlot("ggvis_multivariate").
+                        parseSpec(JSON.parse(msg.value));
+
                 });
         }
                      
@@ -103,6 +92,13 @@ app.controller('MainController', function($scope) {
         return(0);
     };
 
+    $scope.multivariate = function(object_name1, object_name2) {
+        $scope.ws.send("multivariate", [object_name1, object_name2]);
+
+        return(0);
+    };
+
+
     $scope.send_eval_string = function(eval_string) {
         $scope.ws.send("eval_string", eval_string);
         return(0);
@@ -112,7 +108,7 @@ app.controller('MainController', function($scope) {
 
     $scope.tree_control_test = function(branch) {
         console.log(branch.data + " " + branch.label);
-        $scope.send_object(branch.data + "$" + branch.label);
+        $scope.send_object(branch.data.object_index);
     };
 
 });
