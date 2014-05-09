@@ -17,29 +17,50 @@ spyre_onWSOpen <- function(ws) {
         removeTaskCallback(1)
     }
 
+    generate_tree_data <- function(object, index = 1, parent, object_names) {
+
+        if(missing(parent)) {
+            obj_name <- object
+            object <- get(object)
+            
+            parent <- list(label = obj_name,
+                           data = list(root_object = obj_name,
+                               object_index = list(obj_name)))
+            
+        } else {
+            parent <- list(label = object_names[index],
+                           data= list(root_object = parent$data$root_object,
+                               object_index = c(parent$data$object_index,
+                                   object_names[[index]])))
+        }
+
+        if(!is.list(object)) {
+            return(parent)
+        }
+
+
+        named <- if(is.null(names(object))) {
+            rep(FALSE, length(object))
+        } else {
+            ifelse(names(object) == "", FALSE, TRUE)
+        }
+        
+        children <- mapply(generate_tree_data,
+                           object = object,
+                           index = seq_along(object),
+                           MoreArgs = list(parent = parent,
+                               object_names = ifelse(named, names(object),
+                                   seq_along(object))),
+                           SIMPLIFY = FALSE)
+
+        c(parent, children = list(children))
+    }
+
+
     getCurrentObjects <- function(a, b, c, d) {
         objects <- objects(".GlobalEnv")
 
-        objects_list <-lapply(objects, function(x) {
-            list(name = x,
-                 class = class(get(x)),
-                 dim  = {
-                     nr <- nrow(get(x))
-                     if(is.null(nr))
-                         nr <- length(get(x))
-                     nr },
-                 size = as.character(object.size(get(x))),
-                 names = {if(!is.null(names(get(x)))) 
-                                        names(get(x)) }) })
-
-        ## remove children that don't exist
-        objects_list <- lapply(objects_list, function(x) {
-
-            if(length(x$names) == 0) {
-                x$names <- NULL
-            }
-            return(x)})
-
+        objects_list <- lapply(objects, generate_tree_data)
         ret_list <- list(event = "objects", data = objects_list)
         ws$send(jsonlite::toJSON(ret_list))
         if(FALSE) {

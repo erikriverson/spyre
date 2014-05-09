@@ -11,7 +11,7 @@ spyre.default <- function(x, ...) {
 
 spyre.data.frame <- function(x, ...) {
     summary <- paste(capture.output(summary(x)), collapse = "\n")
-    list(event = "object", data = list(summary = summary, value = x))
+    list(event = "object", data = list(summary = summary, value = "{}"))
 }
 
 

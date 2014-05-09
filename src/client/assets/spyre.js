@@ -50,14 +50,22 @@ app.controller('MainController', function($scope) {
                     console.log(msg);
 
                     $scope.objects = msg;
+                    
 
                     $scope.objects_tree = 
                         msg.reduce(function(o, v, i) {
+
                             o[i] = {label: v.name[0],
-                                    children: v.names};
+                                    children: v.names,
+                                    data: v.name[0]
+                                   };
+
                             return o;
                         }, []);
 
+                    console.log("TREE:");
+                    console.log($scope.objects_tree);
+                    
                     $scope.$apply();
                 })
                 .bind('object', function(msg) {
@@ -103,8 +111,8 @@ app.controller('MainController', function($scope) {
     $scope.tree_control = {};
 
     $scope.tree_control_test = function(branch) {
-        console.log(branch.label);
-        $scope.send_object(branch.label);
+        console.log(branch.data + " " + branch.label);
+        $scope.send_object(branch.data + "$" + branch.label);
     };
 
 });
