@@ -112,7 +112,7 @@ spyre_onWSOpen <- function(ws) {
 
     process_data <- function(binary_flag, data) {
         E <- jsonlite::fromJSON(data)$event
-        D <- as.list(jsonlite::fromJSON(data)$data)
+        D <- jsonlite::fromJSON(data)$data
         message(E)
         message(str(D))
 

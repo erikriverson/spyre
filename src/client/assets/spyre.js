@@ -59,9 +59,6 @@ app.controller('MainController', function($scope) {
                     $scope.$apply();
                 })
                 .bind('uv', function(msg) {
-                    console.log('message from object explorer');
-                    console.log(JSON.parse(msg.value));
-                    
                     ggvis.getPlot("ggvis_univariate").
                         parseSpec(JSON.parse(msg.value));
                     
@@ -69,8 +66,6 @@ app.controller('MainController', function($scope) {
                     $scope.$apply();
                 })
                 .bind('mv', function(msg) {
-                    console.log('message from plotter');
-
                     ggvis.getPlot("ggvis_multivariate").
                         parseSpec(JSON.parse(msg.value));
 
@@ -92,14 +87,16 @@ app.controller('MainController', function($scope) {
 
     $scope.tree_control = {};
 
-    $scope.send_object = function(object_name) {
-        $scope.ws.send("uv", object_name);
+    $scope.send_object = function(event, object_name) {
+        $scope.ws.send(event, object_name);
         return(0);
     };
 
     $scope.tree_control_test = function(branch) {
-        console.log(branch.data + " " + branch.label);
-        $scope.send_object(branch.data.object_index);
+        // We want send_object to behave differently depending on the
+        // active tab, so pass in event?  how do we get some data
+        // associated with the active tab, like it's id?
+        $scope.send_object("uv", branch.data.object_index);
     };
 
 });
