@@ -1,8 +1,10 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap']);
 
-app.controller('plotController', function($scope) {
-
-
+app.controller('mvController', function($scope) {
+    $scope.mv = function(object) {
+        $scope.ws.send("mv", object);
+        return(0);
+    };
 });
 
 app.controller('tabsController', function($scope) {
@@ -14,8 +16,9 @@ app.controller('tabsController', function($scope) {
 });
 
 app.controller('evalController', function($scope) {
+
     $scope.eval_me = function() {
-        $scope.send_eval_string($scope.eval_string);
+        $scope.ws.send("eval_string", eval_string);
         $scope.eval_string = ""; 
     };
 });
@@ -25,7 +28,8 @@ app.controller('evalController', function($scope) {
 app.controller('iconController',  function($scope) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            $scope.send_object(".CLOSING.");
+            $scope.ws.send("CLOSE", {});
+            $scope.isConnected = false;
         } else {
             $scope.connect();
         }
@@ -54,7 +58,7 @@ app.controller('MainController', function($scope) {
                     
                     $scope.$apply();
                 })
-                .bind('object', function(msg) {
+                .bind('uv', function(msg) {
                     console.log('message from object explorer');
                     console.log(JSON.parse(msg.value));
                     
@@ -64,12 +68,15 @@ app.controller('MainController', function($scope) {
                     $scope.object_summary = msg.summary[0];
                     $scope.$apply();
                 })
-                .bind('plotter', function(msg) {
+                .bind('mv', function(msg) {
                     console.log('message from plotter');
 
                     ggvis.getPlot("ggvis_multivariate").
                         parseSpec(JSON.parse(msg.value));
 
+                })
+                .bind('eval_string', function(msg) {
+                    console.log("Console logged: " + msg);
                 });
         }
                      
@@ -83,28 +90,12 @@ app.controller('MainController', function($scope) {
 
     };
 
-    $scope.send_object = function(object_name) {
-        $scope.ws.send("request_objects", object_name);
-        
-        if(object_name === ".CLOSING.") {
-            $scope.isConnected = false;
-        }
-        return(0);
-    };
-
-    $scope.multivariate = function(object_name1, object_name2) {
-        $scope.ws.send("multivariate", [object_name1, object_name2]);
-
-        return(0);
-    };
-
-
-    $scope.send_eval_string = function(eval_string) {
-        $scope.ws.send("eval_string", eval_string);
-        return(0);
-    };
-    
     $scope.tree_control = {};
+
+    $scope.send_object = function(object_name) {
+        $scope.ws.send("uv", object_name);
+        return(0);
+    };
 
     $scope.tree_control_test = function(branch) {
         console.log(branch.data + " " + branch.label);
@@ -112,4 +103,3 @@ app.controller('MainController', function($scope) {
     };
 
 });
-

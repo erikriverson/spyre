@@ -5,13 +5,13 @@ spyre <- function(x, ...) {
 spyre.default <- function(x, ...) {
     summary <- paste(capture.output(str(x)), collapse = "\n")
     ## need a way to limit size of x (likely)
-    list(event = "object", data = list(summary = summary,
+    list(event = "uv", data = list(summary = summary,
                                 value = x))
 }
 
 spyre.data.frame <- function(x, ...) {
     summary <- paste(capture.output(summary(x)), collapse = "\n")
-    list(event = "object", data = list(summary = summary, value = "{}"))
+    list(event = "uv", data = list(summary = summary, value = "{}"))
 }
 
 
@@ -27,7 +27,7 @@ spyre.factor <- function(x, ...) {
                      collapse = ""))
     
     ## need a way to limit size of x (likely)
-    list(event = "object", data = list(summary = summary,
+    list(event = "uv", data = list(summary = summary,
                                value = ggvis_spec))
     
 }
@@ -44,7 +44,7 @@ spyre.numeric <- function(x, ...) {
                      collapse = ""))
     
     ## need a way to limit size of x (likely)
-    list(event = "object", data = list(summary = summary,
+    list(event = "uv", data = list(summary = summary,
                                value = ggvis_spec))
     
 }
@@ -52,7 +52,7 @@ spyre.numeric <- function(x, ...) {
 
 spyre.function <- function(x, ...) {
     value <- paste(capture.output(args(x)), collapse = "\n")
-    list(event = "object", data = list(summary = value))
+    list(event = "uv", data = list(summary = value))
 }
 
 ## think what we want for summary/value, raw or summarized?
@@ -79,7 +79,7 @@ mutivariate <- function(x, y, ...) {
                      collapse = ""))
     
     ## need a way to limit size of x (likely)
-    list(event = "object", data = list(summary = summary,
+    list(event = "uv", data = list(summary = summary,
                                value = ggvis_spec))
     
 }
