@@ -101,9 +101,15 @@ cleanup <- function() {
 spyre_onWSOpen <- function(ws) {
 
     getCurrentObjects <- function(a, b, c, d) {
+        message("getCurrentObjects run, sending list of objects")
         objects <- objects(".GlobalEnv")
 
-        objects_list <- lapply(objects, generate_tree_data)
+        objects_list <- list(tree_data = lapply(objects, generate_tree_data),
+                             object_class = lapply(objects, function(x) class(get(x))))
+
+        objects_list <- lapply(seq_along(objects_list[[1]]),
+                               function (i) sapply(objects_list, "[", i))
+
         ret_list <- list(event = "objects", data = objects_list)
         ws$send(jsonlite::toJSON(ret_list))
         TRUE

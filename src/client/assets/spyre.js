@@ -1,6 +1,15 @@
-var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap']);
+var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
+                                   'ngDragDrop']);
 
 app.controller('mvController', function($scope) {
+
+    // for drag and drop testing
+    $scope.xvar_target = [];
+    $scope.yvar_target = [];
+
+    $scope.xvar_button = {title : "X Button", drag:true};
+    $scope.yvar_button = {title : "X Button", drag:true};
+
     $scope.mv = function(object) {
         $scope.ws.send("mv", object);
         return(0);
@@ -18,12 +27,10 @@ app.controller('tabsController', function($scope) {
 app.controller('evalController', function($scope) {
 
     $scope.eval_me = function() {
-        $scope.ws.send("eval_string", eval_string);
+        $scope.ws.send("eval_string", $scope.eval_string);
         $scope.eval_string = ""; 
     };
 });
-               
-
 
 app.controller('iconController',  function($scope) {
     $scope.toggle_connect = function() {
@@ -35,8 +42,6 @@ app.controller('iconController',  function($scope) {
         }
     };
 });
-
-
 
 app.controller('MainController', function($scope) {
     // really need the app/app.controller stuff.

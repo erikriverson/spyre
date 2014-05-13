@@ -46,3 +46,10 @@
     background-color:black;
     color:white;
 }
+
+/* since we have many trees, don't want them selected */
+
+.nav-pills li .active a:focus {
+    color: "red";
+    background-color: "black"
+}
