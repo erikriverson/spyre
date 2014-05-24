@@ -1,5 +1,76 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
-                                   'ngDragDrop']);
+                                   'ngDragDrop', 'ngGrid']);
+
+app.controller('rawController', function($scope) {
+
+    $scope.filterOptions = {
+        filterText: "",
+        useExternalFilter: true
+    }; 
+
+    $scope.totalServerItems = 0;
+
+    $scope.pagingOptions = {
+        pageSizes: [10, 50, 100],
+        pageSize: 10,
+        currentPage: 1
+    };	
+
+    $scope.setPagingData = function(data, page, pageSize){	
+        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+        $scope.rawdata = pagedData;
+        $scope.totalServerItems = data.length;
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    };
+
+    $scope.getPagedDataAsync = function (pageSize, page, searchText) {
+        setTimeout(function () {
+            var data;
+            if (searchText) {
+                var ft = searchText.toLowerCase();
+                $http.get('jsonFiles/largeLoad.json').success(function (largeLoad) {		
+                    data = largeLoad.filter(function(item) {
+                        return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
+                    });
+                    $scope.setPagingData(data,page,pageSize);
+                });            
+            } else {
+                $scope.ws.send("rawdata", $scope.recent_branch);
+            }
+        }, 100);
+    };
+	
+    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+	
+    $scope.$watch('pagingOptions', function (newVal, oldVal) {
+        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        }
+    }, true);
+    $scope.$watch('filterOptions', function (newVal, oldVal) {
+        if (newVal !== oldVal) {
+          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+        }
+    }, true);
+	
+    $scope.request_raw_data = function() {
+        $scope.ws.send("rawdata", $scope.recent_branch);
+    };
+        
+    $scope.gridOptions = { data: 'rawdata',
+                           enableColumnResize : true,
+                           showGroupPanel : true,
+                           showFilter : true,
+                           enablePaging: true, 
+                           showFooter: true,
+                           totalServerItems : 'totalServerItems',
+                           pagingOptions: $scope.pagingOptions, 
+                           filterOptions: $scope.filterOptions,
+                           showColumnMenu: true};
+
+});
 
 app.controller('mvController', function($scope) {
 
@@ -84,12 +155,22 @@ app.controller('MainController', function($scope) {
                         parseSpec(JSON.parse(msg.value));
                     
                     $scope.object_summary = msg.summary[0];
+                    console.log("hi");
+                    console.log($scope.object_summary);
                     $scope.$apply();
                 })
                 .bind('mv', function(msg) {
                     ggvis.getPlot("ggvis_multivariate").
                         parseSpec(JSON.parse(msg.value));
-
+                    $scope.object_summary = msg.summary[0];
+                    $scope.$apply();
+                })
+                .bind('rawdata', function(msg) {
+                    console.log("got rawdata message:");
+                    console.log(msg.value);
+                    $scope.rawdata = msg.value;
+                    $scope.setPagingData(msg.value ,1, 10);
+                    $scope.$apply();
                 })
                 .bind('eval_string', function(msg) {
                     console.log("Console logged: " + msg);
@@ -114,10 +195,17 @@ app.controller('MainController', function($scope) {
     };
 
     $scope.tree_control_test = function(branch) {
+        console.log("tree_control_test called");
+        console.log(branch);
         // We want send_object to behave differently depending on the
         // active tab, so pass in event?  how do we get some data
         // associated with the active tab, like its id?
         $scope.send_object("uv", branch.data.object_index);
+        branch.selected = branch.expanded = false;
+
+        // this let's us keep an application scoped variable of what
+        // is most recently selected tree branch
+        $scope.recent_branch = branch.data.object_index;
     };
 
     $scope.items = [

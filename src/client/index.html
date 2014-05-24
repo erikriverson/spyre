@@ -1,12 +1,13 @@
 <!doctype html>
 <html ng-app="spyre">
   <head>
-    <title>Spyre</title>
+    <title>spyre: Explore</title>
     <link rel="stylesheet" type="text/css" href="./assets/spyre.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="./assets/angular-bootstrap-nav-tree/dist/abn_tree.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="//angular-ui.github.io/ng-grid/css/ng-grid.css" rel="stylesheet">
 
     <!-- added for ggvis -->
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
@@ -34,7 +35,7 @@
 
         <div class="navbar-collapse collapse">
 
-          <a class="navbar-brand" href="#">Spyre</a>
+          <a class="navbar-brand" href="#">spyre</a>
 
 
           <ul class="nav navbar-nav navbar-right">
@@ -51,7 +52,13 @@
     <div id="container">
 
       <div id="objectlist"> 
-        <h4>Object List</h4>
+        <span><h4>Object List</h4>
+        <button type = "button" class="btn btn-primary btn-dropdown">Actions</button></span>
+
+          <div id="uplevel" class="glyphicon glyphicon-arrow-up" 
+               ng-click="object_level_up()">
+          </div>
+
         <table>
           <tr ng-repeat="(key, prop) in objects_tree track by key" >
             <td>
@@ -93,9 +100,7 @@
           <tab heading="Univariate Explorer">
                   <div id="output">
                     <h4>Summary</h4>
-                    <pre>
-                      {{object_summary}}
-                    </pre>
+                    <pre>{{object_summary}}</pre>
                   </div>
 
                   <div id="plot">
@@ -130,24 +135,21 @@
           <tab heading="Multivariate Explorer" ng-controller="mvController">
                   <div id="output">
                     <h4>Summary</h4>
-                    <pre>
-                      {{object_summary}}
-                    </pre>
+                    <pre>{{object_summary}}</pre>
                   </div>
 
                   <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="xvar_target"> 
                     <p>X Variable</p>
-                    <div class="btn btn-success" data-drag="false" data-jqyoui-options 
-                         jqyoui-draggable ng-hide="!xvar_target[0].label">
+                    <div class="btn btn-success">
                       {{xvar_target[0].label}}
                     </div>
                   </div>
 
 
                   <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="yvar_target"> 
-                    <p>Y-TARGET</p>
+                    <p>Y Variable</p>
                     <div class="btn btn-success" data-drag="false" data-jqyoui-options 
-                         jqyoui-draggable ng-hide="!yvar_target">
+                         jqyoui-draggable>
                       {{yvar_target[0].label}}
                     </div>
                   </div>
@@ -189,7 +191,9 @@
           <tab heading="Modeling">
           </tab>
 
-          <tab heading="Raw Data Explorer">
+          <tab heading="Raw Data Explorer" ng-controller="rawController">
+            <button class="btn btn-primary" ng-click="request_raw_data()">Get selected data.frame</button>
+            <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>
           </tab>
 
           <tab heading="Live Console" >
@@ -231,6 +235,9 @@
     <script src="./assets/ggvis/lodash.min.js"></script>
     <script>var lodash = _.noConflict();</script>
     <script src="./assets/ggvis/ggvis.js"></script>
+
+    <script src="//angular-ui.github.io/ng-grid/lib/ng-grid.debug.js"></script>
+    <script src="//angular-ui.github.io/ng-grid/lib/ng-grid-layout.js"></script>
 
   </body>
 </html>

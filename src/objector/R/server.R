@@ -18,7 +18,6 @@ uv <- function(D) {
 }
 
 mv <- function(D) {
-    str(D)
     if(length(D[[2]]) == 0 || length(D[[1]]) == 0) {
         return(0)
     }
@@ -37,13 +36,21 @@ mv <- function(D) {
     else
         D2 <- get(D[[2]][[1]])
 
-    jsonlite::toJSON(multivariate(D1, D2))
+    names <- c(D[[1]], D[[2]])
+    message(paste("names are", names))
+
+    jsonlite::toJSON(multivariate(D1, D2, names))
 }
 
 eval_string <- function(D) {
     data <- capture.output(eval_string(D[[1]]))
-    jsonlite::toJSON(list(event = event,
-                          data = list(summary = data)))
+    jsonlite::toJSON(list(data = list(summary = data)))
+}
+
+rawdata <- function(D) {
+    D1 <- get(D[[1]][[1]])
+    str(D1)
+    jsonlite::toJSON(list(event = "rawdata", data = list(value = D1)))
 }
 
 generate_tree_data <- function(object, index = 1, parent, object_names) {

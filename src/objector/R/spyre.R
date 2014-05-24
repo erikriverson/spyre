@@ -65,7 +65,7 @@ A_spyre_factor_test3 <- as.factor(sample(c("male", "female", "other"), 200,
                                         replace = TRUE))
 
 
-multivariate <- function(x, y, ...) {
+multivariate <- function(x, y, names, ...) {
     message("multivariate function called")
     str(x)
     str(y)
@@ -73,12 +73,13 @@ multivariate <- function(x, y, ...) {
 
     value <- data.frame(var1 = x, var2 = y)
 
-    ggvis_plot <- qvis(value, ~var1, ~var2)
+    ggvis_plot <- qvis(value, ~var1, ~var2) %>%
+        add_guide_axis("x", title = names[1]) %>%
+        add_guide_axis("y", title = names[2]) 
+            
     ggvis_spec <-
         unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
     ## need a way to limit size of x (likely)
-    list(event = "mv", data = list(summary = summary,
-                           value = ggvis_spec))
-    
+    list(event = "mv", data = list(summary = summary, value = ggvis_spec))
 }
