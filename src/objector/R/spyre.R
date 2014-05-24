@@ -23,8 +23,7 @@ spyre.factor <- function(x, ...) {
 
     ggvis_plot <- qvis(value, ~var)
     ggvis_spec <-
-        unbox(paste0(capture.output(ggvis:::show_spec(ggvis_plot, FALSE)),
-                     collapse = ""))
+        unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,
@@ -34,14 +33,12 @@ spyre.factor <- function(x, ...) {
 
 spyre.numeric <- function(x, ...) {
     summary <- paste(capture.output(summary(x)), collapse = "\n")
-    cat(summary)
 
     value <- data.frame(var = x)
 
     ggvis_plot <- qvis(value, ~var)
     ggvis_spec <-
-        unbox(paste0(capture.output(ggvis:::show_spec(ggvis_plot, FALSE)),
-                     collapse = ""))
+        unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,
@@ -68,18 +65,20 @@ A_spyre_factor_test3 <- as.factor(sample(c("male", "female", "other"), 200,
                                         replace = TRUE))
 
 
-mutivariate <- function(x, y, ...) {
+multivariate <- function(x, y, ...) {
+    message("multivariate function called")
+    str(x)
+    str(y)
     summary <- paste(c(capture.output(cor(x, y))))
 
     value <- data.frame(var1 = x, var2 = y)
 
     ggvis_plot <- qvis(value, ~var1, ~var2)
     ggvis_spec <-
-        unbox(paste0(capture.output(ggvis:::show_spec(ggvis_plot, FALSE)),
-                     collapse = ""))
+        unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
     ## need a way to limit size of x (likely)
-    list(event = "uv", data = list(summary = summary,
-                               value = ggvis_spec))
+    list(event = "mv", data = list(summary = summary,
+                           value = ggvis_spec))
     
 }

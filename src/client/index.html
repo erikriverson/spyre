@@ -66,6 +66,20 @@
             <td> 
               {{prop.object_class[0]}}
             </td>
+            <td>
+              <div class="btn-group" dropdown is-open="status.isopen">
+                <!-- <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled"> -->
+                <!--   Actions <span class="caret"></span> -->
+                <!-- </button> -->
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a></li>
+                </ul>
+              </div>
+            </td>
           </tr>
         </table>
           
@@ -122,27 +136,22 @@
                   </div>
 
                   <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="xvar_target"> 
-                    <p>X-TARGET</p>
-                    <div class="btn btn-success" data-drag="false" data-jqyoui-options ng-model="xvar_target"
-                         jqyoui-draggable ng-hide="!xvar_target.title">
-                      {{xvar_target.title}}
+                    <p>X Variable</p>
+                    <div class="btn btn-success" data-drag="false" data-jqyoui-options 
+                         jqyoui-draggable ng-hide="!xvar_target[0].label">
+                      {{xvar_target[0].label}}
                     </div>
                   </div>
 
-                  <div data-drop="true" data-jqyoui-options jqyoui-droppable="{multiple:true}" ng-model="yvar_target"> 
-                    <p data-drop="true" ng-model="yvar_target"> Here is: {{yvar_target}} </p>
-                    
-                    <div ng-repeat="(key, prop) in yvar_target track by key"> 
-                      <abn-tree tree-data="[yvar_target[key]]" ng-model="prop"
-                                on-select="tree_control_test(branch)" icon-leaf="" 
-                                icon-expand="fa fa-plus-square" icon-collapse="fa fa-minus-square"
-                                data-drop="true" data-jqyoui-options="{revert: 'invalid', helper:'clone'}" 
-                                data-jqyoui-droppable="{multiple:true}">
-                      </abn-tree>
-                    </div>
 
+                  <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="yvar_target"> 
                     <p>Y-TARGET</p>
+                    <div class="btn btn-success" data-drag="false" data-jqyoui-options 
+                         jqyoui-draggable ng-hide="!yvar_target">
+                      {{yvar_target[0].label}}
+                    </div>
                   </div>
+
 
                   <div id="plot">
                     <h4>ggvis</h4>

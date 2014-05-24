@@ -7,6 +7,7 @@
 require(httpuv)
 require(jsonlite)
 library(ggvis)
+source("/home/erik/Dropbox/src/projects/objector/src/objector/R/spyre.R")
 
 uv <- function(D) {
     if(length(D) > 1)
@@ -17,14 +18,25 @@ uv <- function(D) {
 }
 
 mv <- function(D) {
+    str(D)
+    if(length(D[[2]]) == 0 || length(D[[1]]) == 0) {
+        return(0)
+    }
+
     if(length(D[[1]]) > 1)
         D1 <- iget(D[[1]][[1]], D[[1]][2:length(D[[1]])])
     else
         D1 <- get(D[[1]][[1]])
+
+    if(length(D[[2]]) == 0) {
+        return(0)
+    }
+
     if(length(D[[2]]) > 1)
         D2 <- iget(D[[2]][[1]], D[[2]][2:length(D[[2]])])
     else
         D2 <- get(D[[2]][[1]])
+
     jsonlite::toJSON(multivariate(D1, D2))
 }
 

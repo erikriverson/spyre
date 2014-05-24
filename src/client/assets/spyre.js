@@ -6,12 +6,28 @@ app.controller('mvController', function($scope) {
     // for drag and drop testing
     $scope.xvar_target = [];
     $scope.yvar_target = [];
+    
+    $scope.$watchCollection('xvar_target', function(newValue, oldValue) {
+        if(newValue !== oldValue) {
+            $scope.mv(newValue, $scope.yvar_target);
+        }
+    });
 
-    $scope.xvar_button = {title : "X Button", drag:true};
-    $scope.yvar_button = {title : "X Button", drag:true};
+    $scope.$watchCollection('yvar_target', function(newValue, oldValue) {
+        console.log(newValue + oldValue);
+        if(newValue !== oldValue) {
+            $scope.mv($scope.xvar_target, newValue);
+        }
+    });
 
-    $scope.mv = function(object) {
-        $scope.ws.send("mv", object);
+    $scope.mv = function(xvar_target, yvar_target) {
+        console.log("Calling the mv function with" + xvar_target + "and" + yvar_target);
+        var mv_object = {xvar_target : xvar_target[0].data.object_index, 
+                         yvar_target: yvar_target[0].data.object_index};
+
+        console.log(mv_object);
+
+        $scope.ws.send("mv", mv_object);
         return(0);
     };
 });
@@ -100,8 +116,24 @@ app.controller('MainController', function($scope) {
     $scope.tree_control_test = function(branch) {
         // We want send_object to behave differently depending on the
         // active tab, so pass in event?  how do we get some data
-        // associated with the active tab, like it's id?
+        // associated with the active tab, like its id?
         $scope.send_object("uv", branch.data.object_index);
+    };
+
+    $scope.items = [
+        'The first choice!',
+        'And another choice for you.',
+        'but wait! A third!'
+    ];
+
+    $scope.status = {
+        isopen: false
+    };
+
+    $scope.toggleDropdown = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.status.isopen = !$scope.status.isopen;
     };
 
 });
