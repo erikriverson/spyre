@@ -1,7 +1,46 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
                                    'ngDragDrop', 'ngGrid']);
 
-app.controller('rawController', function($scope) {
+app.factory('WS2', function($q) {
+    var ws = new WebSocket("ws://localhost:7681");
+
+    ws.onopen = function(){  
+        var defer = $q.defer();
+        console.log("Socket has been opened!");  
+        defer.resolve("socket connected");
+    };
+
+    var send_request = function(request) {
+      var defer = $q.defer();
+      console.log('Sending request', request);
+      ws.send(JSON.stringify(request));
+      return defer.promise;
+    };
+
+    return {
+	get_r_data: function(event, data) {
+            var request = {
+                event: event,
+                data : data
+            };
+	    return send_request(request)
+	        .then(function(response) {
+	            if (typeof response.data === 'object') {
+                        console.log("here with:");
+                        console.log(response.data);
+	                return response.data;
+	            } else {
+	                return $q.reject(response.data);
+	            }
+	        }, function(response) {
+	            return $q.reject(response.data);
+	        });
+	}
+    };
+    
+});
+
+app.controller('rawController', function($scope, WS2) {
 
     $scope.filterOptions = {
         filterText: "",
@@ -37,7 +76,8 @@ app.controller('rawController', function($scope) {
                     $scope.setPagingData(data,page,pageSize);
                 });            
             } else {
-                $scope.ws.send("rawdata", $scope.recent_branch);
+//                WS2.get_r_data("rawdata", $scope.recent_branch);
+                console.log("just skip this");
             }
         }, 100);
     };
@@ -55,10 +95,6 @@ app.controller('rawController', function($scope) {
         }
     }, true);
 	
-    $scope.request_raw_data = function() {
-        $scope.ws.send("rawdata", $scope.recent_branch);
-    };
-        
     $scope.gridOptions = { data: 'rawdata',
                            enableColumnResize : true,
                            showGroupPanel : true,
@@ -72,7 +108,7 @@ app.controller('rawController', function($scope) {
 
 });
 
-app.controller('mvController', function($scope) {
+app.controller('mvController', function($scope, WS2) {
 
     // for drag and drop testing
     $scope.xvar_target = [];
@@ -98,7 +134,7 @@ app.controller('mvController', function($scope) {
 
         console.log(mv_object);
 
-        $scope.ws.send("mv", mv_object);
+        WS2.get_r_data("mv", mv_object);
         return(0);
     };
 });
@@ -111,10 +147,10 @@ app.controller('tabsController', function($scope) {
                    {title:'Console',content:'more stuff'}];
 });
 
-app.controller('evalController', function($scope) {
+app.controller('evalController', function($scope, WS2) {
 
     $scope.eval_me = function() {
-        $scope.ws.send("eval_string", $scope.eval_string);
+        WS2.get_r_data("eval_string", $scope.eval_string);
         $scope.eval_string = ""; 
     };
 });
@@ -122,7 +158,7 @@ app.controller('evalController', function($scope) {
 app.controller('iconController',  function($scope) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            $scope.ws.send("CLOSE", {});
+            WS2.get_r_data("CLOSE", {});
             $scope.isConnected = false;
         } else {
             $scope.connect();
@@ -130,59 +166,26 @@ app.controller('iconController',  function($scope) {
     };
 });
 
-app.controller('MainController', function($scope) {
+app.controller('MainController', function($scope, WS2) {
     // really need the app/app.controller stuff.
     $scope.isConnected = false;
     // so tree does not complain about no data
     $scope.objects_tree = [];
 
     $scope.connect = function() {
-        try {
-            var w_socket = new FancyWebSocket("ws://127.0.0.1:7681");        
 
-            w_socket
-                .bind('objects', function(msg) {
-                    console.log("Object of Objects:");
-                    console.log(msg);
+        WS2.get_r_data("objects", "objects")
+            .then(function(msg) {
+                console.log("Object of Objects:");
+                console.log(msg);
 
-                    $scope.objects = msg;
-                    $scope.objects_tree = msg;
+                $scope.objects = msg;
+                $scope.objects_tree = msg;
                     
-                    $scope.$apply();
-                })
-                .bind('uv', function(msg) {
-                    ggvis.getPlot("ggvis_univariate").
-                        parseSpec(JSON.parse(msg.value));
-                    
-                    $scope.object_summary = msg.summary[0];
-                    console.log("hi");
-                    console.log($scope.object_summary);
-                    $scope.$apply();
-                })
-                .bind('mv', function(msg) {
-                    ggvis.getPlot("ggvis_multivariate").
-                        parseSpec(JSON.parse(msg.value));
-                    $scope.object_summary = msg.summary[0];
-                    $scope.$apply();
-                })
-                .bind('rawdata', function(msg) {
-                    console.log("got rawdata message:");
-                    console.log(msg.value);
-                    $scope.rawdata = msg.value;
-                    $scope.setPagingData(msg.value ,1, 10);
-                    $scope.$apply();
-                })
-                .bind('eval_string', function(msg) {
-                    console.log("Console logged: " + msg);
-                });
-        }
-                     
-        catch(ex) { 
-            console.log("Caught exception!");
-            $scope.isConnected = false; 
-        };
+                $scope.$apply();
 
-        $scope.ws = w_socket; 
+            });
+        
         $scope.isConnected = true;
 
     };
@@ -190,7 +193,7 @@ app.controller('MainController', function($scope) {
     $scope.tree_control = {};
 
     $scope.send_object = function(event, object_name) {
-        $scope.ws.send(event, object_name);
+        WS2.get_r_data(event, object_name);
         return(0);
     };
 

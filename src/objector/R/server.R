@@ -136,6 +136,7 @@ spyre_onWSOpen <- function(ws) {
 
 
     process_data <- function(binary_flag, data) {
+        str(data)
         E <- jsonlite::fromJSON(data)$event
         D <- jsonlite::fromJSON(data)$data
         message(E)
