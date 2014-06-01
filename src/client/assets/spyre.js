@@ -2,7 +2,9 @@ var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
                                    'ngDragDrop', 'ngGrid']);
 
 app.factory('WSService', function($q) {
+
     var ws = new FancyWebSocket("ws://localhost:7681");
+
     return {
         send_r_data: function(event, data) {
 	    return ws.send(event,data);
@@ -163,15 +165,41 @@ app.controller('iconController',  function($scope) {
 
 app.controller('MainController', function($scope, WSService) {
 
-    WSService.register_ws_callback('objects', function(msg) {
-        console.log("Object of Objects:");
-        console.log(msg);
+    WSService.register_ws_callback('open', function() {
+        WSService.register_ws_callback('objects', function(msg) {
+            console.log("Object of Objects:");
+            console.log(msg);
             
-        $scope.objects = msg;
-        $scope.objects_tree = msg;
-                    
-        $scope.$apply();
+            $scope.objects = msg;
+            $scope.objects_tree = msg;
+            
+            $scope.$apply();
+        });
+
+
+        WSService.register_ws_callback('actions', function(msg) {
+            console.log("Actions received:");
+            console.log(msg);
+            
+            $scope.actions = msg;
+            $scope.$apply();
+        });
+
+        WSService.register_ws_callback('environments', function(msg) {
+            console.log("Environments received:");
+            console.log(msg);
+            
+            $scope.envs = msg;
+            $scope.$apply();
+        });
     });
+
+
+    $scope.selected = function(env) {
+        WSService.send_r_data("set_selected_env", env);
+        console.log(env + "is selected");
+        $scope.selected_env = env;
+    };
 
     // really need the app/app.controller stuff.
     $scope.isConnected = false;
@@ -214,6 +242,8 @@ app.controller('MainController', function($scope, WSService) {
         // is most recently selected tree branch
         $scope.recent_branch = branch.data.object_index;
     };
+
+    $scope.selected_env = ".GlobalEnv";
 
     $scope.items = [
         'The first choice!',

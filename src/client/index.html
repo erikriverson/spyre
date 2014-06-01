@@ -50,10 +50,33 @@
 
       
     <div id="container">
-
+      
       <div id="objectlist"> 
         <span><h4>Object List</h4>
-        <button type = "button" class="btn btn-primary btn-dropdown">Actions</button></span>
+
+          <div class="btn-group" dropdown is-open="status.isopen">
+            <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
+              Search Path <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
+            </ul>
+          </div>
+
+          <div>
+          Selected env is: {{selected_env}}
+          </div>
+
+          
+          <!-- <div class="btn-group" dropdown is-open="status.isopen"> -->
+          <!--   <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled"> -->
+          <!--     Actions <span class="caret"></span> -->
+          <!--   </button> -->
+          <!--   <ul class="dropdown-menu" role="menu"> -->
+          <!--     <li ng-repeat="action in actions"><a href="#">{{action}}</a></li> -->
+          <!--   </ul> -->
+          <!-- </div> -->
+
 
           <div id="uplevel" class="glyphicon glyphicon-arrow-up" 
                ng-click="object_level_up()">
@@ -72,20 +95,6 @@
 
             <td> 
               {{prop.object_class[0]}}
-            </td>
-            <td>
-              <div class="btn-group" dropdown is-open="status.isopen">
-                <!-- <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled"> -->
-                <!--   Actions <span class="caret"></span> -->
-                <!-- </button> -->
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </div>
             </td>
           </tr>
         </table>

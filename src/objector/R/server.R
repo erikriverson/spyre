@@ -9,6 +9,26 @@ require(jsonlite)
 library(ggvis)
 source("/home/erik/Dropbox/src/projects/objector/src/objector/R/spyre.R")
 
+
+get_selected_env <- function() {
+    message("here we go")
+    if(exists("selected_env", .GlobalEnv)) {
+        as.environment(get("selected_env", .GlobalEnv))
+    } else {
+        as.environment(".GlobalEnv")
+    }
+}
+
+
+get_selected_env <- function() {
+    message("here we go")
+    if(exists("selected_env", .GlobalEnv)) {
+        selected_env
+    } else {
+        ".GlobalEnv"
+    }
+}
+
 uv <- function(D) {
     if(length(D) > 1)
         D <- iget(D[[1]], D[2:length(D)])
@@ -115,30 +135,49 @@ CLOSE <- function(D) {
 
 cleanup <- function() {
     removeTaskCallback(1)
+    message("removed the task callback function!")
 }
 
 spyre_onWSOpen <- function(ws) {
-
     getCurrentObjects <- function(a, b, c, d) {
-        message("getCurrentObjects run, sending list of objects")
-        objects <- objects(".GlobalEnv")
+
+        if(length(a) == 0 || as.character(a) %in%
+           c(".ess_help", ".ess_funargs", ".ess_get_completions")) {
+            cat("\nskipping rest of function", file = "/home/erik/spyre.log", append = TRUE)
+            return(TRUE)
+
+        }
+
+        env <- get_selected_env()
+        
+        objects <- objects(env)
 
         objects_list <- list(tree_data = lapply(objects, generate_tree_data),
-                             object_class = lapply(objects, function(x) class(get(x))))
+                             object_class = lapply(objects, function(x) class(get(x, env))))
 
         objects_list <- lapply(seq_along(objects_list[[1]]),
                                function (i) sapply(objects_list, "[", i))
 
         ret_list <- list(event = "objects", data = objects_list)
         ws$send(jsonlite::toJSON(ret_list))
+
+        env_list <- list(event = "environments", data = search())
+        ws$send(toJSON(env_list))
+        
         TRUE
     }
 
+    set_selected_env <- function(D) {
+        assign("selected_env", D, envir = .GlobalEnv)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    }
 
     process_data <- function(binary_flag, data) {
+        message("processing data")
         str(data)
         E <- jsonlite::fromJSON(data)$event
         D <- jsonlite::fromJSON(data)$data
+
         message(E)
         message(str(D))
 
@@ -155,7 +194,7 @@ spyre_onWSOpen <- function(ws) {
         ret <- tryCatch(eval(parse(text = string), env = .GlobalEnv), error =
                         function(e) as.character(e))
         ## in case objects get created
-        getCurrentObjects(NULL, NULL, NULL, NULL)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL)
         ret
     }
 
@@ -163,8 +202,9 @@ spyre_onWSOpen <- function(ws) {
     ws$onClose(cleanup)
 
     addTaskCallback(getCurrentObjects)
+    message("added task callback")
     ## initial list
-    getCurrentObjects(NULL, NULL, NULL, NULL)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL)
 }
 
 #' @export

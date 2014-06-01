@@ -48,7 +48,8 @@ spyre.numeric <- function(x, ...) {
 
 
 spyre.function <- function(x, ...) {
-    value <- paste(capture.output(args(x)), collapse = "\n")
+    message("sypre.function called")
+    value <- paste(capture.output(print(x)), collapse = "\n")
     list(event = "uv", data = list(summary = value))
 }
 
