@@ -16,6 +16,7 @@ spyre.data.frame <- function(x, ...) {
 
 
 spyre.factor <- function(x, ...) {
+    message("I'm definitely here")
     summary <- paste(c(capture.output(table(x)),
                    capture.output(levels(x))), collapse = "\n")
 

@@ -21,7 +21,6 @@ get_selected_env <- function() {
 
 
 get_selected_env <- function() {
-    message("here we go")
     if(exists("selected_env", .GlobalEnv)) {
         selected_env
     } else {
@@ -30,10 +29,14 @@ get_selected_env <- function() {
 }
 
 uv <- function(D) {
+    message("I'm in uv with:")
+    message(str(D))
+            
     if(length(D) > 1)
         D <- iget(D[[1]], D[2:length(D)])
     else
         D <- get(D[[1]])
+    
     jsonlite::toJSON(spyre(D))
 }
 
@@ -78,14 +81,19 @@ generate_tree_data <- function(object, index = 1, parent, object_names) {
     if(missing(parent)) {
         obj_name <- object
         object <- get(object)
-        
-        parent <- list(label = unbox(obj_name),
-                       data = list(root_object = obj_name,
+
+        ## test with multi-class objects (ggplot2, data.table, etc.)
+        parent <- list(class = class(object),
+                       label = unbox(obj_name),
+                       data = list(root_object = unbox(obj_name),
                            object_index = list(obj_name)))
         
     } else {
-        parent <- list(label = unbox(object_names[index]),
-                       data= list(root_object = parent$data$root_object,
+        ## message("parent not missing!")
+        ## message(paste0("object is: ", object, collapse = " "))
+        parent <- list(class = lapply(object, class),
+                       label = unbox(object_names[index]),
+                       data = list(root_object = parent$data$root_object,
                            object_index = c(parent$data$object_index,
                                object_names[[index]])))
     }
@@ -145,18 +153,16 @@ spyre_onWSOpen <- function(ws) {
            c(".ess_help", ".ess_funargs", ".ess_get_completions")) {
             cat("\nskipping rest of function", file = "/home/erik/spyre.log", append = TRUE)
             return(TRUE)
-
         }
 
         env <- get_selected_env()
         
         objects <- objects(env)
+        objects_list <- lapply(objects, generate_tree_data)
 
-        objects_list <- list(tree_data = lapply(objects, generate_tree_data),
-                             object_class = lapply(objects, function(x) class(get(x, env))))
-
-        objects_list <- lapply(seq_along(objects_list[[1]]),
-                               function (i) sapply(objects_list, "[", i))
+        ## what is this doing?
+        ## objects_list <- lapply(seq_along(objects_list),
+        ##                        function (i) sapply(objects_list, "[", i))
 
         ret_list <- list(event = "objects", data = objects_list)
         ws$send(jsonlite::toJSON(ret_list))
@@ -177,8 +183,8 @@ spyre_onWSOpen <- function(ws) {
         str(data)
         E <- jsonlite::fromJSON(data)$event
         D <- jsonlite::fromJSON(data)$data
-
-        message(E)
+        
+        message(paste("calling function:", E))
         message(str(D))
 
         R <- do.call(E, list(D))
@@ -220,6 +226,6 @@ stop_spyre <- function(handle) {
 
 
 ## bootstrap
-if(exists("handle"))
-    stop_spyre(handle)
-handle <- start_spyre()
+if(exists("hndl"))
+    stop_spyre(hndl)
+hndl <- start_spyre()

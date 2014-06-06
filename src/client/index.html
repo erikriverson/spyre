@@ -52,19 +52,15 @@
     <div id="container">
       
       <div id="objectlist"> 
-        <span><h4>Object List</h4>
 
-          <div class="btn-group" dropdown is-open="status.isopen">
+          <div class="btn-group" dropdown >
             <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
-              Search Path <span class="caret"></span>
+              {{selected_env}} <span class="caret"></span>
             </button>
+            <div ng-show="data_is_selected">Selected Data: {{selected_data}}</div>
             <ul class="dropdown-menu" role="menu">
               <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
             </ul>
-          </div>
-
-          <div>
-          Selected env is: {{selected_env}}
           </div>
 
           
@@ -83,18 +79,14 @@
           </div>
 
         <table>
-          <tr ng-repeat="(key, prop) in objects_tree track by key" >
+          <tr ng-repeat="object in objects_tree" ng-click="send_object('uv', object.data.object_index)" 
+              ng-dblclick="object_level_down(object)">
             <td>
-              <abn-tree tree-data="[objects_tree[key].tree_data]" ng-model="prop.tree_data"
-                        on-select="tree_control_test(branch)" icon-leaf="" 
-                        icon-expand="fa fa-plus-square" icon-collapse="fa fa-minus-square"
-                        data-drag="true" data-jqyoui-options="{revert: 'invalid', helper:'clone'}" 
-                        data-jqyoui-draggable="{animate:true, placeholder:'keep'}">
-              </abn-tree>
+              <div>{{object.label}}</div>
             </td>
 
             <td> 
-              {{prop.object_class[0]}}
+              {{object.class[0]}}
             </td>
           </tr>
         </table>
@@ -147,20 +139,23 @@
                     <pre>{{object_summary}}</pre>
                   </div>
 
-                  <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="xvar_target"> 
-                    <p>X Variable</p>
-                    <div class="btn btn-success">
-                      {{xvar_target[0].label}}
-                    </div>
+                  <div class="btn-group" dropdown >
+                    <button type="button" class="btn dropdown-toggle" 
+                            ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
                   </div>
 
-
-                  <div data-drop="true" data-jqyoui-options jqyoui-droppable ng-model="yvar_target"> 
-                    <p>Y Variable</p>
-                    <div class="btn btn-success" data-drag="false" data-jqyoui-options 
-                         jqyoui-draggable>
-                      {{yvar_target[0].label}}
-                    </div>
+                  <div class="btn-group" dropdown >
+                    <button type="button" class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
                   </div>
 
 
