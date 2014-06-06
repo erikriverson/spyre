@@ -27,13 +27,13 @@ app.controller('rawController', function($scope, WSService) {
     });
 
     $scope.request_raw_data = function() {
-        WSService.send_r_data('rawdata', $scope.recent_branch);
+        WSService.send_r_data('rawdata', $scope.selected_data);
     };
 
-    $scope.filterOptions = {
-        filterText: "",
-        useExternalFilter: true
-    }; 
+    // $scope.filterOptions = {
+    //     filterText: "",
+    //     useExternalFilter: true
+    // }; 
 
     $scope.totalServerItems = 0;
 
@@ -93,6 +93,13 @@ app.controller('rawController', function($scope, WSService) {
                            pagingOptions: $scope.pagingOptions, 
                            filterOptions: $scope.filterOptions,
                            showColumnMenu: true};
+
+    $scope.$watch('selected_data', function(newVal, oldVal) {
+        if(newVal !== oldVal) {
+            $scope.request_raw_data();
+        }
+    });
+        
 
 });
 
@@ -170,6 +177,7 @@ app.controller('MainController', function($scope, WSService) {
             
             $scope.objects = msg;
             $scope.objects_tree = msg;
+            $scope.objects_table = msg;
             
             $scope.$apply();
         });
@@ -241,5 +249,16 @@ app.controller('MainController', function($scope, WSService) {
     };
 
     $scope.selected_env = ".GlobalEnv";
+
+    $scope.gridOptions = { data: 'objects_table',
+                           enableColumnResize : true,
+                           showGroupPanel : false,
+                           multiSelect : false,
+                           showFilter : true,
+                           enablePaging: false, 
+                           showFooter: true,
+                           columnDefs: [{ field: 'label', displayName: 'Object'},
+                                    { field: 'class', displayName: 'Class'}],
+                           showColumnMenu: false};
 
 });

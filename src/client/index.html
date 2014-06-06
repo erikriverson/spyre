@@ -78,18 +78,20 @@
                ng-click="object_level_up()">
           </div>
 
-        <table>
-          <tr ng-repeat="object in objects_tree" ng-click="send_object('uv', object.data.object_index)" 
-              ng-dblclick="object_level_down(object)">
-            <td>
-              <div>{{object.label}}</div>
-            </td>
+        <!-- <table class="table table-hover table-condensed"> -->
+        <!--   <tr ng-repeat="object in objects_tree" ng-click="send_object('uv', object.data.object_index)"  -->
+        <!--       ng-dblclick="object_level_down(object)"> -->
+        <!--     <td> -->
+        <!--       <div>{{object.label}}</div> -->
+        <!--     </td> -->
 
-            <td> 
-              {{object.class[0]}}
-            </td>
-          </tr>
-        </table>
+        <!--     <td>  -->
+        <!--       {{object.class[0]}} -->
+        <!--     </td> -->
+        <!--   </tr> -->
+        <!-- </table> -->
+
+        <div id="object-grid" class="gridStyle", ng-grid="gridOptions"></div>
           
       </div>
     </div>
@@ -134,11 +136,6 @@
           </tab>
 
           <tab heading="Multivariate Explorer" ng-controller="mvController">
-                  <div id="output">
-                    <h4>Summary</h4>
-                    <pre>{{object_summary}}</pre>
-                  </div>
-
                   <div class="btn-group" dropdown >
                     <button type="button" class="btn dropdown-toggle" 
                             ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
@@ -157,6 +154,12 @@
                         <a href="#">{{object.label}}</a></li>
                     </ul>
                   </div>
+
+                  <div id="output">
+                    <h4>Summary</h4>
+                    <pre>{{object_summary}}</pre>
+                  </div>
+
 
 
                   <div id="plot">

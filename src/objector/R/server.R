@@ -76,7 +76,7 @@ rawdata <- function(D) {
     jsonlite::toJSON(list(event = "rawdata", data = list(value = D1)))
 }
 
-generate_tree_data <- function(object, index = 1, parent, object_names) {
+generate_tree_data <- function(object, index = 1, parent, object_names, object_class) {
 
     if(missing(parent)) {
         obj_name <- object
@@ -89,9 +89,7 @@ generate_tree_data <- function(object, index = 1, parent, object_names) {
                            object_index = list(obj_name)))
         
     } else {
-        ## message("parent not missing!")
-        ## message(paste0("object is: ", object, collapse = " "))
-        parent <- list(class = lapply(object, class),
+        parent <- list(class = object_class,
                        label = unbox(object_names[index]),
                        data = list(root_object = parent$data$root_object,
                            object_index = c(parent$data$object_index,
@@ -112,6 +110,7 @@ generate_tree_data <- function(object, index = 1, parent, object_names) {
     children <- mapply(generate_tree_data,
                        object = object,
                        index = seq_along(object),
+                       object_class = lapply(object, class),
                        MoreArgs = list(parent = parent,
                            object_names = ifelse(named, names(object),
                                seq_along(object))),
