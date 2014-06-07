@@ -49,64 +49,53 @@
     </div>
 
       
-    <div id="container">
+    <div id="container" class="container col-md-2">
       
       <div id="objectlist"> 
 
-          <div class="btn-group" dropdown >
-            <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
-              {{selected_env}} <span class="caret"></span>
-            </button>
-            <div ng-show="data_is_selected">Selected Data: {{selected_data}}</div>
-            <ul class="dropdown-menu" role="menu">
-              <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
-            </ul>
-          </div>
+        <div class="btn-group" dropdown >
+          <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
+            {{selected_env}} <span class="caret"></span>
+          </button>
+          <div ng-show="data_is_selected">Selected Data: {{selected_data}}</div>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
+          </ul>
+        </div>
 
+        <div class="btn-group" dropdown >
+          <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+            Actions <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="action in actions"><a href="#">{{action}}</a></li>
+          </ul>
+        </div>
+
+        <div id="uplevel" class="glyphicon glyphicon-arrow-up" 
+             ng-click="object_level_up()">
+        </div>
+        <div id="refresh" class="glyphicon glyphicon-refresh" 
+             ng-click="object_list_refresh()">
+        </div>
           
-          <!-- <div class="btn-group" dropdown is-open="status.isopen"> -->
-          <!--   <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled"> -->
-          <!--     Actions <span class="caret"></span> -->
-          <!--   </button> -->
-          <!--   <ul class="dropdown-menu" role="menu"> -->
-          <!--     <li ng-repeat="action in actions"><a href="#">{{action}}</a></li> -->
-          <!--   </ul> -->
-          <!-- </div> -->
-
-
-          <div id="uplevel" class="glyphicon glyphicon-arrow-up" 
-               ng-click="object_level_up()">
-          </div>
-
-        <!-- <table class="table table-hover table-condensed"> -->
-        <!--   <tr ng-repeat="object in objects_tree" ng-click="send_object('uv', object.data.object_index)"  -->
-        <!--       ng-dblclick="object_level_down(object)"> -->
-        <!--     <td> -->
-        <!--       <div>{{object.label}}</div> -->
-        <!--     </td> -->
-
-        <!--     <td>  -->
-        <!--       {{object.class[0]}} -->
-        <!--     </td> -->
-        <!--   </tr> -->
-        <!-- </table> -->
-
         <div id="object-grid" class="gridStyle", ng-grid="gridOptions"></div>
           
       </div>
     </div>
 
-    <div id="tabslist" ng-controller="tabsController">
+    <div id="tabslist" ng-controller="tabsController" class="col-md-8">
 
       <tabset>
 
           <tab heading="Univariate Explorer">
-                  <div id="output">
+
+                  <div id="output" class="row">
                     <h4>Summary</h4>
                     <pre>{{object_summary}}</pre>
                   </div>
 
-                  <div id="plot">
+                  <div id="plot" class="row">
                     <h4>ggvis</h4>
 
                     <div id="ggvis_univariate-container" class="ggvis-output-container">
@@ -136,59 +125,63 @@
           </tab>
 
           <tab heading="Multivariate Explorer" ng-controller="mvController">
-                  <div class="btn-group" dropdown >
-                    <button type="button" class="btn dropdown-toggle" 
-                            ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
-                        <a href="#">{{object.label}}</a></li>
+            <div id="mv-button-container" class="row">
+
+              <div class="btn-group" dropdown >
+                <button type="button" class="btn dropdown-toggle" 
+                        ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
+                    <a href="#">{{object.label}}</a></li>
+                </ul>
+              </div>
+
+              <div class="btn-group" dropdown >
+                <button type="button" class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
+                    <a href="#">{{object.label}}</a></li>
+                </ul>
+              </div>
+            </div>
+                  
+
+            <div id="output" class="row">
+              <h4>Summary</h4>
+              <pre>{{object_summary}}</pre>
+            </div>
+
+
+
+            <div id="plot" class = "row">
+              <h4>ggvis</h4>
+
+              <div id="ggvis_multivariate-container" class="ggvis-output-container">
+                <div id="ggvis_multivariate" class="ggvis-output"></div>
+                <div class="plot-gear-icon">
+                  <nav class="ggvis-control">
+                    <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
+                    <ul class="ggvis-dropdown">
+                      <li>
+                        Renderer: 
+                        <a id="ggvis_multivariate_renderer_svg" class="ggvis-renderer-button" 
+                           data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
+                        | 
+                        <a id="ggvis_multivariate_renderer_canvas" class="ggvis-renderer-button" 
+                           data-plot-id="ggvis_multivariate" data-renderer="canvas">Canvas</a>
+                      </li>
+                      <li>
+                        <a id="ggvis_multivariate_download" class="ggvis-download" 
+                           data-plot-id="ggvis_multivariate">Download</a>
+                      </li>
                     </ul>
-                  </div>
-
-                  <div class="btn-group" dropdown >
-                    <button type="button" class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
-                        <a href="#">{{object.label}}</a></li>
-                    </ul>
-                  </div>
-
-                  <div id="output">
-                    <h4>Summary</h4>
-                    <pre>{{object_summary}}</pre>
-                  </div>
-
-
-
-                  <div id="plot">
-                    <h4>ggvis</h4>
-
-                    <div id="ggvis_multivariate-container" class="ggvis-output-container">
-                      <div id="ggvis_multivariate" class="ggvis-output"></div>
-                      <div class="plot-gear-icon">
-                        <nav class="ggvis-control">
-                          <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
-                          <ul class="ggvis-dropdown">
-                            <li>
-                              Renderer: 
-                              <a id="ggvis_multivariate_renderer_svg" class="ggvis-renderer-button" 
-                                 data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
-                              | 
-                              <a id="ggvis_multivariate_renderer_canvas" class="ggvis-renderer-button" 
-                                 data-plot-id="ggvis_multivariate" data-renderer="canvas">Canvas</a>
-                            </li>
-                            <li>
-                              <a id="ggvis_multivariate_download" class="ggvis-download" 
-                                 data-plot-id="ggvis_multivariate">Download</a>
-                            </li>
-                          </ul>
-                        </nav>
-                      </div>
-                    </div>
+                  </nav>
+                </div>
+              </div>
                     
-                  </div> <!-- plot -->
+            </div> <!-- plot -->
 
 
             
@@ -204,11 +197,11 @@
 
           <tab heading="Live Console" >
 
-          <form class="navbar-form navbar-left" ng-controller="evalController" ng-submit="eval_me()">
-            <i class="fa fa-terminal fa-2x fa-inverse"></i>
-            <input type="text" class="form-control" placeholder="Eval ..."
-                   ng-model="eval_string" id = "input_eval"></input>
-          </form>
+            <form class="navbar-form navbar-left" ng-controller="evalController" ng-submit="eval_me()">
+              <i class="fa fa-terminal fa-2x fa-inverse"></i>
+              <input type="text" class="form-control" placeholder="Eval ..."
+                     ng-model="eval_string" id = "input_eval"></input>
+            </form>
 
           </tab>
 
@@ -216,7 +209,6 @@
             <div id="filedrop" file-dropzone file="ctrlBoundFile">Drop CSV File Here</div>
             {{ctrlBoundFile}}
           </tab>
-
 
         </tabset>
       </div>
