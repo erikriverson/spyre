@@ -8,6 +8,7 @@ require(httpuv)
 require(jsonlite)
 require(RCurl)
 require(ggvis)
+require(Quandl)
 source("/home/erik/Dropbox/src/projects/objector/src/objector/R/spyre.R")
 
 
@@ -195,7 +196,11 @@ spyre_onWSOpen <- function(ws) {
     }
         
     send_data <- function(msg) {
-        ws$send(msg)
+        ## don't throw error when we don't construct a valid return
+        ## value. A definition and check for 'valid return value' is
+        ## needed.
+        if(is.character(msg))                
+            ws$send(msg)
     }
 
     eval_string <- function(string) {
@@ -209,8 +214,13 @@ spyre_onWSOpen <- function(ws) {
 
     import <- function(D) {
         D <- substr(D, 22, nchar(D))
-        assign("aaa_testing_import",
+        assign("aaa_csv_import",
                read.table(text = base64Decode(D), header = TRUE, sep = ","), pos = .GlobalEnv)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    }
+
+    import_quandl <- function(D) {
+        assign("quandl_test_import", Quandl(D), pos = .GlobalEnv)
         getCurrentObjects("bootstrap", NULL, NULL, NULL)
     }
 

@@ -206,8 +206,75 @@
           </tab>
 
           <tab heading="Import Data" ng-controller="importController">
-            <div id="filedrop" file-dropzone file="ctrlBoundFile">Drop CSV File Here</div>
-            {{ctrlBoundFile}}
+
+            <div class="panel panel-default col-md-4">
+
+              <div class="panel-heading">
+                <h3>RData Importer</h3>
+              </div>
+
+              <div id="filedrop4" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
+
+              <form class="navbar-form navbar-left" ng-submit="import_csv()">
+                <i class="fa fa-terminal fa-2x fa-inverse"></i>
+                <input type="text" class="form-control" placeholder=""
+                       ng-model="eval_string" id = "input_eval"></input>
+              </form>
+
+            </div>
+
+            <div class="panel panel-default col-md-4">
+              <div class="panel-heading">
+                <h3>CSV Importer</h3>
+              </div>
+
+              <div id="filedrop" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
+
+              <form class="navbar-form navbar-left" ng-submit="import_csv()">
+                <i class="fa fa-terminal fa-2x fa-inverse"></i>
+                <input type="text" class="form-control" placeholder=""
+                       ng-model="eval_string" id = "input_eval"></input>
+              </form>
+
+            </div>
+
+
+
+            <div class="panel panel-default col-md-4">
+
+              <div class="panel-heading">
+                <h3>XLSX Importer</h3>
+              </div>
+
+              <div id="filedrop2" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
+
+              <form class="navbar-form navbar-left" ng-submit="import_csv()">
+                <i class="fa fa-terminal fa-2x fa-inverse"></i>
+                <input type="text" class="form-control" placeholder=""
+                       ng-model="eval_string" id = "input_eval"></input>
+              </form>
+
+            </div>
+            <div class="panel panel-default col-md-4">
+
+              <div class="panel-heading">
+                <h4>Quandl Importer</h4>
+              </div>
+
+
+              <form role="form" ng-submit="quandl_import()">
+                <div class="form-group">
+                  <label for="import_quandl_code">Quandl Code</label>
+                  <input type="text" class="form-control" id="import_quandl_1" placeholder="Enter Quandl Code"
+                         ng-model="quandl_code">
+                </div>
+                You entered: {{quandl_code}}
+                <button type="submit" class="btn btn-default">Import</button>
+              </form>
+
+
+            </div>
+
           </tab>
 
         </tabset>

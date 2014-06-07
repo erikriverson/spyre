@@ -27,6 +27,11 @@ app.controller('importController', function($scope, WSService) {
             WSService.send_r_data('import', $scope.ctrlBoundFile);
         }
     });
+
+    $scope.quandl_import = function(form) {
+        console.log("quandl importer called");
+        WSService.send_r_data('import_quandl', $scope.quandl_code);
+    };
 });
 
 app.controller('rawController', function($scope, WSService) {
