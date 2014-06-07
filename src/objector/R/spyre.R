@@ -6,7 +6,7 @@ spyre.default <- function(x, ...) {
     summary <- paste(capture.output(str(x)), collapse = "\n")
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,
-                                value = x))
+                           value = "{}"))
 }
 
 spyre.data.frame <- function(x, ...) {
@@ -16,7 +16,6 @@ spyre.data.frame <- function(x, ...) {
 
 
 spyre.factor <- function(x, ...) {
-    message("I'm definitely here")
     summary <- paste(c(capture.output(table(x)),
                    capture.output(levels(x))), collapse = "\n")
 
@@ -49,7 +48,6 @@ spyre.numeric <- function(x, ...) {
 
 
 spyre.function <- function(x, ...) {
-    message("sypre.function called")
     value <- paste(capture.output(print(x)), collapse = "\n")
     list(event = "uv", data = list(summary = value))
 }
@@ -68,9 +66,6 @@ A_spyre_factor_test3 <- as.factor(sample(c("male", "female", "other"), 200,
 
 
 multivariate <- function(x, y, names, ...) {
-    message("multivariate function called")
-    str(x)
-    str(y)
     summary <- paste(c(capture.output(cor(x, y))))
 
     value <- data.frame(var1 = x, var2 = y)

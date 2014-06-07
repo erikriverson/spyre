@@ -23,6 +23,10 @@ table {
     width:100%;
 }
 
+#filedrop {
+    background-color: red;
+}
+
 #plot {
     float:left;
     width:60%;
@@ -60,5 +64,9 @@ table {
 #object-grid {
     height: 900px;
     font-size: smaller; 
+}
 
+#raw-container {
+    height: 900px;
+    font-size: smaller; 
 }

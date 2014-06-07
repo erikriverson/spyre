@@ -199,7 +199,6 @@
           </tab>
 
           <tab heading="Raw Data Explorer" ng-controller="rawController">
-            <button class="btn btn-primary" ng-click="request_raw_data()">Get selected data.frame</button>
             <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>
           </tab>
 
@@ -213,7 +212,9 @@
 
           </tab>
 
-          <tab heading="Import Data">
+          <tab heading="Import Data" ng-controller="importController">
+            <div id="filedrop" file-dropzone file="ctrlBoundFile">Drop CSV File Here</div>
+            {{ctrlBoundFile}}
           </tab>
 
 
@@ -245,6 +246,7 @@
 
     <script src="//angular-ui.github.io/ng-grid/lib/ng-grid.debug.js"></script>
     <script src="//angular-ui.github.io/ng-grid/lib/ng-grid-layout.js"></script>
+    <script src="./assets/angular-file-dnd/dist/angular-file-dnd.js"></script>
 
   </body>
 </html>

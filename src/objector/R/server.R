@@ -6,7 +6,8 @@
 
 require(httpuv)
 require(jsonlite)
-library(ggvis)
+require(RCurl)
+require(ggvis)
 source("/home/erik/Dropbox/src/projects/objector/src/objector/R/spyre.R")
 
 
@@ -27,6 +28,7 @@ get_selected_env <- function() {
         ".GlobalEnv"
     }
 }
+
 
 uv <- function(D) {
     message("I'm in uv with:")
@@ -146,6 +148,8 @@ cleanup <- function() {
 }
 
 spyre_onWSOpen <- function(ws) {
+
+    ## does ws have to be captured by lexical scoping in the following function?
     getCurrentObjects <- function(a, b, c, d) {
 
         if(length(a) == 0 || as.character(a) %in%
@@ -201,6 +205,13 @@ spyre_onWSOpen <- function(ws) {
         ## in case objects get created
         getCurrentObjects("bootstrap", NULL, NULL, NULL)
         ret
+    }
+
+    import <- function(D) {
+        D <- substr(D, 22, nchar(D))
+        assign("aaa_testing_import",
+               read.table(text = base64Decode(D), header = TRUE, sep = ","), pos = .GlobalEnv)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL)
     }
 
     ws$onMessage(process_data)

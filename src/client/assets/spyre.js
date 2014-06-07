@@ -1,19 +1,32 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
-                                   'ngDragDrop', 'ngGrid']);
+                                   'ngDragDrop', 'ngGrid', 'omr.angularFileDnD']);
 
 app.factory('WSService', function($q) {
 
-    var ws = new FancyWebSocket("ws://localhost:7681");
+        var ws = new FancyWebSocket("ws://localhost:7681");
 
-    return {
-        send_r_data: function(event, data) {
-	    return ws.send(event,data);
-	},
-        register_ws_callback : function(event, callback) {
-            return ws.bind(event, callback);
+        return {
+            send_r_data: function(event, data) {
+	        return ws.send(event,data);
+	    },
+            register_ws_callback : function(event, callback) {
+                return ws.bind(event, callback);
+            }
+        };
+
+});
+
+app.controller('importController', function($scope, WSService) {
+    WSService.register_ws_callback('import', function(msg) {
+        console.log("got import message:");
+        console.log(msg.value);
+    });
+
+    $scope.$watch('ctrlBoundFile', function(newVal, oldVal) {
+        if(newVal !== oldVal) {
+            WSService.send_r_data('import', $scope.ctrlBoundFile);
         }
-    };
-    
+    });
 });
 
 app.controller('rawController', function($scope, WSService) {
@@ -29,11 +42,6 @@ app.controller('rawController', function($scope, WSService) {
     $scope.request_raw_data = function() {
         WSService.send_r_data('rawdata', $scope.selected_data);
     };
-
-    // $scope.filterOptions = {
-    //     filterText: "",
-    //     useExternalFilter: true
-    // }; 
 
     $scope.totalServerItems = 0;
 
@@ -157,12 +165,15 @@ app.controller('evalController', function($scope, WSService) {
     };
 });
 
-app.controller('iconController',  function($scope) {
+app.controller('iconController',  function($scope, WSService) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
             WSService.send_r_data("CLOSE", {});
             $scope.isConnected = false;
         } else {
+            // WSService.connect();   
+
+            // in MainController
             $scope.connect();
         }
     };
@@ -177,7 +188,6 @@ app.controller('MainController', function($scope, WSService) {
             
             $scope.objects = msg;
             $scope.objects_tree = msg;
-            $scope.objects_table = msg;
             
             $scope.$apply();
         });
@@ -250,15 +260,17 @@ app.controller('MainController', function($scope, WSService) {
 
     $scope.selected_env = ".GlobalEnv";
 
-    $scope.gridOptions = { data: 'objects_table',
+    $scope.gridOptions = { data: 'objects_tree',
+                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'uv\', row.entity.data.object_index)" ng-dblclick="object_level_down(row.entity)"></div>',
                            enableColumnResize : true,
                            showGroupPanel : false,
                            multiSelect : false,
                            showFilter : true,
                            enablePaging: false, 
+                           selectedItems : $scope.objects_tree, 
                            showFooter: true,
                            columnDefs: [{ field: 'label', displayName: 'Object'},
-                                    { field: 'class', displayName: 'Class'}],
+                                        { field: 'class[0]', displayName: 'Class'}],
                            showColumnMenu: false};
 
 });
