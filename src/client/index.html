@@ -72,10 +72,10 @@
           </ul>
         </div>
 
-        <div id="uplevel" class="glyphicon glyphicon-arrow-up" 
+        <div id="uplevel" tooltip="{{tt.uplevel}}" class="glyphicon glyphicon-arrow-up" 
              ng-click="object_level_up()">
         </div>
-        <div id="refresh" class="glyphicon glyphicon-refresh" 
+        <div tooltip="{{tt.refresh}}" id="refresh" class="glyphicon glyphicon-refresh" 
              ng-click="object_list_refresh()">
         </div>
           
@@ -183,6 +183,11 @@
                     
             </div> <!-- plot -->
 
+            <div id="ggplot" class="row">
+              <img ng-src="{{ggplot_path}}"></img>
+              ggplot_path is: {{ggplot_path}}
+            </div>
+
 
             
           </tab>
@@ -224,11 +229,12 @@
             </div>
 
             <div class="panel panel-default col-md-4">
+
               <div class="panel-heading">
-                <h3>CSV Importer</h3>
+                <h3>Clipboard Importer</h3>
               </div>
 
-              <div id="filedrop" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
+              <div id="filedrop9" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
 
               <form class="navbar-form navbar-left" ng-submit="import_csv()">
                 <i class="fa fa-terminal fa-2x fa-inverse"></i>
@@ -237,6 +243,24 @@
               </form>
 
             </div>
+
+
+            <div class="panel panel-default col-md-4">
+              <div class="panel-heading">
+                <h3>CSV Importer</h3>
+              </div>
+
+              <div id="filedrop" class="panel-body" ng-paste="ctrlBoundFile">Paste Data Here</div>
+              {{ctrlBoundFile}}
+
+              <form class="navbar-form navbar-left" ng-submit="import_csv()">
+                <i class="fa fa-terminal fa-2x fa-inverse"></i>
+                <input type="text" class="form-control" placeholder=""
+                       ng-model="eval_string" id = "input_eval"></input>
+              </form>
+
+            </div>
+
 
 
 
@@ -255,6 +279,7 @@
               </form>
 
             </div>
+
             <div class="panel panel-default col-md-4">
 
               <div class="panel-heading">
@@ -269,6 +294,25 @@
                          ng-model="quandl_code">
                 </div>
                 You entered: {{quandl_code}}
+                <button type="submit" class="btn btn-default">Import</button>
+              </form>
+            </div>
+
+
+            <div class="panel panel-default col-md-4">
+
+              <div class="panel-heading">
+                <h4>HTTP API Importer</h4>
+              </div>
+
+
+              <form role="form" ng-submit="quandl_import()">
+                <div class="form-group">
+                  <label for="import_quandl_code">URL</label>
+                  <input type="text" class="form-control" id="import_http_1" placeholder="Enter URL"
+                         ng-model="http_url">
+                </div>
+                You entered: {{http_url}}
                 <button type="submit" class="btn btn-default">Import</button>
               </form>
 

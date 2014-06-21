@@ -121,7 +121,9 @@ app.controller('mvController', function($scope, WSService) {
         ggvis.getPlot("ggvis_multivariate").
             parseSpec(JSON.parse(msg.value));
         $scope.object_summary = msg.summary[0];
-        $scope.$apply();
+        $scope.$apply(function() {
+            $scope.ggplot_path = msg.ggpath[0];
+        });
     });
 
     $scope.target = {x : "Not Set",
@@ -248,8 +250,6 @@ app.controller('MainController', function($scope, WSService) {
             
             $scope.object_summary = msg.summary[0];
             console.log($scope.object_summary);
-
-            $scope.$apply();
         });
 
         $scope.isConnected = true;
@@ -277,5 +277,11 @@ app.controller('MainController', function($scope, WSService) {
                            columnDefs: [{ field: 'label', displayName: 'Object'},
                                         { field: 'class[0]', displayName: 'Class'}],
                            showColumnMenu: false};
+
+    $scope.tt = { refresh : "Refresh object list",
+                  uplevel : "Display full list of objects",
+                  envlist : "Available environments",
+                  actions : "Perform action on selected object"};
+
 
 });
