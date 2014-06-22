@@ -2,10 +2,6 @@ table {
     font-size: smaller;
 }
 
-.glyphicon-link {
-    font-size: 2.8em;
-}
-
 .glyphicon:hover {
     cursor:pointer;
 }

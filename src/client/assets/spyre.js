@@ -1,26 +1,41 @@
 var app = angular.module('spyre', ['angularBootstrapNavTree', 'ui.bootstrap',
                                    'ngDragDrop', 'ngGrid', 'omr.angularFileDnD']);
 
-app.factory('WSService', function($q) {
 
-        var ws = new FancyWebSocket("ws://localhost:7681");
+app.factory('WSConnect', function() {
+    var WSConnect = {};
 
-        return {
-            send_r_data: function(event, data) {
-	        return ws.send(event,data);
-	    },
-            register_ws_callback : function(event, callback) {
-                return ws.bind(event, callback);
-            }
-        };
+    WSConnect.connect = function(ws_url) {
+        WSConnect.ws = new FancyWebSocket(ws_url);
+        if(ws_url === undefined) {
+            WSConnect.ws.send = {};
+            WSConnect.ws.bind = {};
+        }
+    };
 
+    return WSConnect;
+    
+});
+
+app.factory('WSService', function(WSConnect) {
+    return {
+        send_r_data: function(event, data) {
+	    return WSConnect.ws.send(event, data);
+        },
+        register_ws_callback: function(event, callback) {
+            return WSConnect.ws.bind(event, callback);
+        }
+    };
 });
 
 app.controller('importController', function($scope, WSService) {
-    WSService.register_ws_callback('import', function(msg) {
-        console.log("got import message:");
-        console.log(msg.value);
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('import', function(msg) {
+            console.log("got import message:");
+            console.log(msg.value);
+        });
     });
+        
 
     $scope.$watch('ctrlBoundFile', function(newVal, oldVal) {
         if(newVal !== oldVal) {
@@ -36,12 +51,14 @@ app.controller('importController', function($scope, WSService) {
 
 app.controller('rawController', function($scope, WSService) {
 
-    WSService.register_ws_callback('rawdata', function(msg) {
-        console.log("got rawdata message:");
-        console.log(msg.value);
-        $scope.rawdata = msg.value;
-        $scope.setPagingData(msg.value ,1, 10);
-        $scope.$apply();
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('rawdata', function(msg) {
+            console.log("got rawdata message:");
+            console.log(msg.value);
+            $scope.rawdata = msg.value;
+            $scope.setPagingData(msg.value ,1, 10);
+            $scope.$apply();
+        });
     });
 
     $scope.request_raw_data = function() {
@@ -117,12 +134,14 @@ app.controller('rawController', function($scope, WSService) {
 });
 
 app.controller('mvController', function($scope, WSService) {
-    WSService.register_ws_callback('mv', function(msg) {
-        ggvis.getPlot("ggvis_multivariate").
-            parseSpec(JSON.parse(msg.value));
-        $scope.object_summary = msg.summary[0];
-        $scope.$apply(function() {
-            $scope.ggplot_path = msg.ggpath[0];
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('mv', function(msg) {
+            ggvis.getPlot("ggvis_multivariate").
+                parseSpec(JSON.parse(msg.value));
+            $scope.object_summary = msg.summary[0];
+            $scope.$apply(function() {
+                $scope.ggplot_path = msg.ggpath[0];
+            });
         });
     });
 
@@ -162,8 +181,10 @@ app.controller('tabsController', function($scope) {
 });
 
 app.controller('evalController', function($scope, WSService) {
-    WSService.register_ws_callback('eval_string', function(msg) {
-        console.log("Console logged: " + msg);
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('eval_string', function(msg) {
+            console.log("Console logged: " + msg);
+        });
     });
 
     $scope.eval_me = function() {
@@ -172,51 +193,60 @@ app.controller('evalController', function($scope, WSService) {
     };
 });
 
-app.controller('iconController',  function($scope, WSService) {
+app.controller('MainController', function($scope, WSService, WSConnect, $rootScope) {
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
             WSService.send_r_data("CLOSE", {});
             $scope.isConnected = false;
         } else {
-            // WSService.connect();   
-
-            // in MainController
             $scope.connect();
         }
     };
-});
 
-app.controller('MainController', function($scope, WSService) {
+    $scope.connect = function() {
+        $scope.spyre_server = "ws://localhost:7681";
+        WSConnect.connect($scope.spyre_server);
 
-    WSService.register_ws_callback('open', function() {
-        WSService.register_ws_callback('objects', function(msg) {
-            console.log("Object of Objects:");
-            console.log(msg);
+        WSService.register_ws_callback('uv', function(msg) {
+            ggvis.getPlot("ggvis_univariate").
+                parseSpec(JSON.parse(msg.value));
             
-            $scope.objects = msg;
-            $scope.objects_tree = msg;
-            
-            $scope.$apply();
+            $scope.object_summary = msg.summary[0];
+            console.log($scope.object_summary);
         });
 
-
-        WSService.register_ws_callback('actions', function(msg) {
-            console.log("Actions received:");
-            console.log(msg);
+        WSService.register_ws_callback('open', function() {
+            WSService.register_ws_callback('objects', function(msg) {
+                console.log("Object of Objects:");
+                console.log(msg);
+                
+                $scope.objects = msg;
+                $scope.objects_tree = msg;
+                
+                $scope.$apply();
+            });
             
-            $scope.actions = msg;
-            $scope.$apply();
+
+            WSService.register_ws_callback('actions', function(msg) {
+                console.log("Actions received:");
+                console.log(msg);
+                
+                $scope.actions = msg;
+                $scope.$apply();
+            });
+
+            WSService.register_ws_callback('environments', function(msg) {
+                console.log("Environments received:");
+                console.log(msg);
+                
+                $scope.envs = msg;
+                $scope.$apply();
+            });
         });
 
-        WSService.register_ws_callback('environments', function(msg) {
-            console.log("Environments received:");
-            console.log(msg);
-            
-            $scope.envs = msg;
-            $scope.$apply();
-        });
-    });
-
+        $scope.isConnected = true;
+        $scope.$broadcast('connected');
+    };
 
     $scope.selected = function(env) {
         WSService.send_r_data("set_selected_env", env);
@@ -242,23 +272,11 @@ app.controller('MainController', function($scope, WSService) {
         $scope.data_is_selected = false;
     };
 
-    $scope.connect = function() {
-
-        WSService.register_ws_callback('uv', function(msg) {
-            ggvis.getPlot("ggvis_univariate").
-                parseSpec(JSON.parse(msg.value));
-            
-            $scope.object_summary = msg.summary[0];
-            console.log($scope.object_summary);
-        });
-
-        $scope.isConnected = true;
-
-    };
 
     $scope.tree_control = {};
 
     $scope.send_object = function(event, object_name) {
+        $scope.selected_object = object_name;
         WSService.send_r_data(event, object_name);
         return(0);
     };

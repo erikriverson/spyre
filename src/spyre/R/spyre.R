@@ -16,14 +16,21 @@ spyre.data.frame <- function(x, ...) {
 
 
 spyre.factor <- function(x, ...) {
-    summary <- paste(c(
-        capture.output(substitute(x)),
-        capture.output(table(x)),
-        capture.output(levels(x))), collapse = "\n")
+    summary <-
+        paste0(
+            paste0("Factor Levels:\n",
+                   paste0("  ", levels(x), collapse = "\n")),
+            "\n\nTable:\n",
+            paste0(capture.output(table(x, useNA = "always")),
+                   collapse = "\n"),
+            "\n\nTable (%)\n",
+            paste0(capture.output(prop.table(table(x, useNA = "always"))*100),
+                   collapse = "\n"))
 
     value <- data.frame(var = x)
 
-    ggvis_plot <- value  %>% ggvis(~var)
+    ggvis_plot <- value  %>% ggvis(~var) %>% layer_bars() %>%
+        set_options(width = 420, height = 280)
     ggvis_spec <-
         unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
@@ -34,11 +41,17 @@ spyre.factor <- function(x, ...) {
 }
 
 spyre.numeric <- function(x, ...) {
-    summary <- paste(capture.output(summary(x)), collapse = "\n")
+    summary <- paste0(paste0(capture.output(summary(x)), collapse = "\n"),
+                      "\nVariance/Standard Deviation\n",
+                      paste0(round(var(x), 2), "/",
+                             round(sd(x), 2)),
+                      collapse = "\n")
 
     value <- data.frame(var = x)
 
-    ggvis_plot <- value  %>% ggvis(~var)
+    ggvis_plot <- value  %>% ggvis(~var)  %>% layer_histograms() %>%
+        set_options(width = 420, height = 280)
+    
     ggvis_spec <-
         unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
@@ -50,8 +63,8 @@ spyre.numeric <- function(x, ...) {
 
 
 spyre.function <- function(x, ...) {
-    value <- paste(capture.output(print(x)), collapse = "\n")
-    list(event = "uv", data = list(summary = value, value = value))
+    value <- paste0(capture.output(print(x)), collapse = "\n")
+    list(event = "uv", data = list(summary = value, "{}"))
 }
 
 ## think what we want for summary/value, raw or summarized?
@@ -73,9 +86,7 @@ multivariate <- function(x, y, names, ...) {
 
     value <- data.frame(var1 = x, var2 = y)
 
-    ggvis_plot <- value  %>% ggvis(~var1, ~var2) %>%
-        add_axis("x", title = names[2]) %>%
-        add_axis("y", title = names[3]) 
+    ggvis_plot <- value  %>% ggvis(~var1, ~var2) %>% layer_points()
             
     ggvis_spec <-
         unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
@@ -83,7 +94,7 @@ multivariate <- function(x, y, names, ...) {
     ggplot_object <-
         ggplot(value, aes(x = var1, y = var2)) + geom_point()
 
-    tmpfile <- tempfile(tmpdir = "/home/erik/Dropbox/src/projects/objector/src/client/tmp",
+    tmpfile <- tempfile(tmpdir = "/home/erik/Dropbox/src/projects/spyre/src/client/tmp",
                         fileext = ".png")
     tmpfile_relpath <- paste0(strsplit(tmpfile, "/")[[1]][10:11], collapse = "/")
     
