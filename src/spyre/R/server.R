@@ -10,6 +10,7 @@ require(RCurl)
 require(ggvis)
 require(Quandl)
 require(ggplot2)
+require(httr)
 source("/home/erik/Dropbox/src/projects/spyre/src/spyre/R/spyre.R")
 
 
@@ -37,11 +38,11 @@ uv <- function(D) {
     message(str(D))
             
     if(length(D) > 1)
-        D <- iget(D[[1]], D[2:length(D)])
+        R <- iget(D[[1]], D[2:length(D)])
     else
-        D <- get(D[[1]])
+        R <- get(D[[1]])
     
-    jsonlite::toJSON(spyre(D))
+    jsonlite::toJSON(spyre(R, D))
 }
 
 

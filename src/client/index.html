@@ -17,37 +17,57 @@
   <body ng-controller="MainController">
 
 
-<nav class="navbar navbar-inverse" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Spyre</a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <form class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="ws://localhost:7681" ng-model="spyre_server">
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Spyre</a>
         </div>
-        <button type="submit" class="btn btn-default" ng-click="toggle_connect()"><span class="glyphicon glyphicon-link"></span></button>
-      </form>
-      {{spyre_server}}
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Settings</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Help</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="ws://localhost:7681" ng-model="spyre_server">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="toggle_connect()">
+              <span ng-class="{wson: isConnected}" class="glyphicon glyphicon-link"></span></button>
+          </form>
+
+          <ul class="nav navbar-nav navbar-right">
+
+            <!-- session information -->
+            <li ng-controller="SessionController">
+              <script type="text/ng-template" id="about.html">
+                <div class="about modal-header">
+                  <h4>sessionInfo()</h4>
+                </div>
+                <div class="about modal-body">
+                  <p>
+                  <pre>{{session_info}}</pre>
+                  huh?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" ng-click="ok()">Dismiss</button>
+                </div>
+              </script>
+              <a href ng-click="get_session_info()" id="session">Session Info</a>
+            </li>
+
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
       
     <div id="container" class="container col-md-2">
       
@@ -88,7 +108,7 @@
 
       <tabset>
 
-          <tab heading="Univariate Explorer">
+          <tab heading="Object Explorer">
             <h1>{{selected_object[0][0]}}</h1>
 
                   <div id="output" class="row col-md-6">
@@ -263,8 +283,6 @@
             </div>
 
 
-
-
             <div class="panel panel-default col-md-4">
 
               <div class="panel-heading">
@@ -294,7 +312,6 @@
                   <input type="text" class="form-control" id="import_quandl_1" placeholder="Enter Quandl Code"
                          ng-model="quandl_code">
                 </div>
-                You entered: {{quandl_code}}
                 <button type="submit" class="btn btn-default">Import</button>
               </form>
             </div>
@@ -322,8 +339,15 @@
 
           </tab>
 
+          <tab heading="Documentation">
+            <div ng-bind-html="renderHtml(object_help)"></div>
+          </tab>
+
+
         </tabset>
       </div>
+
+
 
       
     </div> <!-- objectlist -->
@@ -354,3 +378,5 @@
 
   </body>
 </html>
+
+

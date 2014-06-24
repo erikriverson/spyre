@@ -193,7 +193,10 @@ app.controller('evalController', function($scope, WSService) {
     };
 });
 
-app.controller('MainController', function($scope, WSService, WSConnect, $rootScope) {
+app.controller('MainController', function($scope, $sce, WSService, WSConnect, $rootScope) {
+
+    $scope.selected_env = ".GlobalEnv";
+
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
             WSService.send_r_data("CLOSE", {});
@@ -207,12 +210,33 @@ app.controller('MainController', function($scope, WSService, WSConnect, $rootSco
         $scope.spyre_server = "ws://localhost:7681";
         WSConnect.connect($scope.spyre_server);
 
+        $scope.renderHtml = function(html_code)
+        {
+            var phtml = jQuery.parseHTML(html_code);
+            var bc = $(".breadcrumb", phtml);
+
+            return $sce.trustAsHtml($(".documentation", phtml).
+                   prop('outerHTML'));
+        };
+
         WSService.register_ws_callback('uv', function(msg) {
-            ggvis.getPlot("ggvis_univariate").
-                parseSpec(JSON.parse(msg.value));
+            console.log(msg);
+
+            if(msg.hasOwnProperty("value")) {
+                ggvis.getPlot("ggvis_univariate").
+                    parseSpec(JSON.parse(msg.value));
+            }
             
-            $scope.object_summary = msg.summary[0];
-            console.log($scope.object_summary);
+            if(msg.hasOwnProperty("summary")) {
+                $scope.object_summary = msg.summary[0];
+            }
+            
+            if(msg.hasOwnProperty("help")) {
+                $scope.object_help = msg.help[0];
+            }
+
+            // why is apply needed to get summary to show up each click?
+            $scope.$apply();
         });
 
         WSService.register_ws_callback('open', function() {
@@ -255,7 +279,7 @@ app.controller('MainController', function($scope, WSService, WSConnect, $rootSco
     };
 
     // really need the app/app.controller stuff.
-    $scope.isConnected = false;
+    // $scope.isConnected = false;
     // so tree does not complain about no data
     $scope.objects_tree = [];
 
@@ -281,7 +305,8 @@ app.controller('MainController', function($scope, WSService, WSConnect, $rootSco
         return(0);
     };
 
-    $scope.selected_env = ".GlobalEnv";
+
+
 
     $scope.gridOptions = { data: 'objects_tree',
                            rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'uv\', row.entity.data.object_index)" ng-dblclick="object_level_down(row.entity)"></div>',
@@ -303,3 +328,49 @@ app.controller('MainController', function($scope, WSService, WSConnect, $rootSco
 
 
 });
+
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
+    $scope.about = "test";
+    $scope.items = items;
+    $scope.selected = {
+        item: $scope.items[0]
+    };
+
+    $scope.ok = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
+
+app.controller('SessionController', function ($scope, $modal, WSService) {
+    $scope.get_session_info = function() {
+        WSService.send_r_data('session', null);
+        return(0);
+    };
+
+    $scope.$on('connected', function () {
+        WSService.register_ws_callback('session', function(msg) {
+            console.log(msg);
+            $scope.session_info = msg.summary[0];
+        });
+    });
+
+    $scope.open = function () {
+        
+        var modalInstance = $modal.open({
+            templateUrl: 'about.html',
+            controller: ModalInstanceCtrl,
+            resolve: {
+                items: function () {
+                    return $scope.items;
+                }
+            }
+        });
+    };
+});
+
+
+

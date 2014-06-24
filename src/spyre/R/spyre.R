@@ -5,13 +5,13 @@ spyre <- function(x, ...) {
 spyre.default <- function(x, ...) {
     summary <- paste(capture.output(str(x)), collapse = "\n")
     ## need a way to limit size of x (likely)
-    list(event = "uv", data = list(summary = summary,
-                           value = "{}"))
+    list(event = "uv", data = list(summary = summary))
+
 }
 
 spyre.data.frame <- function(x, ...) {
     summary <- paste(capture.output(summary(x)), collapse = "\n")
-    list(event = "uv", data = list(summary = summary, value = "{}"))
+    list(event = "uv", data = list(summary = summary))
 }
 
 
@@ -21,7 +21,7 @@ spyre.factor <- function(x, ...) {
             paste0("Factor Levels:\n",
                    paste0("  ", levels(x), collapse = "\n")),
             "\n\nTable:\n",
-            paste0(capture.output(table(x, useNA = "always")),
+            paste0(capture.output(table(x, useNA = "always"))[-1],
                    collapse = "\n"),
             "\n\nTable (%)\n",
             paste0(capture.output(prop.table(table(x, useNA = "always"))*100),
@@ -50,6 +50,7 @@ spyre.numeric <- function(x, ...) {
     value <- data.frame(var = x)
 
     ggvis_plot <- value  %>% ggvis(~var)  %>% layer_histograms() %>%
+        layer_densities() %>% 
         set_options(width = 420, height = 280)
     
     ggvis_spec <-
@@ -61,10 +62,19 @@ spyre.numeric <- function(x, ...) {
     
 }
 
+rdoc_help <- function (fun, package) {
+    content(GET(paste0("http://rdocs-staging.herokuapp.com/packages/",
+                       package, "/functions/", fun)), as = "text")
+}
 
-spyre.function <- function(x, ...) {
+spyre.function <- function(x, name, ...) {
     value <- paste0(capture.output(print(x)), collapse = "\n")
-    list(event = "uv", data = list(summary = value, "{}"))
+##    message(name)
+##    message(system.file("help", name, package = "MASS"))
+##    help <- readLines(system.file("html", name, package = "MASS")) 
+    help <- rdoc_help(name, package = "MASS")
+
+    list(event = "uv", data = list(summary = value, help = help))
 }
 
 ## think what we want for summary/value, raw or summarized?
@@ -106,3 +116,10 @@ multivariate <- function(x, y, names, ...) {
     list(event = "mv", data = list(summary = summary, value = ggvis_spec,
                            ggpath = tmpfile_relpath))
 }
+
+session <- function(x) {
+    session <- paste0(capture.output(sessionInfo()), collapse = "\n")
+    message(session)
+    list(event = "session", data = list(summary = session))
+}
+
