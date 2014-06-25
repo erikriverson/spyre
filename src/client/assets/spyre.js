@@ -201,6 +201,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
         if($scope.isConnected) {
             WSService.send_r_data("CLOSE", {});
             $scope.isConnected = false;
+            $scope.selected_env = ".GlobalEnv";
         } else {
             $scope.connect();
         }
@@ -221,8 +222,12 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 
         WSService.register_ws_callback('uv', function(msg) {
             console.log(msg);
+            $scope.object_ggvis = false;
+            $scope.object_property = false;
+            $scope.object_help = false; 
 
             if(msg.hasOwnProperty("value")) {
+                $scope.object_ggvis = true;
                 ggvis.getPlot("ggvis_univariate").
                     parseSpec(JSON.parse(msg.value));
             }
@@ -274,7 +279,6 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 
     $scope.selected = function(env) {
         WSService.send_r_data("set_selected_env", env);
-        console.log(env + "is selected");
         $scope.selected_env = env;
     };
 
@@ -294,8 +298,8 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 
     $scope.object_level_up = function() {
         $scope.data_is_selected = false;
+        $scope.selected(".GlobalEnv");
     };
-
 
     $scope.tree_control = {};
 
@@ -304,8 +308,6 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
         WSService.send_r_data(event, object_name);
         return(0);
     };
-
-
 
 
     $scope.gridOptions = { data: 'objects_tree',

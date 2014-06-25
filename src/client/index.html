@@ -49,10 +49,7 @@
                   <h4>sessionInfo()</h4>
                 </div>
                 <div class="about modal-body">
-                  <p>
                   <pre>{{session_info}}</pre>
-                  huh?
-                  </p>
                 </div>
                 <div class="modal-footer">
                   <button class="btn btn-primary" ng-click="ok()">Dismiss</button>
@@ -111,12 +108,12 @@
           <tab heading="Object Explorer">
             <h1>{{selected_object[0][0]}}</h1>
 
-                  <div id="output" class="row col-md-6">
+                  <div id="output" ng-class"object_ggvis ? 'col-md-10' : 'col-md-6'" class="row" ng-show="object_summary">
                     <h4>Summary</h4>
                     <pre>{{object_summary}}</pre>
                   </div>
 
-                  <div id="plot" class="row col-md-4">
+                  <div id="plot" class="row col-md-4" ng-show="object_ggvis">
                     <h4>Plot</h4>
 
                     <div id="ggvis_univariate-container" class="ggvis-output-container">
@@ -143,6 +140,12 @@
                     </div>
                     
                   </div> <!-- plot -->
+
+                  <!-- help -->
+                  <div ng-show="object_help">
+                    <h4>Documentation</h4>
+                    <div ng-bind-html="renderHtml(object_help)"></div>
+                  </div>
           </tab>
 
           <tab heading="Multivariate Explorer" ng-controller="mvController">
@@ -338,11 +341,6 @@
             </div>
 
           </tab>
-
-          <tab heading="Documentation">
-            <div ng-bind-html="renderHtml(object_help)"></div>
-          </tab>
-
 
         </tabset>
       </div>
