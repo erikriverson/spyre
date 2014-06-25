@@ -195,6 +195,11 @@ app.controller('evalController', function($scope, WSService) {
 
 app.controller('MainController', function($scope, $sce, WSService, WSConnect, $rootScope) {
 
+    $scope.options = {};
+    $scope.options.uv_plot_type = 'density';
+
+
+
     $scope.selected_env = ".GlobalEnv";
 
     $scope.toggle_connect = function() {
@@ -225,6 +230,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
             $scope.object_ggvis = false;
             $scope.object_property = false;
             $scope.object_help = false; 
+            $scope.object_controls = false; 
 
             if(msg.hasOwnProperty("value")) {
                 $scope.object_ggvis = true;
@@ -240,6 +246,10 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
                 $scope.object_help = msg.help[0];
             }
 
+            if(msg.hasOwnProperty("controls")) {
+                $scope.object_controls = msg.controls[0];
+            }
+
             // why is apply needed to get summary to show up each click?
             $scope.$apply();
         });
@@ -251,6 +261,9 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
                 
                 $scope.objects = msg;
                 $scope.objects_tree = msg;
+
+                // what functions should we call here? 
+                $scope.send_object('uv', $scope.selected_object, $scope.options);
                 
                 $scope.$apply();
             });
@@ -303,15 +316,25 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 
     $scope.tree_control = {};
 
-    $scope.send_object = function(event, object_name) {
+    $scope.send_object = function(event, object_name, data) {
+        var data_arg = {object: object_name.data.object_index,
+                               data : data};
+
+        WSService.send_r_data(event, data_arg);
         $scope.selected_object = object_name;
-        WSService.send_r_data(event, object_name);
         return(0);
     };
 
+    $scope.$watchCollection('options', function(newValue, oldValue) {
+        if(newValue !== oldValue) {
+            $scope.send_object('uv', $scope.selected_object, $scope.options);
+        }
+    });
+
+
 
     $scope.gridOptions = { data: 'objects_tree',
-                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'uv\', row.entity.data.object_index)" ng-dblclick="object_level_down(row.entity)"></div>',
+                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'uv\', row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
                            enableColumnResize : true,
                            showGroupPanel : false,
                            multiSelect : false,

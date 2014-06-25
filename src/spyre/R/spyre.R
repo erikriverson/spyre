@@ -40,7 +40,8 @@ spyre.factor <- function(x, ...) {
     
 }
 
-spyre.numeric <- function(x, ...) {
+spyre.numeric <- function(x, data, ...) {
+    options <- data$data
     summary <- paste0(paste0(capture.output(summary(x)), collapse = "\n"),
                       "\nVariance/Standard Deviation\n",
                       paste0(round(var(x), 2), "/",
@@ -49,17 +50,23 @@ spyre.numeric <- function(x, ...) {
 
     value <- data.frame(var = x)
 
-    ggvis_plot <- value  %>% ggvis(~var)  %>% layer_histograms() %>%
-        layer_densities() %>% 
+    
+    gg1  <- value  %>% ggvis(~var)  %>%
         set_options(width = 420, height = 280)
+
+    if(options$uv_plot_type == "histogram") {
+        gg1  <- gg1 %>% layer_histograms()
+    } else {
+        gg1 <- gg1 %>% layer_densities()
+    }
     
     ggvis_spec <-
-        unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
+        unbox(paste0(capture.output(show_spec(gg1)), collapse = ""))
     
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,
                                value = ggvis_spec))
-    
+
 }
 
 rdoc_help <- function (fun, package) {
@@ -72,7 +79,8 @@ spyre.function <- function(x, name, ...) {
 ##    message(name)
 ##    message(system.file("help", name, package = "MASS"))
 ##    help <- readLines(system.file("html", name, package = "MASS")) 
-    help <- rdoc_help(name, package = "MASS")
+##    help <- rdoc_help(name, package = "MASS")
+    help <- "Help stub"
 
     list(event = "uv", data = list(summary = value, help = help))
 }

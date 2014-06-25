@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Spyre</a>
+          <a class="navbar-brand" href="#">SPYRE</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -106,39 +106,47 @@
       <tabset>
 
           <tab heading="Object Explorer">
-            <h1>{{selected_object[0][0]}}</h1>
+            <h1>{{selected_object.data.object_index[0][0]}}</h1>
 
-                  <div id="output" ng-class"object_ggvis ? 'col-md-10' : 'col-md-6'" class="row" ng-show="object_summary">
-                    <h4>Summary</h4>
-                    <pre>{{object_summary}}</pre>
-                  </div>
+            <div ng-show="selected_object.class == 'numeric'" id="controls" ng-show="object_controls">
+              <h4>Options</h4>
+              <div class="btn-group">
+                <label class="btn btn-primary" ng-model="options.uv_plot_type" btn-radio="'density'">Kernel Density</label>
+                <label class="btn btn-primary" ng-model="options.uv_plot_type" btn-radio="'histogram'">Histogram</label>
+              </div>              
+            </div> <!-- controls -->
 
-                  <div id="plot" class="row col-md-4" ng-show="object_ggvis">
-                    <h4>Plot</h4>
+            <div id="output" ng-class"object_ggvis ? 'col-md-10' : 'col-md-6'" class="row" ng-show="object_summary">
+              <h4>Summary</h4>
+              <pre>{{object_summary}}</pre>
+            </div>
 
-                    <div id="ggvis_univariate-container" class="ggvis-output-container">
-                      <div id="ggvis_univariate" class="ggvis-output"></div>
-                      <div class="plot-gear-icon">
-                        <nav class="ggvis-control">
-                          <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
-                          <ul class="ggvis-dropdown">
-                            <li>
-                              Renderer: 
-                              <a id="ggvis_univariate_renderer_svg" class="ggvis-renderer-button" 
-                                 data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
-                              | 
-                              <a id="ggvis_univariate_renderer_canvas" class="ggvis-renderer-button" 
-                                 data-plot-id="ggvis_univariate" data-renderer="canvas">Canvas</a>
-                            </li>
-                            <li>
-                              <a id="ggvis_univariate_download" class="ggvis-download" 
-                                 data-plot-id="ggvis_univariate">Download</a>
-                            </li>
-                          </ul>
-                        </nav>
-                      </div>
-                    </div>
-                    
+            <div id="plot" class="row col-md-4" ng-show="object_ggvis">
+              <h4>Plot</h4>
+
+              <div id="ggvis_univariate-container" class="ggvis-output-container">
+                <div id="ggvis_univariate" class="ggvis-output"></div>
+                <div class="plot-gear-icon">
+                  <nav class="ggvis-control">
+                    <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
+                    <ul class="ggvis-dropdown">
+                      <li>
+                        Renderer: 
+                        <a id="ggvis_univariate_renderer_svg" class="ggvis-renderer-button" 
+                           data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
+                        | 
+                        <a id="ggvis_univariate_renderer_canvas" class="ggvis-renderer-button" 
+                           data-plot-id="ggvis_univariate" data-renderer="canvas">Canvas</a>
+                      </li>
+                      <li>
+                        <a id="ggvis_univariate_download" class="ggvis-download" 
+                           data-plot-id="ggvis_univariate">Download</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+              
                   </div> <!-- plot -->
 
                   <!-- help -->

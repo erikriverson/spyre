@@ -20,6 +20,10 @@ table {
     color:white;
 }
 
+.navbar-brand {
+    font-size: 24px;
+}
+
 #datagrid {
     border: 0px solid rgb(212,212,212);
     width: 100%; 

@@ -37,7 +37,7 @@ uv <- function(D) {
     message("I'm in uv with:")
     message(str(D))
             
-    if(length(D) > 1)
+    if(length(D[[1]]) > 1)
         R <- iget(D[[1]], D[2:length(D)])
     else
         R <- get(D[[1]])
@@ -201,6 +201,7 @@ spyre_onWSOpen <- function(ws) {
         message(paste("calling function:", E))
         message(str(D))
 
+        ## This is where we call the processing function (e.g., uv, mv, ...)
         R <- do.call(E, list(D))
         send_data(R)
     }
