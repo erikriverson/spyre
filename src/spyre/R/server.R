@@ -38,7 +38,7 @@ uv <- function(D) {
     message(str(D))
             
     if(length(D[[1]]) > 1)
-        R <- iget(D[[1]], D[2:length(D)])
+        R <- iget(D[[1]][[1]], D[[1]][2:length(D)])
     else
         R <- get(D[[1]])
     
