@@ -146,7 +146,8 @@ app.controller('mvController', function($scope, WSService) {
     });
 
     $scope.target = {x : "Not Set",
-                     y : "Not Set"};
+                     y : "Not Set",
+                     fill : "Not Set"};
 
     $scope.select = function(event, object) {
         console.log("this is the event:" + event);
@@ -156,14 +157,15 @@ app.controller('mvController', function($scope, WSService) {
     
     $scope.$watchCollection('target', function(newValue, oldValue) {
         if(newValue !== oldValue) {
-            $scope.mv($scope.target.x, $scope.target.y);
+            $scope.mv($scope.target.x, $scope.target.y, $scope.target.fill);
         }
     });
 
-    $scope.mv = function(xvar_target, yvar_target) {
-        console.log("Calling the mv function with" + xvar_target + "and" + yvar_target);
+    $scope.mv = function(xvar_target, yvar_target, fill_target) {
+        console.log("Calling the mv function with" + xvar_target + "and" + yvar_target + "and" + fill_target);
         var mv_object = {xvar_target : xvar_target.data.object_index, 
-                         yvar_target: yvar_target.data.object_index};
+                         yvar_target: yvar_target.data.object_index,
+                         fill_target: fill_target.data.object_index};
 
         console.log(mv_object);
 
@@ -355,7 +357,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 });
 
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
+var ModalInstanceController = function ($scope, $modalInstance, items) {
     $scope.about = "test";
     $scope.items = items;
     $scope.selected = {
@@ -387,7 +389,7 @@ app.controller('SessionController', function ($scope, $modal, WSService) {
         
         var modalInstance = $modal.open({
             templateUrl: 'about.html',
-            controller: ModalInstanceCtrl,
+            controller: ModalInstanceController,
             resolve: {
                 items: function () {
                     return $scope.items;

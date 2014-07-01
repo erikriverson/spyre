@@ -35,11 +35,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="ws://localhost:7681" ng-model="spyre_server">
+              <input type="text" class="form-control" placeholder="ws://localhost:7681" 
+                     ng-model="spyre_server" />
             </div>
             <button type="submit" class="btn btn-default" ng-click="toggle_connect()">
               <span ng-class="{wson: isConnected}" class="glyphicon glyphicon-link"></span></button>
           </form>
+          
+          <ul class="nav navbar-nav navbar-left" ng-show="data_is_selected">
+            <li><a href="#">Active Data: {{selected_data}}</a></li>
+          </ul>
 
           <ul class="nav navbar-nav navbar-right">
 
@@ -75,7 +80,6 @@
           <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
             {{selected_env}} <span class="caret"></span>
           </button>
-          <div ng-show="data_is_selected">Selected Data: {{selected_data}}</div>
           <ul class="dropdown-menu" role="menu">
             <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
           </ul>
@@ -114,6 +118,7 @@
               <div class="btn-group">
                 <label class="btn btn-primary" ng-model="options.uv_plot_type" btn-radio="'density'">Kernel Density</label>
                 <label class="btn btn-primary" ng-model="options.uv_plot_type" btn-radio="'histogram'">Histogram</label>
+                <input type="text" ng-model="options.uv_plot_binwidth" ng-show="options.uv_plot_type === 'histogram'" />
               </div>              
             </div> <!-- controls -->
 
@@ -159,7 +164,7 @@
 
           <tab heading="Multivariate Explorer" ng-controller="mvController">
             <div id="mv-button-container" class="row">
-
+              X
               <div class="btn-group" dropdown >
                 <button type="button" class="btn dropdown-toggle" 
                         ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
@@ -169,7 +174,7 @@
                     <a href="#">{{object.label}}</a></li>
                 </ul>
               </div>
-
+              Y
               <div class="btn-group" dropdown >
                 <button type="button" class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
                 </button>
@@ -178,6 +183,18 @@
                     <a href="#">{{object.label}}</a></li>
                 </ul>
               </div>
+
+              Fill
+              <div class="btn-group" dropdown >
+                <button type="button" class="btn dropdown-toggle" 
+                        ng-model="objects_tree">{{target.fill.label}}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="object in objects_tree" ng-click="select('fill', object)">
+                    <a href="#">{{object.label}}</a></li>
+                </ul>
+              </div>
+
             </div>
                   
 

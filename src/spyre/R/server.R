@@ -69,10 +69,16 @@ mv <- function(D) {
     else
         D2 <- get(D[[2]][[1]])
 
-    names <- c(D[[1]], D[[2]])
-    message(paste("names are", names))
 
-    jsonlite::toJSON(multivariate(D1, D2, names))
+    if(length(D[[3]]) > 1)
+        D3 <- iget(D[[3]][[1]], D[[3]][2:length(D[[3]])])
+    else
+        D3 <- get(D[[3]][[1]])
+
+    names <- c(D[[1]], D[[2]], D[[3]])
+    message(paste("names are", names), collapse = "\n")
+
+    jsonlite::toJSON(multivariate(D1, D2, D3, names))
 }
 
 eval_string <- function(D) {
@@ -160,11 +166,17 @@ spyre_onWSOpen <- function(ws) {
     ## does ws have to be captured by lexical scoping in the following function?
     getCurrentObjects <- function(a, b, c, d) {
 
-        if(length(a) == 0 || as.character(a) %in%
-           c(".ess_help", ".ess_funargs", ".ess_get_completions")) {
-            cat("\nskipping rest of function", file = "/home/erik/spyre.log", append = TRUE)
+        if(length(a) == 0 ||
+           grepl("tryCatch|objects\\(pos", as.character(a))) {
+            cat("\n regex match!! \n", file = "/home/erik/spyre.log",
+                append = TRUE)
             return(TRUE)
+            cat("\n cannot get here! \n", file = "/home/erik/spyre.log",
+                append = TRUE)
         }
+
+        cat("\n", as.character(a), "\n", file = "/home/erik/spyre.log",
+            append = TRUE)
 
         env <- get_selected_env()
         
@@ -199,7 +211,7 @@ spyre_onWSOpen <- function(ws) {
         D <- jsonlite::fromJSON(data)$data
         
         message(paste("calling function:", E))
-        message(str(D))
+##        message(str(D))
 
         ## This is where we call the processing function (e.g., uv, mv, ...)
         R <- do.call(E, list(D))
