@@ -15,16 +15,6 @@ source("/home/erik/Dropbox/src/projects/spyre/src/spyre/R/spyre.R")
 
 
 get_selected_env <- function() {
-    message("here we go")
-    if(exists("selected_env", .GlobalEnv)) {
-        as.environment(get("selected_env", .GlobalEnv))
-    } else {
-        as.environment(".GlobalEnv")
-    }
-}
-
-
-get_selected_env <- function() {
     if(exists("selected_env", .GlobalEnv)) {
         selected_env
     } else {
@@ -33,17 +23,6 @@ get_selected_env <- function() {
 }
 
 
-uv <- function(D) {
-    message("I'm in uv with:")
-    message(str(D))
-            
-    if(length(D[[1]]) > 1)
-        R <- iget(D[[1]][[1]], D[[1]][2:length(D)])
-    else
-        R <- get(D[[1]])
-    
-    jsonlite::toJSON(spyre(R, D))
-}
 
 
 actions <- function() {
