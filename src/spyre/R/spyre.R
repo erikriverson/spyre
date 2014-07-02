@@ -58,8 +58,8 @@ spyre.numeric <- function(x, data, ...) {
                       collapse = "\n")
 
     value <- data.frame(var = x)
+    value <- subset(value, !is.na(var))
 
-    
     gg1  <- value  %>% ggvis(~var)  %>%
         set_options(width = 420, height = 280)
 
@@ -123,6 +123,7 @@ multivariate <- function(x, y, z, names, ...) {
     summary <- paste(c(capture.output(cor(x, y))))
 
     value <- data.frame(var1 = x, var2 = y, var3 = z)
+    value <- value[complete.cases(value), ]
 
     ggvis_plot <- value  %>% ggvis(~var1, ~var2, fill = ~var3) %>% layer_points()
             
