@@ -1,1 +1,17 @@
-Title: spyre
+Package: spyre
+Title: A Browser-based Exploratory Data Analysis System
+Description: Spyre connects to a locally running R process to help you explore
+    your data in a browser.
+Version: 0.2
+Authors: Erik Iverson (erik@sigmafield.org)
+Depends:
+    R (>= 3.1.0)
+Imports:
+    httpuv,
+    httr,
+    jsonlite,
+    ggvis,
+    Quandl,
+    ggplot2
+License: GPL-2
+LazyData: true

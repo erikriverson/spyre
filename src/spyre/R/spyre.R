@@ -1,7 +1,6 @@
 ################################################################################
-#   Program Name:     server.R
+#   Program Name:     spyre.R
 #   Author:           Erik Iverson <erik@sigmafield.org>
-#   Purpose:          httpuv implementation of spyre server
 ################################################################################
 
 require(httpuv)
@@ -71,9 +70,3 @@ start_spyre <- function(app) {
 stop_spyre <- function(handle) {
     stopDaemonizedServer(handle)
 }
-
-
-## bootstrap
-if(exists("hndl"))
-    stop_spyre(hndl)
-hndl <- start_spyre()
