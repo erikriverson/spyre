@@ -48,7 +48,7 @@ spyre_onWSOpen <- function(ws) {
         D <- jsonlite::fromJSON(data)$data
         
         message(paste("calling function:", E))
-##        message(str(D))
+        message(paste("The data argument is :", D))
 
         ## This is where we call the processing function (e.g., uv, mv, ...)
         R <- do.call(E, list(D))

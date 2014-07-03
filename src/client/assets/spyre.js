@@ -197,6 +197,7 @@ app.controller('evalController', function($scope, WSService) {
 
 app.controller('MainController', function($scope, $sce, WSService, WSConnect, $rootScope) {
 
+//    $scope.selected_object = [];
     $scope.options = {};
     $scope.options.uv_plot_type = 'density';
 
@@ -265,7 +266,8 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
                 $scope.objects_tree = msg;
 
                 // what functions should we call here? 
-                $scope.send_object('uv', $scope.selected_object, $scope.options);
+                $scope.send_object('object_explorer_connect', $scope.selected_object, 
+                                   $scope.options);
                 
                 $scope.$apply();
             });
@@ -301,7 +303,6 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
     // $scope.isConnected = false;
     // so tree does not complain about no data
     $scope.objects_tree = [];
-
     $scope.object_display_level = 1;
 
     $scope.object_level_down = function(object) {
@@ -319,8 +320,12 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
     $scope.tree_control = {};
 
     $scope.send_object = function(event, object_name, data) {
+        if(object_name === undefined) {
+            return(0);
+        }
+        
         var data_arg = {object: object_name.data.object_index,
-                               data : data};
+                        data : data};
 
         WSService.send_r_data(event, data_arg);
         $scope.selected_object = object_name;
@@ -329,14 +334,14 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
 
     $scope.$watchCollection('options', function(newValue, oldValue) {
         if(newValue !== oldValue) {
-            $scope.send_object('uv', $scope.selected_object, $scope.options);
+            $scope.send_object('object_explorer_connect', $scope.selected_object, $scope.options);
         }
     });
 
 
 
     $scope.gridOptions = { data: 'objects_tree',
-                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'uv\', row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
+                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'object_explorer_connect\', row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
                            enableColumnResize : true,
                            showGroupPanel : false,
                            multiSelect : false,

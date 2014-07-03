@@ -1,10 +1,7 @@
-object_explorer <- function(D) {
-    if(length(D[[1]]) > 1)
-        R <- iget(D[[1]][[1]], D[[1]][2:length(D)])
-    else
-        R <- get(D[[1]])
-    
-    jsonlite::toJSON(object_explorer(R, D))
+object_explorer_connect <- function(D) {
+    message("from connect")
+    message(str(D))
+    jsonlite::toJSON(object_explorer(iget(D$object), D))
 }
 
 object_explorer <- function(x, ...) {
@@ -98,7 +95,7 @@ object_explorer.numeric <- function(x, data, ...) {
 
 object_explorer.character <- object_explorer.factor
 
-spyre.function <- function(x, name, ...) {
+object_explorer.function <- function(x, name, ...) {
     value <- paste0(capture.output(print(x)), collapse = "\n")
 ##    message(name)
 ##    message(system.file("help", name, package = "MASS"))

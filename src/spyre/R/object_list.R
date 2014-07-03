@@ -30,7 +30,7 @@ generate_object_list <- function(object, index = 1, parent, object_names,
         ifelse(names(object) == "", FALSE, TRUE)
     }
     
-    children <- mapply(generate_tree_data,
+    children <- mapply(generate_object_list,
                        object = object,
                        index = seq_along(object),
                        object_class = lapply(object, class),
