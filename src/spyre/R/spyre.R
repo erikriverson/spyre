@@ -33,15 +33,13 @@ rawdata <- function(D) {
     object %i% index_list[-1]
 }
 
-
 iget <- function(object_desc) {
-    message("passed to iget")
-    message(str(object_desc))
+    obj <- get(object_desc[[1]])
+               
     if(length(object_desc) > 1) {
-        obj <- object_desc[[1]] %i% object_desc[2:length(object_desc)]
-    } else {
-        obj <- get(object_desc)
+        obj <- obj %i% object_desc[2:length(object_desc)]
     }
+
     obj
 }
 
