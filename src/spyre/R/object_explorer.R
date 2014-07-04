@@ -22,7 +22,7 @@ object_explorer.data.frame <- function(x, ...) {
 
 object_explorer.ggvis <- function(x, ...) {
     ggvis_spec <-
-        unbox(paste0(capture.output(show_spec(x)), collapse = ""))
+        jsonlite::unbox(paste0(capture.output(show_spec(x)), collapse = ""))
 
     ggvis_explain <- paste(capture.output(explain(x)), collapse = "\n")
     list(event = "uv", data = list(summary=ggvis_explain,
@@ -47,7 +47,7 @@ object_explorer.factor <- function(x, ...) {
     ggvis_plot <- value  %>% ggvis(~var) %>% layer_bars() %>%
         set_options(width = 420, height = 280)
     ggvis_spec <-
-        unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
+        jsonlite::unbox(paste0(capture.output(show_spec(ggvis_plot)), collapse = ""))
     
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,
@@ -85,7 +85,7 @@ object_explorer.numeric <- function(x, data, ...) {
     }
     
     ggvis_spec <-
-        unbox(paste0(capture.output(show_spec(gg1)), collapse = ""))
+        jsonlite::unbox(paste0(capture.output(show_spec(gg1)), collapse = ""))
     
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary,

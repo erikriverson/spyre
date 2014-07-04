@@ -7,13 +7,13 @@ generate_object_list <- function(object, index = 1, parent, object_names,
 
         ## test with multi-class objects (ggplot2, data.table, etc.)
         parent <- list(class = class(object),
-                       label = unbox(obj_name),
-                       data = list(root_object = unbox(obj_name),
+                       label = jsonlite::unbox(obj_name),
+                       data = list(root_object = jsonlite::unbox(obj_name),
                            object_index = list(obj_name)))
         
     } else {
         parent <- list(class = object_class,
-                       label = unbox(object_names[index]),
+                       label = jsonlite::unbox(object_names[index]),
                        data = list(root_object = parent$data$root_object,
                            object_index = c(parent$data$object_index,
                                object_names[[index]])))

@@ -8,10 +8,11 @@ Depends:
     R (>= 3.1.0)
 Imports:
     httpuv,
-    httr,
     jsonlite,
+    httr,
     ggvis,
+    dplyr,
     Quandl,
-    ggplot2
+    prettyR
 License: GPL-2
 LazyData: true

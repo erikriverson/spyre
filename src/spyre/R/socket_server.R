@@ -28,10 +28,10 @@ spyre_onWSOpen <- function(ws) {
         ws$send(jsonlite::toJSON(ret_list))
 
         env_list <- list(event = "environments", data = search())
-        ws$send(toJSON(env_list))
+        ws$send(jsonlite::toJSON(env_list))
 
         action_list <- list(event = "actions", data = actions())
-        ws$send(toJSON(action_list))
+        ws$send(jsonlite::toJSON(action_list))
 
         TRUE
     }
