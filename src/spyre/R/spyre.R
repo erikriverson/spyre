@@ -59,7 +59,7 @@ cleanup <- function() {
 #' @export
 start_spyre <- function(port = 7681) {
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
-    packageStartupMessage(paste("spyre running on port ", port))
+    packageStartupMessage(paste("spyre running on port", port))
     startDaemonizedServer("127.0.0.1", port, app = app)
 }
 

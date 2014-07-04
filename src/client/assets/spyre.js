@@ -139,9 +139,6 @@ app.controller('mvController', function($scope, WSService) {
             ggvis.getPlot("ggvis_multivariate").
                 parseSpec(JSON.parse(msg.value));
             $scope.object_summary = msg.summary[0];
-            $scope.$apply(function() {
-                $scope.ggplot_path = msg.ggpath[0];
-            });
         });
     });
 
@@ -169,7 +166,7 @@ app.controller('mvController', function($scope, WSService) {
 
         console.log(mv_object);
 
-        WSService.send_r_data("mv", mv_object);
+        WSService.send_r_data("ggvis_explorer", mv_object);
         return(0);
     };
 });
