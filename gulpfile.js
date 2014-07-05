@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');  
 var clean = require('gulp-clean');  
 var concat = require('gulp-concat');  
-var uglify = require('gulp-uglify');  
+var livereload = require('gulp-livereload');
 
 gulp.task('clean', function () {  
     return gulp.src('src/client/build', {read: false})
@@ -29,8 +29,13 @@ gulp.task('js_spyre', function() {
     return gulp.src('src/client/scripts/**/*.js')
         .pipe(concat('spyre.js'))
         .pipe(gulp.dest('src/client/build'))
+        .pipe(livereload())
         .on('error', gutil.log);
+    
+});
+
+gulp.task('livereload', function() {
 });
 
 
-gulp.task('default', ['js_vendor', 'js_bower_components', 'js_spyre']);
+gulp.task('default', ['js_vendor', 'js_bower_components', 'js_spyre', 'livereload']);

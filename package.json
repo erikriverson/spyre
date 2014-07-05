@@ -7,6 +7,9 @@
     "grunt-express": "~1.0.0-beta2",
     "grunt-contrib-watch": "~0.5.1",
     "grunt-open": "~0.2.1",
-    "gulp": "~3.8.5"
+    "gulp": "~3.8.5",
+    "gulp-livereload": "~2.1.0",
+    "gulp-jshint": "~1.6.4",
+    "gulp-serve": "~0.2.0"
   }
 }
