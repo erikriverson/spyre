@@ -60,12 +60,12 @@ cleanup <- function() {
 start_spyre <- function(port = 7681) {
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
     packageStartupMessage(paste("spyre running on port", port))
-    startDaemonizedServer("127.0.0.1", port, app = app)
+    httpuv::startDaemonizedServer("127.0.0.1", port, app = app)
 }
 
 #' @export
 stop_spyre <- function(handle) {
-    stopDaemonizedServer(handle)
+    httpuv::stopDaemonizedServer(handle)
 }
 
 .onAttach <- function(x, y) {
