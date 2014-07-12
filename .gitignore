@@ -1,4 +1,4 @@
 node_modules/
-src/client/bower_components/
+client/bower_components/
 .tern-port
 */.tern-port

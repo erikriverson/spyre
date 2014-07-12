@@ -1,0 +1,19 @@
+.vega{-webkit-user-select:none}
+.plots>div{float:left}
+.ggvis-output-container{overflow:hidden}
+.ui-resizable-helper{border:1px dotted #999}
+.ggvis-tooltip{position:absolute;float:left;pointer-events:none;border-radius:3px;border:1px solid #999;padding:5px;opacity:.85;background-color:#fff;box-shadow:2px 2px 6px #888}
+.sidebar-bottom{float:left;margin-left:0}
+.main-top{float:right!important;margin-left:auto}
+@media (max-width:767px){body{padding-right:0;padding-left:0}
+.sidebar-bottom{display:inline-block;margin-top:20px;width:100%}
+.main-top{float:none!important;margin-left:0}
+.ggvis-input-container{width:45%;padding-left:2.5%;padding-right:2.5%;float:left}}
+.ggvis-dropdown-menu .ggvis-dropdown-item{display:block;padding:3px 20px;clear:both;font-weight:400;line-height:20px;color:#333;white-space:nowrap}
+.plot-gear-icon{position:absolute;width:15px;height:15px;top:0;right:5px}
+nav.ggvis-control{position:relative;float:right}
+a.ggvis-dropdown-toggle{font-size:18px;text-decoration:none;color:#aaa;cursor:pointer}
+ul.ggvis-dropdown{display:none;text-align:right;position:absolute;margin-top:.5em;border-radius:3px;border:1px solid #999;padding:4px;opacity:.85;background-color:#fff;box-shadow:2px 2px 6px #888;width:200px;margin-left:-200px}
+ul.ggvis-dropdown li{list-style-type:none;padding:5px 2px}
+ul.ggvis-dropdown li a{color:#00f;text-decoration:none;padding:2px;cursor:pointer}
+ul.ggvis-dropdown li a.inactive{color:#000;cursor:initial}
