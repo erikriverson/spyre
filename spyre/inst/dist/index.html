@@ -164,10 +164,10 @@
                   <label for="vis_x_var">X</label>
                   <div class="btn-group" dropdown >
                     <button type="button" class="btn dropdown-toggle" id="vis_x_var"
-                            ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
+                            ng-model="objects_tree">{{target.xvar.label}}<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
+                      <li ng-repeat="object in objects_tree" ng-click="select('xvar', object)">
                         <a href="#">{{object.label}}</a></li>
                     </ul>
                   </div>
@@ -179,36 +179,37 @@
                   <label for="vis_y_var">Y</label>
                   <div class="btn-group" dropdown >
                     <button type="button" id="vis_y_var" 
-                            class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
+                            class="btn dropdown-toggle">{{target.yvar.label}}<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
+                      <li ng-repeat="object in objects_tree" ng-click="select('yvar', object)">
                         <a href="#">{{object.label}}</a></li>
                     </ul>
                   </div>
                 </div>
 
+                <!-- fill -->
                 <div class="control-group">
                   <label class="control-label">Fill</label>
                   <div class="controls">
                     <label class="radio">
-                      <input type="radio" name="user[role]" ng-model="scaledValue" value="false" >
+                      <input type="radio" name="fill" ng-model="fill_scaled" value="false" >
                       Unscaled
                     </label>
 
                     <label class="radio">
-                      <input type="radio" name="user[role]" ng-model="scaledValue" value="true">
+                      <input type="radio" name="fill" ng-model="fill_scaled" value="true">
                       Scaled
                     </label>
                   </div>
                 </div>
 
-                <div id="unscaled_fill" ng-hide="scaledValue">
+                <div id="unscaled_fill" ng-hide="fill_scaled">
                   <label>Click to select color</label>
                   <input colorpicker colorpicker-with-input="true" type="text" ng-model="target.fill" />
                 </div>
 
-                <div id="fill_var" ng-show="scaledValue">
+                <div id="fill_var" ng-show="fill_scaled">
                   <label for="vis_fill_var">Variable</label>
                   <div class="btn-group" dropdown >
                     <button type="button" class="btn dropdown-toggle" id="vis_fill_var"
@@ -220,6 +221,42 @@
                     </ul>
                   </div>
                 </div>
+
+
+                <!-- stroke -->
+                <div class="control-group">
+                  <label class="control-label">Border</label>
+                  <div class="controls">
+                    <label class="radio">
+                      <input type="radio" name="stroke" ng-model="stroke_scaled" value="false" >
+                      Unscaled
+                    </label>
+
+                    <label class="radio">
+                      <input type="radio" name="stroke" ng-model="stroke_scaled" value="true">
+                      Scaled
+                    </label>
+                  </div>
+                </div>
+
+                <div id="unscaled_stroke" ng-hide="stroke_scaled">
+                  <label>Click to select color</label>
+                  <input colorpicker colorpicker-with-input="true" type="text" ng-model="target.stroke" />
+                </div>
+
+                <div id="stroke_var" ng-show="stroke_scaled">
+                  <label for="vis_stroke_var">Variable</label>
+                  <div class="btn-group" dropdown >
+                    <button type="button" class="btn dropdown-toggle" id="vis_stroke_var"
+                            ng-model="objects_tree">{{target.stroke.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('stroke', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
 
               </form>
 
