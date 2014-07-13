@@ -1,4 +1,4 @@
-var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid']);
+var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid', 'colorpicker.module']);
 
 app.controller('evalController', function($scope, WSService) {
     $scope.$on('connected', function() {
@@ -100,6 +100,7 @@ app.controller('rawController', function($scope, WSService) {
 app.controller('mvController', function($scope, WSService) {
     $scope.$on('connected', function() {
         WSService.register_ws_callback('mv', function(msg) {
+            console.log('reply from mv');
             ggvis.getPlot("ggvis_multivariate").
                 parseSpec(JSON.parse(msg.value));
             $scope.object_summary = msg.summary[0];
@@ -108,7 +109,8 @@ app.controller('mvController', function($scope, WSService) {
 
     $scope.target = {x : "Not Set",
                      y : "Not Set",
-                     fill : "Not Set"};
+                     fill : "#FFFFFF"
+                     };
 
     $scope.select = function(event, object) {
         console.log("this is the event:" + event);
@@ -123,16 +125,24 @@ app.controller('mvController', function($scope, WSService) {
     });
 
     $scope.mv = function(xvar_target, yvar_target, fill_target) {
-        console.log("Calling the mv function with" + xvar_target + "and" + yvar_target + "and" + fill_target);
+        console.log("Calling the mv function with" + xvar_target + "and" + yvar_target + "and" + typeof(fill_target));
+
+        if(typeof(fill_target) !== "string") {
+            fill_target = fill_target.data.object_index;
+        }
+        
         var mv_object = {xvar_target : xvar_target.data.object_index, 
                          yvar_target: yvar_target.data.object_index,
-                         fill_target: fill_target.data.object_index};
+                         fill_target: fill_target};
 
         console.log(mv_object);
 
         WSService.send_r_data("ggvis_explorer", mv_object);
         return(0);
     };
+
+    $scope.scaledValue = 'false';
+    
 });
 
 app.controller('importController', function($scope, WSService) {
@@ -156,7 +166,7 @@ app.controller('importController', function($scope, WSService) {
     };
 });
 
-app.controller('MainController', function($scope, $sce, WSService, WSConnect, $rootScope) {
+app.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
 
 //    $scope.selected_object = [];
     $scope.options = {};
@@ -218,6 +228,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
             $scope.$apply();
         });
 
+
         WSService.register_ws_callback('open', function() {
             WSService.register_ws_callback('objects', function(msg) {
                 console.log("Object of Objects:");
@@ -254,6 +265,8 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
         $scope.isConnected = true;
         $scope.$broadcast('connected');
     };
+
+
 
     $scope.selected = function(env) {
         WSService.send_r_data("set_selected_env", env);
@@ -319,6 +332,9 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
                   envlist : "Available environments",
                   actions : "Perform action on selected object"};
 
+
+    //connect on start, should be an option
+    $timeout(function() { $scope.toggle_connect(); }, 1000);
 
 });
 

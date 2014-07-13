@@ -13,7 +13,7 @@ ggvis_spyre <- function(objs, names, ...) {
     value <- value[complete.cases(value), ]
     message(names(value))
 
-    ggvis_plot <- value %>% ggvis(~xvar_target, ~yvar_target, fill = ~fill_target) %>%
+    ggvis_plot <- value %>% ggvis(~xvar_target, ~yvar_target, fill := ~fill_target) %>%
         layer_points()
             
     ggvis_spec <-

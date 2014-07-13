@@ -26,6 +26,7 @@ gulp.task('clean', function () {
 // process bower_components
 gulp.task('js_bower_components', function() {
     gulp.src(['client/bower_components/**/*.min.js', 
+              'client/bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
               'client/bower_components/angular/angular.js',
               '!client/bower_components/angular/angular.min.js',
               '!client/bower_components/lodash/dist/lodash.underscore.min.js',
@@ -33,6 +34,7 @@ gulp.task('js_bower_components', function() {
               '!client/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.min.js',
               '!client/bower_components/ng-grid/*.min.js',
               '!client/bower_components/bootstrap/**',
+              '!client/bower_components/angular-bootstrap-colorpicker/test/**',
               '!client/bower_components/lodash/dist/lodash.compat.min.js'])
         .pipe(flatten())
         .pipe(order([ 
@@ -41,6 +43,7 @@ gulp.task('js_bower_components', function() {
             'd3.min.js',
             'vega.min.js',
             'lodash.min.js',
+            'bootstrap-colorpicker-module.js',
             'client/bower_components/**/*.min.js']))
         .pipe(concat('bower.js'))
         .pipe(gulp.dest(js_dir));
@@ -59,10 +62,11 @@ gulp.task('js_vendor', function() {
 // process spyre components
 gulp.task('js_spyre', function() {
     gulp.src('client/scripts/**/*.js')
-        .pipe(angularFilesort())
         .pipe(concat('spyre.js'))
         .pipe(gulp.dest(js_dir))
         .on('error', gutil.log);
+
+//        .pipe(angularFilesort())
 });
 
 // process index.html
@@ -104,7 +108,7 @@ gulp.task('webserver', function() {
 
 // livereload for development
 gulp.task('livereload', function() {
-  gulp.src(['./spyre/inst/dist/*.js', './spyre/inst/dist/styles/*.css', 
+  gulp.src(['./spyre/inst/dist/scripts/*.js', './spyre/inst/dist/styles/*.css', 
             './spyre/inst/dist/index.html'])
     .pipe(watch())
     .pipe(connect.reload());
@@ -112,7 +116,7 @@ gulp.task('livereload', function() {
 
 // watch files
 gulp.task('watch', function() {
-    gulp.watch('./client/scripts/**/*.js', ['css_spyre']);
+    gulp.watch('./client/scripts/**/*.js', ['js_spyre']);
     gulp.watch('./client/styles/**/*.css', ['css_spyre']);
     gulp.watch('./client/index.html', ['html_index']);
 });

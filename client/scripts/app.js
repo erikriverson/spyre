@@ -1,1 +1,1 @@
-var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid']);
+var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid', 'colorpicker.module']);

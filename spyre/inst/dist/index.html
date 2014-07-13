@@ -153,51 +153,80 @@
                   </div>
           </tab>
 
-          <tab heading="ggvis" ng-controller="mvController">
+
+          <tab heading="Visualizer" ng-controller="mvController">
+            <div class="col-md-2">
+            <h4>Chart Properties</h4>
+
             <div id="mv-button-container" class="row">
-              X
-              <div class="btn-group" dropdown >
-                <button type="button" class="btn dropdown-toggle" 
-                        ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
-                    <a href="#">{{object.label}}</a></li>
-                </ul>
-              </div>
-              Y
-              <div class="btn-group" dropdown >
-                <button type="button" class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
-                    <a href="#">{{object.label}}</a></li>
-                </ul>
-              </div>
+              <form role="form">
+                <div class="form-group">
+                  <label for="vis_x_var">X</label>
+                  <div class="btn-group" dropdown >
+                    <button type="button" class="btn dropdown-toggle" id="vis_x_var"
+                            ng-model="objects_tree">{{target.x.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('x', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
+                  </div>
+                </div>
 
-              Fill
-              <div class="btn-group" dropdown >
-                <button type="button" class="btn dropdown-toggle" 
-                        ng-model="objects_tree">{{target.fill.label}}<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li ng-repeat="object in objects_tree" ng-click="select('fill', object)">
-                    <a href="#">{{object.label}}</a></li>
-                </ul>
-              </div>
+
+
+                <div class="form-group">
+                  <label for="vis_y_var">Y</label>
+                  <div class="btn-group" dropdown >
+                    <button type="button" id="vis_y_var" 
+                            class="btn dropdown-toggle">{{target.y.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('y', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label">Fill</label>
+                  <div class="controls">
+                    <label class="radio">
+                      <input type="radio" name="user[role]" ng-model="scaledValue" value="false" >
+                      Unscaled
+                    </label>
+
+                    <label class="radio">
+                      <input type="radio" name="user[role]" ng-model="scaledValue" value="true">
+                      Scaled
+                    </label>
+                  </div>
+                </div>
+
+                <div id="unscaled_fill" ng-hide="scaledValue">
+                  <label>Click to select color</label>
+                  <input colorpicker colorpicker-with-input="true" type="text" ng-model="target.fill" />
+                </div>
+
+                <div id="fill_var" ng-show="scaledValue">
+                  <label for="vis_fill_var">Variable</label>
+                  <div class="btn-group" dropdown >
+                    <button type="button" class="btn dropdown-toggle" id="vis_fill_var"
+                            ng-model="objects_tree">{{target.fill.label}}<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="object in objects_tree" ng-click="select('fill', object)">
+                        <a href="#">{{object.label}}</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+              </form>
 
             </div>
-                  
-
-            <div id="output" class="row">
-              <h4>Summary</h4>
-              <pre>{{object_summary}}</pre>
             </div>
 
-
-
-            <div id="plot" class = "row">
-              <h4>ggvis</h4>
+            <div id="plot" class = "row col-md-6">
 
               <div id="ggvis_multivariate-container" class="ggvis-output-container">
                 <div id="ggvis_multivariate" class="ggvis-output"></div>
@@ -221,30 +250,17 @@
                   </nav>
                 </div>
               </div>
-                    
+              
             </div> <!-- plot -->
 
           </tab>
 
 
-          <tab heading="Modeling">
-          </tab>
-
-          <tab heading="Raw Data Explorer" ng-controller="rawController">
+          <tab heading="Data Viewer" ng-controller="rawController">
             <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>
           </tab>
 
-          <tab heading="Live Console" >
-
-            <form class="navbar-form navbar-left" ng-controller="evalController" ng-submit="eval_me()">
-              <i class="fa fa-terminal fa-2x fa-inverse"></i>
-              <input type="text" class="form-control" placeholder="Eval ..."
-                     ng-model="eval_string" id = "input_eval"></input>
-            </form>
-
-          </tab>
-
-          <tab heading="Import Data" ng-controller="importController">
+          <tab heading="Data Importer" ng-controller="importController">
 
             <div class="panel panel-default col-md-4">
 

@@ -1,4 +1,4 @@
-app.controller('MainController', function($scope, $sce, WSService, WSConnect, $rootScope) {
+app.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
 
 //    $scope.selected_object = [];
     $scope.options = {};
@@ -60,6 +60,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
             $scope.$apply();
         });
 
+
         WSService.register_ws_callback('open', function() {
             WSService.register_ws_callback('objects', function(msg) {
                 console.log("Object of Objects:");
@@ -96,6 +97,8 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
         $scope.isConnected = true;
         $scope.$broadcast('connected');
     };
+
+
 
     $scope.selected = function(env) {
         WSService.send_r_data("set_selected_env", env);
@@ -161,5 +164,8 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $r
                   envlist : "Available environments",
                   actions : "Perform action on selected object"};
 
+
+    //connect on start, should be an option
+    $timeout(function() { $scope.toggle_connect(); }, 1000);
 
 });

@@ -34,6 +34,11 @@ rawdata <- function(D) {
 }
 
 iget <- function(object_desc) {
+    message(str(object_desc))
+    if(grepl('^#', object_desc[[1]])) {
+       return(object_desc)
+   }
+
     obj <- get(object_desc[[1]])
                
     if(length(object_desc) > 1) {
@@ -86,6 +91,10 @@ start_spyre <- function(port = 7681) {
 
 #' @export
 stop_spyre <- function(handle) {
+    if(missing(handle)) {
+        handle <- get("spyre_handle", pos = "package:spyre")
+    }
+    
     httpuv::stopDaemonizedServer(handle)
 }
 
