@@ -44,7 +44,28 @@ iget <- function(object_desc) {
 }
 
 spyre_call <- function(req) {
-    message("spyre_call")
+
+    if(req$PATH_INFO != "/") {
+        fp <- paste(c("dist", unlist(strsplit(req$PATH_INFO, "/"))[-1]),
+                    collapse = "/")
+        file_req <- system.file(fp, package = "spyre")
+
+        body <- paste(readLines(file_req), collapse = "\n")
+        fe <- file_ext(file_req)
+        mime <- if(fe == "css") "text/css" else "application/javascript"
+        headers <- list('Content-Type' = mime)
+    } else {
+        body <- paste(readLines(system.file("dist", "index.html",
+                                            package = "spyre")),
+                      collapse = "\n")
+        headers <- list('Content-Type' = 'text/html')
+    }
+    list(
+        status = 200L,
+        headers = headers,
+        body = body)
+
+
 }
 
 CLOSE <- function(D) {
