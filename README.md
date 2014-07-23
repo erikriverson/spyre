@@ -18,7 +18,8 @@ changed, and new tabs can be created by writing simple R functions and
 implementing client behavior using the Angular.js JavaScript
 framework.
 
-Setup is easy, as spyre is just a regular R package.
+Setup is easy, as spyre is just a regular R package that functions as
+a local web server to communicate with the browser.
 
 ## Installation
 
