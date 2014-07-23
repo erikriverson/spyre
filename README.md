@@ -7,10 +7,13 @@ process. Spyre shows you information about the current R session, has
 an object explorer that enables fast exploratory data analysis, and
 more.
 
-Since Spyre uses your local R process, you don't have to upload any
-data outside your computer or network. Spyre does not block the R
-prompt, so you still have full access to the R console in your editor
-of choice. Spyre has been tested with both RStudio and Emacs ESS.
+Since spyre uses your local R process, you don't have to upload any
+data outside your computer or network to get access to a browser-based
+data analysis tool. Spyre does not block the R prompt, so you still
+have full access to the R console in your editor of choice. Spyre has
+been tested with both RStudio and Emacs ESS.
+
+Setup is easy, as spyre is just a regular R package.
 
 ## Installation
 
