@@ -10,8 +10,13 @@ more.
 Since spyre uses your local R process, you don't have to upload any
 data outside your computer or network to get access to a browser-based
 data analysis tool. Spyre does not block the R prompt, so you still
-have full access to the R console in your editor of choice. Spyre has
+have full access to the R console in your editor of choice. It has
 been tested with both RStudio and Emacs ESS.
+
+Spyre was built to be extensible. Defaults summaries be easily
+changed, and new tabs can be created by writing simple R functions and
+implementing client behavior using the Angular.js JavaScript
+framework.
 
 Setup is easy, as spyre is just a regular R package.
 
