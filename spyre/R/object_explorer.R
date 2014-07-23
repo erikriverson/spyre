@@ -1,6 +1,8 @@
 object_explorer_connect <- function(D) {
-    message("from connect")
-    message(str(D))
+    if(FALSE) {
+        message("from connect")
+        message(str(D))
+    }
     jsonlite::toJSON(object_explorer(iget(D$object), D))
 }
 
@@ -12,7 +14,6 @@ object_explorer.default <- function(x, ...) {
     summary <- paste(capture.output(str(x)), collapse = "\n")
     ## need a way to limit size of x (likely)
     list(event = "uv", data = list(summary = summary))
-
 }
 
 object_explorer.data.frame <- function(x, ...) {

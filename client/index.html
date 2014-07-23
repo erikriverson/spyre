@@ -258,11 +258,17 @@
                 </div>
 
 
+                <div slider ng-model="target.size"
+                     floor="2"
+                     ceiling="10"
+                     step-width="0.5">
+                </div>
+
               </form>
 
             </div>
             </div>
-
+    
             <div id="plot" class = "row col-md-6">
 
               <div id="ggvis_multivariate-container" class="ggvis-output-container">
@@ -292,6 +298,16 @@
 
           </tab>
 
+          <!-- rmarkdown live viewer -->
+          <tab heading="RMarkdown Viewer" ng-controller="rmdController">
+            <div id="rmd-container">
+              <input type="text" ng-model="rmd_file_path">
+              <button type="submit" class="btn btn-default" ng-click="submit_rmd_file_path()"></button>
+
+              <iframe id="test_iframe" src="about:blank" class="col-md-12" style='height:900px'></iframe>
+
+            </div>
+          </tab>
 
           <tab heading="Data Viewer" ng-controller="rawController">
             <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>

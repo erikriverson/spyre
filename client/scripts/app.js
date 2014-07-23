@@ -1,1 +1,4 @@
-var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid', 'colorpicker.module']);
+var app = angular.module('spyre', ['ui.bootstrap', 
+                                   'ngGrid', 
+                                   'colorpicker.module', 
+                                   'vr.directives.slider']);

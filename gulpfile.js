@@ -44,6 +44,7 @@ gulp.task('js_bower_components', function() {
             'vega.min.js',
             'lodash.min.js',
             'bootstrap-colorpicker-module.js',
+            'angular-slider.js',
             'client/bower_components/**/*.min.js']))
         .pipe(concat('bower.js'))
         .pipe(gulp.dest(js_dir));

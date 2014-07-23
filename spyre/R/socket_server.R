@@ -91,4 +91,6 @@ spyre_onWSOpen <- function(ws) {
     message("added task callback")
     ## initial list
     getCurrentObjects("bootstrap", NULL, NULL, NULL)
+
+    assign("ws", ws,  pos = 1)
 }

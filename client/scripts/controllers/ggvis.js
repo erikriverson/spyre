@@ -11,7 +11,8 @@ app.controller('mvController', function($scope, WSService) {
     $scope.target = {xvar : "Not Set",
                      yvar : "Not Set",
                      fill : "#000000",
-                     stroke : "#000000"
+                     stroke : "#000000",
+                     size   : 1
                      };
 
     $scope.select = function(event, object) {
@@ -28,14 +29,15 @@ app.controller('mvController', function($scope, WSService) {
 
     $scope.mv = function(plot_spec) {
         console.log(plot_spec);
-        var fill, stroke;
+        var fill, stroke, size;
         if(typeof(plot_spec.fill) !== "string") {
             console.log('think fill is not a string');
             fill = plot_spec.fill.data.object_index;
         } else {
             fill = plot_spec.fill;
-        }
+        }                       
 
+        // strings are hex color codes in this case
         if(typeof(plot_spec.stroke) !== "string") {
             stroke = plot_spec.stroke.data.object_index;
         } else {
@@ -45,7 +47,8 @@ app.controller('mvController', function($scope, WSService) {
         var mv_object = {xvar : plot_spec.xvar.data.object_index, 
                          yvar: plot_spec.yvar.data.object_index,
                          fill: fill,
-                         stroke : stroke};
+                         stroke : stroke,
+                         size   : size};
 
         console.log("going to call mv with:");
         console.log(mv_object);

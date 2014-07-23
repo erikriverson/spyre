@@ -1,4 +1,7 @@
-var app = angular.module('spyre', ['ui.bootstrap', 'ngGrid', 'colorpicker.module']);
+var app = angular.module('spyre', ['ui.bootstrap', 
+                                   'ngGrid', 
+                                   'colorpicker.module', 
+                                   'vr.directives.slider']);
 
 app.controller('evalController', function($scope, WSService) {
     $scope.$on('connected', function() {
@@ -110,7 +113,8 @@ app.controller('mvController', function($scope, WSService) {
     $scope.target = {xvar : "Not Set",
                      yvar : "Not Set",
                      fill : "#000000",
-                     stroke : "#000000"
+                     stroke : "#000000",
+                     size   : 1
                      };
 
     $scope.select = function(event, object) {
@@ -127,14 +131,15 @@ app.controller('mvController', function($scope, WSService) {
 
     $scope.mv = function(plot_spec) {
         console.log(plot_spec);
-        var fill, stroke;
+        var fill, stroke, size;
         if(typeof(plot_spec.fill) !== "string") {
             console.log('think fill is not a string');
             fill = plot_spec.fill.data.object_index;
         } else {
             fill = plot_spec.fill;
-        }
+        }                       
 
+        // strings are hex color codes in this case
         if(typeof(plot_spec.stroke) !== "string") {
             stroke = plot_spec.stroke.data.object_index;
         } else {
@@ -144,7 +149,8 @@ app.controller('mvController', function($scope, WSService) {
         var mv_object = {xvar : plot_spec.xvar.data.object_index, 
                          yvar: plot_spec.yvar.data.object_index,
                          fill: fill,
-                         stroke : stroke};
+                         stroke : stroke,
+                         size   : size};
 
         console.log("going to call mv with:");
         console.log(mv_object);
@@ -348,6 +354,54 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
     //connect on start, should be an option
     $timeout(function() { $scope.toggle_connect(); }, 1000);
+
+});
+
+app.controller('rmdController', function($scope, WSService, $sce) {
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('rmd', function(msg) {
+            console.log("[rmd] message received");
+            console.log(msg.summary);
+            $scope.rmd_content = msg.summary[0];
+            $scope.$apply();
+            $scope.injectHTML();
+        });
+    });
+
+    $scope.injectHTML = function(){
+
+        var html_string = $scope.rmd_content;
+	var iframe = $('iframe#test_iframe').get(0);
+
+	var iframedoc = iframe.document;
+		if (iframe.contentDocument)
+			iframedoc = iframe.contentDocument;
+		else if (iframe.contentWindow)
+			iframedoc = iframe.contentWindow.document;
+
+	 if (iframedoc){
+		 iframedoc.open();
+		 iframedoc.writeln(html_string);
+		 iframedoc.close();
+	 } else {
+		alert('Cannot inject dynamic contents into iframe.');
+	 }
+
+    };
+
+
+    $scope.renderHtml = function(html_code)
+    {
+        console.log('[rmd] renderHTML called');
+        console.log(html_code);
+        return $sce.trustAsHtml(html_code);
+    };
+
+    $scope.rmd_file_path = "test.rmd";
+
+    $scope.submit_rmd_file_path = function() {
+        WSService.send_r_data("rmd_explorer", $scope.rmd_file_path);
+    };
 
 });
 
