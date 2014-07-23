@@ -13,7 +13,7 @@ data analysis tool. Spyre does not block the R prompt, so you still
 have full access to the R console in your editor of choice. It has
 been tested with both RStudio and Emacs ESS.
 
-Spyre was built to be extensible. Defaults summaries be easily
+Spyre was built to be extensible. Default summaries can easily be
 changed, and new tabs can be created by writing simple R functions and
 implementing client behavior using the Angular.js JavaScript
 framework.
