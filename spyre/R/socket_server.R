@@ -75,7 +75,8 @@ spyre_onWSOpen <- function(ws) {
     import <- function(D) {
         D <- substr(D, 22, nchar(D))
         assign("aaa_csv_import",
-               read.table(text = base64Decode(D), header = TRUE, sep = ","), pos = .GlobalEnv)
+               read.table(text = base64Decode(D), header = TRUE, sep = ","),
+               pos = .GlobalEnv)
         getCurrentObjects("bootstrap", NULL, NULL, NULL)
     }
 
@@ -92,5 +93,5 @@ spyre_onWSOpen <- function(ws) {
     ## initial list
     getCurrentObjects("bootstrap", NULL, NULL, NULL)
 
-    assign("ws", ws,  pos = 1)
+    assign("spyre", ws,  pos = "package:spyre")
 }

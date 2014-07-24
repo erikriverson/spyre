@@ -107,3 +107,17 @@ object_explorer.function <- function(x, name, ...) {
     list(event = "uv", data = list(summary = value, help = help))
 }
 
+object_explorer.lm <- function(x, data, ...) {
+    value <- paste0(capture.output(summary(x)), collapse = "\n")
+
+    gg_df <- data.frame(resid = resid(x),
+                        pred  = predict(x))
+
+    gg1 <- gg_df %>% ggvis(~pred, ~resid) %>% layer_points()
+
+    ggvis_spec <-
+        jsonlite::unbox(paste0(capture.output(show_spec(gg1)), collapse = ""))
+        
+    list(event = "uv", data = list(summary = value,
+         value = ggvis_spec))
+}
