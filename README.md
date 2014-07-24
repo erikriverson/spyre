@@ -32,6 +32,15 @@ install_github("erikriverson/spyre/spyre")
 
 library(spyre)
 ````
+
+## Demos
+
+Two-minute Intro
+http://youtu.be/Vq5W-G0gJHM
+
+Live R Markdown Preview
+http://youtu.be/oV0vF8RanK4
+
 ## License
 
 Spyre is released under the MIT License.
