@@ -12,7 +12,7 @@ app.controller('mvController', function($scope, WSService) {
                      yvar : "Not Set",
                      fill : "#000000",
                      stroke : "#000000",
-                     size   : 1
+                     size   : 50
                      };
 
     $scope.select = function(event, object) {
@@ -48,7 +48,7 @@ app.controller('mvController', function($scope, WSService) {
                          yvar: plot_spec.yvar.data.object_index,
                          fill: fill,
                          stroke : stroke,
-                         size   : size};
+                         size   : plot_spec.size};
 
         console.log("going to call mv with:");
         console.log(mv_object);

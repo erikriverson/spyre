@@ -16,6 +16,7 @@ var watch  = require('gulp-watch');
 var inst_dir = 'spyre/inst/dist';
 var js_dir  = inst_dir + '/scripts';
 var css_dir = inst_dir + '/styles';
+var font_dir = inst_dir + '/fonts';
 
 gulp.task('clean', function () {  
     return gulp.src('spyre/inst/dist', {read: false})
@@ -44,11 +45,19 @@ gulp.task('js_bower_components', function() {
             'vega.min.js',
             'lodash.min.js',
             'bootstrap-colorpicker-module.js',
-            'angular-slider.js',
+            'angular-slider.min.js',
+            'angular-slider.min.js',
             'client/bower_components/**/*.min.js']))
         .pipe(concat('bower.js'))
         .pipe(gulp.dest(js_dir));
 });
+
+gulp.task('font_bower_components', function() {
+    gulp.src('client/bower_components/bootstrap/fonts/*')
+        .pipe(gulp.dest(font_dir));
+});
+
+
 
 // process vendor components
 gulp.task('js_vendor', function() {  
@@ -123,13 +132,10 @@ gulp.task('watch', function() {
 });
 
 // default task, build
-gulp.task('default', ['html_index', 
+gulp.task('default', ['html_index', 'font_bower_components',
                       'js_bower_components', 'js_vendor', 'js_spyre', 
                       'css_bower_components', 'css_vendor', 'css_spyre']);
 
 // server task, test
-gulp.task('server', ['html_index', 
-                     'js_vendor', 'js_bower_components', 'js_spyre', 
-                     'css_vendor', 'css_bower_components', 'css_spyre',
-                     'watch', 'webserver', 'livereload']);
+gulp.task('server', ['default', 'watch', 'webserver', 'livereload']);
 

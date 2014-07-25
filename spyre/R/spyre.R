@@ -35,7 +35,7 @@ rawdata <- function(D) {
 
 iget <- function(object_desc) {
     message(str(object_desc))
-    if(grepl('^#', object_desc[[1]])) {
+    if(grepl('^#', object_desc[[1]]) || is.numeric(object_desc[[1]])) {
        return(object_desc)
    }
 

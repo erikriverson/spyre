@@ -26,10 +26,17 @@ ggvis_spyre <- function(objs, names, ...) {
         stroke_scale <- ~stroke
     }
 
+    if(length(objs[["size"]]) == 1) {
+        size_scale <- objs[["size"]]
+    } else {
+        size_scale <- ~size
+    }
+
     ggvis_plot <- value %>%
         ggvis(x = ~xvar, y = ~yvar, prop("fill", fill_scale),
+              prop("size", size_scale),
               prop("stroke", stroke_scale)) %>%
-        layer_points()
+                  layer_points()
             
     ggvis_spec <-
         jsonlite::unbox(paste0(capture.output(show_spec(ggvis_plot)),
