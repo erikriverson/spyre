@@ -39,7 +39,9 @@ gulp.task('js_bower_components', function() {
               '!client/bower_components/lodash/dist/lodash.compat.min.js'])
         .pipe(flatten())
         .pipe(order([ 
+            'angular-file-upload-shim.min.js',
             'angular.js',
+            'angular-file-upload.min.js',
             'jquery.min.js',
             'd3.min.js',
             'vega.min.js',

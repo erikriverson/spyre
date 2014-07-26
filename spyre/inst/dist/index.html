@@ -101,7 +101,7 @@
 
       <tabset>
 
-          <tab heading="Object Explorer">
+          <tab heading="Explore">
             <h1>{{selected_object.data.object_index[0][0]}}</h1>
 
             <div ng-show="selected_object.class == 'numeric'" id="controls" ng-show="object_controls">
@@ -154,7 +154,7 @@
           </tab>
 
 
-          <tab heading="Visualizer" ng-controller="mvController">
+          <tab heading="Visualize" ng-controller="mvController">
             <div class="col-md-2">
             <h4>Chart Properties</h4>
 
@@ -300,7 +300,7 @@
           </tab>
 
           <!-- rmarkdown live viewer -->
-          <tab heading="RMarkdown Viewer" ng-controller="rmdController">
+          <tab heading="R Markdown" ng-controller="rmdController">
             <div id="rmd-container">
               <input type="text" ng-model="rmd_file_path">
               <button type="submit" class="btn btn-default" ng-click="submit_rmd_file_path()"></button>
@@ -310,75 +310,29 @@
             </div>
           </tab>
 
-          <tab heading="Data Viewer" ng-controller="rawController">
+          <tab heading="Raw Data" ng-controller="rawController">
             <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>
           </tab>
 
-          <tab heading="Data Importer" ng-controller="importController">
+          <tab heading="Import" ng-controller="importController">
 
-            <div class="panel panel-default col-md-4">
-
-              <div class="panel-heading">
-                <h3>RData Importer</h3>
-              </div>
-
-              <div id="filedrop4" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
-
-              <form class="navbar-form navbar-left" ng-submit="import_csv()">
-                <i class="fa fa-terminal fa-2x fa-inverse"></i>
-                <input type="text" class="form-control" placeholder=""
-                       ng-model="eval_string" id = "input_csv"></input>
-              </form>
-
-            </div>
-
-            <div class="panel panel-default col-md-4">
+            <div class="panel panel-default col-md-12">
 
               <div class="panel-heading">
-                <h3>Clipboard Importer</h3>
+                <h4>RData</h4>
               </div>
+              
+              <form ng-submit="import_rdata_url()">
+              <label>URL of RData File</label>
+              <input type="text" ng-model="rdata_url">
+              OR
+              <input type="file" class="form-control" ng-file-select="onFileSelect($files)">
+              </input>
+                
+              <button type="submit" class="btn btn-default">Import</button>
 
-              <div id="filedrop9" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
-
-              <form class="navbar-form navbar-left" ng-submit="import_csv()">
-                <i class="fa fa-terminal fa-2x fa-inverse"></i>
-                <input type="text" class="form-control" placeholder=""
-                       ng-model="eval_string" id = "input_eval"></input>
               </form>
 
-            </div>
-
-
-            <div class="panel panel-default col-md-4">
-              <div class="panel-heading">
-                <h3>CSV Importer</h3>
-              </div>
-
-              <div id="filedrop" class="panel-body" ng-paste="ctrlBoundFile">Paste Data Here</div>
-              {{ctrlBoundFile}}
-
-              <form class="navbar-form navbar-left" ng-submit="import_csv()">
-                <i class="fa fa-terminal fa-2x fa-inverse"></i>
-                <input type="text" class="form-control" placeholder=""
-                       ng-model="eval_string" id = "input_eval"></input>
-              </form>
-
-            </div>
-
-
-            <div class="panel panel-default col-md-4">
-
-              <div class="panel-heading">
-                <h3>XLSX Importer</h3>
-              </div>
-
-              <div id="filedrop2" class="panel-body" file-dropzone file="ctrlBoundFile">Drop File Here</div>
-
-              <form class="navbar-form navbar-left" ng-submit="import_csv()">
-                <i class="fa fa-terminal fa-2x fa-inverse"></i>
-                <input type="text" class="form-control" placeholder=""
-                       ng-model="eval_string" id = "input_eval"></input>
-              </form>
 
             </div>
 
