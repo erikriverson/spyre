@@ -40,9 +40,11 @@ install.packages("devtools")
 library(devtools)
 
 install_github("rstudio/httpuv", "rstudio/ggvis")
-install_github("erikriverson/spyre/spyre")
+install_github("erikriverson/spyre/spyre") ## /spyre/spyre is path to R package
 
 library(spyre)
+
+Visit http://localhost:7681 in your browser
 ````
 
 ## License
