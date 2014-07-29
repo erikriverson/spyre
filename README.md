@@ -3,8 +3,8 @@ spyre
 
 Spyre is a web-based companion to the R programming language. It
 allows the browser to communicate with a locally running R
-process. Spyre has an advanced object explorer, a chart interface,
-data importer, and much more.
+process. Spyre has an advanced object explorer, a GUI interface to
+ggvis, a data importer, R Markdown previewer, and much more.
 
 Spyre does not block the R prompt, so you still have full access to
 the R console in your editor of choice. Since it uses a local R
