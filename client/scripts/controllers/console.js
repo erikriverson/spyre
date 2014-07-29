@@ -6,7 +6,7 @@ app.controller('evalController', function($scope, WSService) {
     });
 
     $scope.eval_me = function() {
-        WSService.send_r_data("eval_string", $scope.eval_string);
+        WSService.r("eval_string", $scope.eval_string);
         $scope.eval_string = ""; 
     };
 });

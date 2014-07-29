@@ -316,7 +316,7 @@
 
           <tab heading="Import" ng-controller="importController">
 
-            <div class="panel panel-default col-md-12">
+            <div class="panel panel-default col-md-10">
 
               <div class="panel-heading">
                 <h4>RData</h4>
@@ -324,9 +324,7 @@
               
               <form ng-submit="import_rdata_url()">
               <label>URL of RData File</label>
-              <input type="text" ng-model="rdata_url">
-              OR
-              <input type="file" class="form-control" ng-file-select="onFileSelect($files)">
+              <input type="text" ng-model="rdata_url" class="form-control">
               </input>
                 
               <button type="submit" class="btn btn-default">Import</button>
@@ -336,7 +334,7 @@
 
             </div>
 
-            <div class="panel panel-default col-md-4">
+            <div class="panel panel-default col-md-10">
 
               <div class="panel-heading">
                 <h4>Quandl Importer</h4>
@@ -346,7 +344,7 @@
               <form role="form" ng-submit="quandl_import()">
                 <div class="form-group">
                   <label for="import_quandl_code">Quandl Code</label>
-                  <input type="text" class="form-control" id="import_quandl_1" placeholder="Enter Quandl Code"
+                  <input type="text" class="form-control" id="import_quandl_code" placeholder="Enter Quandl Code"
                          ng-model="quandl_code">
                 </div>
                 <button type="submit" class="btn btn-default">Import</button>
@@ -354,20 +352,19 @@
             </div>
 
 
-            <div class="panel panel-default col-md-4">
+            <div class="panel panel-default col-md-10">
 
               <div class="panel-heading">
                 <h4>HTTP API Importer</h4>
               </div>
 
 
-              <form role="form" ng-submit="quandl_import()">
+              <form role="form" ng-submit="import_http()">
                 <div class="form-group">
-                  <label for="import_quandl_code">URL</label>
-                  <input type="text" class="form-control" id="import_http_1" placeholder="Enter URL"
+                  <label for="import_http_url">URL</label>
+                  <input type="text" class="form-control" id="import_http_url" placeholder="Enter URL"
                          ng-model="http_url">
                 </div>
-                You entered: {{http_url}}
                 <button type="submit" class="btn btn-default">Import</button>
               </form>
 

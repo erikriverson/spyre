@@ -12,7 +12,7 @@ app.controller('evalController', function($scope, WSService) {
     });
 
     $scope.eval_me = function() {
-        WSService.send_r_data("eval_string", $scope.eval_string);
+        WSService.r("eval_string", $scope.eval_string);
         $scope.eval_string = ""; 
     };
 });
@@ -30,7 +30,7 @@ app.controller('rawController', function($scope, WSService) {
     });
 
     $scope.request_raw_data = function() {
-        WSService.send_r_data('rawdata', $scope.selected_data);
+        WSService.r('rawdata', $scope.selected_data);
     };
 
     $scope.totalServerItems = 0;
@@ -62,7 +62,7 @@ app.controller('rawController', function($scope, WSService) {
                     $scope.setPagingData(data,page,pageSize);
                 });            
             } else {
-//                WSService.send_r_data("rawdata", $scope.recent_branch);
+//                WSService.r("rawdata", $scope.recent_branch);
                 console.log("just skip this");
             }
         }, 100);
@@ -156,7 +156,7 @@ app.controller('mvController', function($scope, WSService) {
         console.log("going to call mv with:");
         console.log(mv_object);
 
-        WSService.send_r_data("ggvis_explorer", mv_object);
+        WSService.r("ggvis_explorer", mv_object);
         return(0);
     };
 
@@ -175,20 +175,24 @@ app.controller('importController', function($scope, WSService, $upload) {
 
     $scope.quandl_import = function(form) {
         console.log("quandl importer called");
-        WSService.send_r_data('import_quandl', $scope.quandl_code);
+        WSService.r('import_quandl', $scope.quandl_code);
     };
 
 
     $scope.import_rdata_url = function() {
         console.log('hi');
-        WSService.send_r_data('import_rdata_url', $scope.rdata_url);
+        WSService.r('import_rdata_url', $scope.rdata_url);
+    };
+
+    $scope.import_http = function() {
+        WSService.r('import_http_url', $scope.http_url);
     };
 
     $scope.onFileSelect = function($files) {
         var fileReader = new FileReader();
         fileReader.readAsBinaryString($files[0]);
         fileReader.onload = function(e) {
-            WSService.send_r_data('import_rdata', fileReader.result);
+            WSService.r('import_rdata', fileReader.result);
 
         };
     };
@@ -207,7 +211,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            WSService.send_r_data("CLOSE", {});
+            WSService.r("CLOSE", {});
             $scope.isConnected = false;
             $scope.selected_env = ".GlobalEnv";
         } else {
@@ -298,7 +302,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
 
     $scope.selected = function(env) {
-        WSService.send_r_data("set_selected_env", env);
+        WSService.r("set_selected_env", env);
         $scope.selected_env = env;
     };
 
@@ -330,7 +334,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
         var data_arg = {object: object_name.data.object_index,
                         data : data};
 
-        WSService.send_r_data(event, data_arg);
+        WSService.r(event, data_arg);
         $scope.selected_object = object_name;
         return(0);
     };
@@ -410,7 +414,7 @@ app.controller('rmdController', function($scope, WSService, $sce) {
     $scope.rmd_file_path = "test.rmd";
 
     $scope.submit_rmd_file_path = function() {
-        WSService.send_r_data("rmd_explorer", $scope.rmd_file_path);
+        WSService.r("rmd_explorer", $scope.rmd_file_path);
     };
 
 });
@@ -427,12 +431,9 @@ var ModalInstanceController = function ($scope, $modalInstance, items) {
     };
 };
 
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
 app.controller('SessionController', function ($scope, $modal, WSService) {
     $scope.get_session_info = function() {
-        WSService.send_r_data('session', null);
+        WSService.r('session', null);
         return(0);
     };
 
@@ -474,8 +475,8 @@ app.factory('WSConnect', function() {
 
 app.factory('WSService', function(WSConnect) {
     return {
-        send_r_data: function(event, data) {
-	    return WSConnect.ws.send(event, data);
+        r: function(fun, data) {
+	    return WSConnect.ws.send(fun, data);
         },
         register_ws_callback: function(event, callback) {
             return WSConnect.ws.bind(event, callback);

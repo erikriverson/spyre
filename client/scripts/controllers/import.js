@@ -8,20 +8,24 @@ app.controller('importController', function($scope, WSService, $upload) {
 
     $scope.quandl_import = function(form) {
         console.log("quandl importer called");
-        WSService.send_r_data('import_quandl', $scope.quandl_code);
+        WSService.r('import_quandl', $scope.quandl_code);
     };
 
 
     $scope.import_rdata_url = function() {
         console.log('hi');
-        WSService.send_r_data('import_rdata_url', $scope.rdata_url);
+        WSService.r('import_rdata_url', $scope.rdata_url);
+    };
+
+    $scope.import_http = function() {
+        WSService.r('import_http_url', $scope.http_url);
     };
 
     $scope.onFileSelect = function($files) {
         var fileReader = new FileReader();
         fileReader.readAsBinaryString($files[0]);
         fileReader.onload = function(e) {
-            WSService.send_r_data('import_rdata', fileReader.result);
+            WSService.r('import_rdata', fileReader.result);
 
         };
     };

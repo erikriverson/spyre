@@ -53,7 +53,7 @@ app.controller('mvController', function($scope, WSService) {
         console.log("going to call mv with:");
         console.log(mv_object);
 
-        WSService.send_r_data("ggvis_explorer", mv_object);
+        WSService.r("ggvis_explorer", mv_object);
         return(0);
     };
 

@@ -41,7 +41,7 @@ app.controller('rmdController', function($scope, WSService, $sce) {
     $scope.rmd_file_path = "test.rmd";
 
     $scope.submit_rmd_file_path = function() {
-        WSService.send_r_data("rmd_explorer", $scope.rmd_file_path);
+        WSService.r("rmd_explorer", $scope.rmd_file_path);
     };
 
 });

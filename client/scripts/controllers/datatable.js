@@ -11,7 +11,7 @@ app.controller('rawController', function($scope, WSService) {
     });
 
     $scope.request_raw_data = function() {
-        WSService.send_r_data('rawdata', $scope.selected_data);
+        WSService.r('rawdata', $scope.selected_data);
     };
 
     $scope.totalServerItems = 0;
@@ -43,7 +43,7 @@ app.controller('rawController', function($scope, WSService) {
                     $scope.setPagingData(data,page,pageSize);
                 });            
             } else {
-//                WSService.send_r_data("rawdata", $scope.recent_branch);
+//                WSService.r("rawdata", $scope.recent_branch);
                 console.log("just skip this");
             }
         }, 100);

@@ -10,12 +10,9 @@ var ModalInstanceController = function ($scope, $modalInstance, items) {
     };
 };
 
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
 app.controller('SessionController', function ($scope, $modal, WSService) {
     $scope.get_session_info = function() {
-        WSService.send_r_data('session', null);
+        WSService.r('session', null);
         return(0);
     };
 

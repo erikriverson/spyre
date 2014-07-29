@@ -15,8 +15,8 @@ app.factory('WSConnect', function() {
 
 app.factory('WSService', function(WSConnect) {
     return {
-        send_r_data: function(event, data) {
-	    return WSConnect.ws.send(event, data);
+        r: function(fun, data) {
+	    return WSConnect.ws.send(fun, data);
         },
         register_ws_callback: function(event, callback) {
             return WSConnect.ws.bind(event, callback);

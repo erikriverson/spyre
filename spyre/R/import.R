@@ -25,3 +25,7 @@ import_quandl <- function(D) {
 }
 
 
+import_http_url <- function(D) {
+    assign("something", fromJSON(D), pos = .GlobalEnv)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+}

@@ -10,7 +10,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            WSService.send_r_data("CLOSE", {});
+            WSService.r("CLOSE", {});
             $scope.isConnected = false;
             $scope.selected_env = ".GlobalEnv";
         } else {
@@ -101,7 +101,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
 
     $scope.selected = function(env) {
-        WSService.send_r_data("set_selected_env", env);
+        WSService.r("set_selected_env", env);
         $scope.selected_env = env;
     };
 
@@ -133,7 +133,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
         var data_arg = {object: object_name.data.object_index,
                         data : data};
 
-        WSService.send_r_data(event, data_arg);
+        WSService.r(event, data_arg);
         $scope.selected_object = object_name;
         return(0);
     };
