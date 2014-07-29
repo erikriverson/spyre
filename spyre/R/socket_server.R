@@ -1,7 +1,5 @@
-spyre_onWSOpen <- function(ws) {
-
-    ## does ws have to be captured by lexical scoping in the following function?
-    getCurrentObjects <- function(a, b, c, d) {
+#' @export
+getCurrentObjects <- function(a, b, c, d, ws) {
 
         if(length(a) == 0 ||
            grepl("tryCatch|objects\\(pos", as.character(a))) {
@@ -36,9 +34,13 @@ spyre_onWSOpen <- function(ws) {
         TRUE
     }
 
+
+spyre_onWSOpen <- function(ws) {
+
+
     set_selected_env <- function(D) {
         assign("selected_env", D, envir = .GlobalEnv)
-        getCurrentObjects("bootstrap", NULL, NULL, NULL)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
     }
 
     process_data <- function(binary_flag, data) {
@@ -68,7 +70,7 @@ spyre_onWSOpen <- function(ws) {
         ret <- tryCatch(eval(parse(text = string), env = .GlobalEnv), error =
                         function(e) as.character(e))
         ## in case objects get created
-        getCurrentObjects("bootstrap", NULL, NULL, NULL)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
         ret
     }
 
@@ -78,7 +80,7 @@ spyre_onWSOpen <- function(ws) {
     addTaskCallback(getCurrentObjects)
     message("added task callback")
     ## initial list
-    getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
 
     assign("spyre", ws,  pos = "package:spyre")
 }

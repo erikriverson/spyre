@@ -9,19 +9,19 @@ import <- function(D) {
 import_rdata_url <- function(D) {
     message(D)
     load(url(D), envir = .GlobalEnv)
-    spyre$getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }
 
 
 import_rdata <- function(D) {
 
     load(readBin(textConnection(D), character()), envir = .GlobalEnv)
-    spyre$getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }
 
 import_quandl <- function(D) {
     assign("quandl_test_import", Quandl(D), pos = .GlobalEnv)
-    spyre$getCurrentObjects("bootstrap", NULL, NULL, NULL)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }
 
 
