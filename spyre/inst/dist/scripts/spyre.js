@@ -185,7 +185,7 @@ app.controller('importController', function($scope, WSService, $upload) {
     };
 
     $scope.import_http = function() {
-        WSService.r('import_http_url', $scope.http_url);
+        WSService.r('import_http_url_break', $scope.http_url);
     };
 
     $scope.onFileSelect = function($files) {

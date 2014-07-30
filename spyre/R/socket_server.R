@@ -52,8 +52,8 @@ spyre_onWSOpen <- function(ws) {
         message(paste("calling function:", E))
         message(paste("The data argument is :", D))
 
-        ## This is where we call the processing function (e.g., uv, mv, ...)
-        R <- do.call(E, list(D))
+        ## Call the processing function in tryCatch
+        R <- tryCatch(do.call(E, list(D)), error = function(e) e)
         send_data(R)
     }
         
