@@ -6,13 +6,13 @@ ggvis_explorer <- function(D) {
 }
 
 ggvis_spyre <- function(objs, names, ...) {
-    message(paste0(names, collapse = " "))
-    message(paste0(str(objs), collapse = "\n"))
+    futile.logger::flog.debug(paste0(names, collapse = " "))
+    futile.logger::flog.debug(paste0(str(objs), collapse = "\n"))
     summary <- paste(c(capture.output(cor(objs[[1]], objs[[2]]))))
 
     value <- as.data.frame(objs)
     value <- value[complete.cases(value), ]
-    message(names(value))
+    futile.logger::flog.debug(names(value))
 
     if(length(objs[["fill"]]) == 1) {
         fill_scale <- objs[["fill"]]

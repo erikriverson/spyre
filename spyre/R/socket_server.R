@@ -1,18 +1,6 @@
 #' @export
 getCurrentObjects <- function(a, b, c, d, ws) {
 
-        if(length(a) == 0 ||
-           grepl("tryCatch|objects\\(pos", as.character(a))) {
-            cat("\n regex match!! \n", file = "/home/erik/spyre.log",
-                append = TRUE)
-            return(TRUE)
-            cat("\n cannot get here! \n", file = "/home/erik/spyre.log",
-                append = TRUE)
-        }
-
-        cat("\n", as.character(a), "\n", file = "/home/erik/spyre.log",
-            append = TRUE)
-
         env <- get_selected_env()
         
         objects <- objects(env)
@@ -44,13 +32,12 @@ spyre_onWSOpen <- function(ws) {
     }
 
     process_data <- function(binary_flag, data) {
-        message("processing data")
-        str(data)
+        futile.logger::flog.debug("processing data")
         E <- jsonlite::fromJSON(data)$event
         D <- jsonlite::fromJSON(data)$data
         
-        message(paste("calling function:", E))
-        message(paste("The data argument is :", D))
+        futile.logger::flog.debug(paste("calling function:", E))
+        futile.logger::flog.debug(paste("The data argument is :", D))
 
         ## Call the processing function in tryCatch
         R <- tryCatch(do.call(E, list(D)), error = function(e) e)
@@ -78,7 +65,7 @@ spyre_onWSOpen <- function(ws) {
     ws$onClose(cleanup)
 
     addTaskCallback(getCurrentObjects)
-    message("added task callback")
+    futile.logger::flog.debug("added task callback")
     ## initial list
     getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
 

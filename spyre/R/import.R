@@ -7,7 +7,7 @@ import <- function(D) {
 }
 
 import_rdata_url <- function(D) {
-    message(D)
+    futile.logger::flog.debug(D)
     load(url(D), envir = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }

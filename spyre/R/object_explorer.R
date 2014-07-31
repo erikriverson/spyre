@@ -1,8 +1,4 @@
 object_explorer_connect <- function(D) {
-    if(FALSE) {
-        message("from connect")
-        message(str(D))
-    }
     jsonlite::toJSON(object_explorer(iget(D$object), D))
 }
 
@@ -70,7 +66,7 @@ object_explorer.numeric <- function(x, data, ...) {
     gg1  <- value  %>% ggvis(~var)  %>%
         set_options(width = 420, height = 280)
 
-    message(str(options))
+    futile.logger::flog.debug(capture.output(str(options)))
 
     ## use angular to check for invalid values, also check here?
     ## e.g., we get a '.' if inputing a decimal value in the text box
@@ -98,8 +94,8 @@ object_explorer.character <- object_explorer.factor
 
 object_explorer.function <- function(x, name, ...) {
     value <- paste0(capture.output(print(x)), collapse = "\n")
-##    message(name)
-##    message(system.file("help", name, package = "MASS"))
+##    futile.logger::flog.debug(name)
+##    futile.logger::flog.debug(system.file("help", name, package = "MASS"))
 ##    help <- readLines(system.file("html", name, package = "MASS")) 
 ##    help <- rdoc_help(name, package = "MASS")
     help <- "Help stub"

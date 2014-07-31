@@ -7,13 +7,14 @@ Authors: Erik Iverson (erik@sigmafield.org)
 Depends:
     R (>= 3.1.0)
 Imports:
-    tools,
     httpuv,
     jsonlite,
     httr,
     ggvis,
     dplyr,
     Quandl,
-    prettyR
+    prettyR,
+    futile.logger,
+    tools
 License: MIT
 LazyData: true

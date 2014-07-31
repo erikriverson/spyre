@@ -22,7 +22,6 @@ eval_string <- function(D) {
 
 rawdata <- function(D) {
     D1 <- get(D[[1]][[1]])
-    str(D1)
     jsonlite::toJSON(list(event = "rawdata", data = list(value = D1)))
 }
 
@@ -34,7 +33,7 @@ rawdata <- function(D) {
 }
 
 iget <- function(object_desc) {
-    message(str(object_desc))
+    futile.logger::flog.debug(capture.output(str(object_desc)))
     if(grepl('^#', object_desc[[1]]) || is.numeric(object_desc[[1]])) {
        return(object_desc)
    }
@@ -79,7 +78,7 @@ CLOSE <- function(D) {
 
 cleanup <- function() {
     removeTaskCallback(1)
-    message("removed the task callback function!")
+    futile.logger::flog.debug("removed task callback function")
 }
 
 #' @export
