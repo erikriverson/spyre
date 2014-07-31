@@ -1,15 +1,15 @@
 spyre
 =====
 
-Spyre is a web-based companion to the R programming language. It
+Spyre is a browser-based companion to the R programming language. It
 allows the browser to communicate with a locally running R
 process. Spyre has an advanced object explorer, a GUI interface to
 ggvis, a data importer, R Markdown previewer, and much more.
 
 Spyre does not block the R prompt, so you still have full access to
-the R console in your editor of choice. Since it uses a local R
-process, you don't have to upload data outside your computer or
-network.  It has been tested with both RStudio and Emacs ESS.
+the R console in your editor of choice. Since it processes data with a
+local R process, you don't have to upload data outside your computer
+or network.  It has been tested with both RStudio and Emacs ESS.
 
 Spyre was built to be extensible. Default summaries can easily be
 changed, and new tabs can be created by writing simple R functions and
