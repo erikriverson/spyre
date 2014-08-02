@@ -91,7 +91,7 @@ object_explorer.numeric <- function(x, data, ...) {
 
 }
 
-object_explorer.labelled <- function(x, ...) {
+object_explorer.labelled <- function(x, data, ...) {
     require(Hmisc)
     NextMethod("object_explorer")
 }
