@@ -1,5 +1,6 @@
-object_explorer_connect <- function(D) {
-    jsonlite::toJSON(object_explorer(iget(D$object), D))
+object_explorer_connect <- function(object, options) {
+    jsonlite::toJSON(object_explorer(iget(object),
+                                     list(object = object , options = options)))
 }
 
 object_explorer <- function(x, ...) {
@@ -54,7 +55,7 @@ object_explorer.factor <- function(x, ...) {
 }
 
 object_explorer.numeric <- function(x, data, ...) {
-    options <- data$data
+    options <- data$options
     summary <- paste0(paste0(capture.output(summary(x)), collapse = "\n"),
                       "\nVariance/Standard Deviation\n",
                       paste0(round(var(x), 2), "/",
@@ -67,7 +68,7 @@ object_explorer.numeric <- function(x, data, ...) {
     gg1  <- value  %>% ggvis(~var)  %>%
         set_options(width = 420, height = 280)
 
-##    futile.logger::flog.debug(capture.output(str(options)))
+    ##    futile.logger::flog.debug(capture.output(str(options)))
 
     ## use angular to check for invalid values, also check here?
     ## e.g., we get a '.' if inputing a decimal value in the text box

@@ -1,14 +1,14 @@
 spyre_onWSOpen <- function(ws) {
 
-    set_selected_env <- function(D) {
-        assign("selected_env", D, pos = "package:spyre")
+    set_selected_env <- function(env) {
+        assign("selected_env", env, pos = "package:spyre")
         getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
     }
 
     process_data <- function(binary_flag, data) {
         futile.logger::flog.debug("processing data")
-        E <- jsonlite::fromJSON(data)[[1]]
-        message(str(E))
+        message(data)
+        E <- jsonlite::fromJSON(data)
         futile.logger::flog.debug(paste("calling function:", E$fun))
         futile.logger::flog.debug(paste("The data argument is :", E$args))
 

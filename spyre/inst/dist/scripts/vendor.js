@@ -24,10 +24,8 @@ var FancyWebSocket = function(url) {
         return this; // chainable
     };
     
-    this.send = function(event_name, event_data) {
-        var payload = JSON.stringify({event : event_name, 
-                                      data : event_data});
-
+    this.send = function(rcall) {
+        var payload = JSON.stringify(rcall);
         conn.send( payload ); // <= send JSON data to socket server
         return this;
     };

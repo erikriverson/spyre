@@ -12,7 +12,6 @@ spyre.controller('mvController', function($scope, WSService) {
         WSService.r(rcall);
     };
 
-
     $scope.target = {xvar : "Not Set",
                      yvar : "Not Set",
                      fill : "#000000",

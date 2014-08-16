@@ -1,16 +1,12 @@
 spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
 
-//    $scope.selected_object = [];
+    $scope.selected_env = ".GlobalEnv";
     $scope.options = {};
     $scope.options.uv_plot_type = 'density';
 
-
-
-    $scope.selected_env = ".GlobalEnv";
-
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
-            WSService.r("CLOSE", {});
+            WSService.r({fun : "CLOSE", args : {}});
             $scope.isConnected = false;
             $scope.selected_env = ".GlobalEnv";
         } else {
@@ -22,45 +18,6 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.spyre_server = "ws://localhost:7681";
         WSConnect.connect($scope.spyre_server);
 
-        $scope.renderHtml = function(html_code)
-        {
-            var phtml = jQuery.parseHTML(html_code);
-            var bc = $(".breadcrumb", phtml);
-
-            return $sce.trustAsHtml($(".documentation", phtml).
-                   prop('outerHTML'));
-        };
-
-        WSService.register_ws_callback('uv', function(msg) {
-            console.log(msg);
-            $scope.object_ggvis = false;
-            $scope.object_property = false;
-            $scope.object_help = false; 
-            $scope.object_controls = false; 
-
-            if(msg.hasOwnProperty("value")) {
-                $scope.object_ggvis = true;
-                ggvis.getPlot("ggvis_univariate").
-                    parseSpec(JSON.parse(msg.value));
-            }
-            
-            if(msg.hasOwnProperty("summary")) {
-                $scope.object_summary = msg.summary[0];
-            }
-            
-            if(msg.hasOwnProperty("help")) {
-                $scope.object_help = msg.help[0];
-            }
-
-            if(msg.hasOwnProperty("controls")) {
-                $scope.object_controls = msg.controls[0];
-            }
-
-            // why is apply needed to get summary to show up each click?
-            $scope.$apply();
-        });
-
-
         WSService.register_ws_callback('open', function() {
             WSService.register_ws_callback('objects', function(msg) {
                 console.log("Object of Objects:");
@@ -70,9 +27,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 $scope.objects_tree = msg;
 
                 // what functions should we call here? 
-                $scope.send_object('object_explorer_connect', $scope.selected_object, 
-                                   $scope.options);
-                
+                $scope.send_object($scope.selected_object, $scope.options);
                 $scope.$apply();
             });
             
@@ -98,16 +53,11 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.$broadcast('connected');
     };
 
-
-
     $scope.selected = function(env) {
-        WSService.r("set_selected_env", env);
+        WSService.r({fun : "set_selected_env", args : {env : env}});
         $scope.selected_env = env;
     };
 
-    // really need the app/app.controller stuff.
-    // $scope.isConnected = false;
-    // so tree does not complain about no data
     $scope.objects_tree = [];
     $scope.object_display_level = 1;
 
@@ -123,31 +73,20 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.selected(".GlobalEnv");
     };
 
-    $scope.tree_control = {};
-
-    $scope.send_object = function(event, object_name, data) {
+    $scope.send_object = function(object_name, options) {
         if(object_name === undefined) {
             return(0);
         }
-        
-        var data_arg = {object: object_name.data.object_index,
-                        data : data};
-
-        WSService.r(event, data_arg);
+        var send_call = {fun :  'object_explorer_connect',
+                         args : { object: object_name.data.object_index,
+                                  options : options}};
+        WSService.r(send_call);
         $scope.selected_object = object_name;
         return(0);
     };
 
-    $scope.$watchCollection('options', function(newValue, oldValue) {
-        if(newValue !== oldValue) {
-            $scope.send_object('object_explorer_connect', $scope.selected_object, $scope.options);
-        }
-    });
-
-
-
     $scope.gridOptions = { data: 'objects_tree',
-                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'object_explorer_connect\', row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
+                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
                            enableColumnResize : true,
                            showGroupPanel : false,
                            multiSelect : false,

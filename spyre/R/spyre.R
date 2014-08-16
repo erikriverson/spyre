@@ -78,14 +78,14 @@ cleanup <- function() {
 }
 
 #' @export
-start_spyre <- function(port = 7681) {
+spyre_start <- function(port = 7681) {
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
     packageStartupMessage(paste("spyre running on port", port))
     httpuv::startDaemonizedServer("127.0.0.1", port, app = app)
 }
 
 #' @export
-stop_spyre <- function(handle) {
+spyre_stop <- function(handle) {
     if(missing(handle)) {
         handle <- get("spyre_handle", pos = "package:spyre")
     }
@@ -94,10 +94,10 @@ stop_spyre <- function(handle) {
 }
 
 .onAttach <- function(x, y) {
-    handle <- start_spyre()
+    handle <- spyre_start()
     assign("spyre_handle", handle, pos = "package:spyre")
 }
 
 .onDetach <- function(x) {
-    stop_spyre(get("spyre_handle", pos = "package:spyre"))
+    spyre_stop(get("spyre_handle", pos = "package:spyre"))
 }

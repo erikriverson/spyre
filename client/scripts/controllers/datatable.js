@@ -11,7 +11,8 @@ spyre.controller('rawController', function($scope, WSService) {
     });
 
     $scope.request_raw_data = function() {
-        WSService.r('rawdata', $scope.selected_data);
+        WSService.r({fun: 'rawdata', 
+                     args : {'data' : $scope.selected_data}});
     };
 
     $scope.totalServerItems = 0;

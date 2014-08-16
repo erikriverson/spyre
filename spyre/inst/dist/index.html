@@ -101,7 +101,7 @@
 
       <tabset>
 
-          <tab heading="Explore">
+          <tab heading="Explore" ng-controller="exploreController">
             <h1>{{selected_object.data.object_index[0][0]}}</h1>
 
             <div ng-show="selected_object.class == 'numeric'" id="controls" ng-show="object_controls">
@@ -145,12 +145,6 @@
               </div>
               
                   </div> <!-- plot -->
-
-                  <!-- help -->
-                  <div ng-show="object_help">
-                    <h4>Documentation</h4>
-                    <div ng-bind-html="renderHtml(object_help)"></div>
-                  </div>
           </tab>
 
 
