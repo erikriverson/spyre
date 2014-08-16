@@ -1,46 +1,19 @@
-#' @export
-getCurrentObjects <- function(a, b, c, d, ws) {
-
-        env <- get_selected_env()
-        
-        objects <- objects(env)
-        objects_list <- lapply(objects, generate_object_list)
-
-        ## what is this doing?
-        ## objects_list <- lapply(seq_along(objects_list),
-        ##                        function (i) sapply(objects_list, "[", i))
-
-        ret_list <- list(event = "objects", data = objects_list)
-        ws$send(jsonlite::toJSON(ret_list))
-
-        env_list <- list(event = "environments", data = search())
-        ws$send(jsonlite::toJSON(env_list))
-
-        action_list <- list(event = "actions", data = actions())
-        ws$send(jsonlite::toJSON(action_list))
-
-        TRUE
-    }
-
-
 spyre_onWSOpen <- function(ws) {
 
-
     set_selected_env <- function(D) {
-        assign("selected_env", D, envir = .GlobalEnv)
+        assign("selected_env", D, pos = "package:spyre")
         getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
     }
 
     process_data <- function(binary_flag, data) {
         futile.logger::flog.debug("processing data")
-        E <- jsonlite::fromJSON(data)$event
-        D <- jsonlite::fromJSON(data)$data
-        
-        futile.logger::flog.debug(paste("calling function:", E))
-        futile.logger::flog.debug(paste("The data argument is :", D))
+        E <- jsonlite::fromJSON(data)[[1]]
+        message(str(E))
+        futile.logger::flog.debug(paste("calling function:", E$fun))
+        futile.logger::flog.debug(paste("The data argument is :", E$args))
 
         ## Call the processing function in tryCatch
-        R <- tryCatch(do.call(E, list(D)), error = function(e) e)
+        R <- tryCatch(do.call(E$fun, E$args), error = function(e) e)
         send_data(R)
     }
         

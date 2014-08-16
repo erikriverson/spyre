@@ -1,4 +1,4 @@
-app.factory('WSConnect', function() {
+spyre.factory('WSConnect', function() {
     var WSConnect = {};
 
     WSConnect.connect = function(ws_url) {
@@ -13,10 +13,10 @@ app.factory('WSConnect', function() {
     
 });
 
-app.factory('WSService', function(WSConnect) {
+spyre.factory('WSService', function(WSConnect) {
     return {
-        r: function(fun, data) {
-	    return WSConnect.ws.send(fun, data);
+        r: function(rcall) {
+	    return WSConnect.ws.send(rcall);
         },
         register_ws_callback: function(event, callback) {
             return WSConnect.ws.bind(event, callback);

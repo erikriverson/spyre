@@ -1,4 +1,4 @@
-app.controller('mvController', function($scope, WSService) {
+spyre.controller('mvController', function($scope, WSService) {
     $scope.$on('connected', function() {
         WSService.register_ws_callback('mv', function(msg) {
             console.log('reply from mv');
@@ -7,6 +7,11 @@ app.controller('mvController', function($scope, WSService) {
             $scope.object_summary = msg.summary[0];
         });
     });
+
+    $scope.callr = function(rcall) {
+        WSService.r(rcall);
+    };
+
 
     $scope.target = {xvar : "Not Set",
                      yvar : "Not Set",

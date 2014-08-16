@@ -318,9 +318,9 @@
                 <h4>RData</h4>
               </div>
               
-              <form ng-submit="import_rdata_url()">
+              <form ng-submit="callr(import_rdata_url)">
               <label>URL of RData File</label>
-              <input type="text" ng-model="rdata_url" class="form-control">
+              <input type="text" ng-model="import_rdata_url.args.url" class="form-control">
               </input>
                 
               <button type="submit" class="btn btn-default">Import</button>
@@ -337,11 +337,16 @@
               </div>
 
 
-              <form role="form" ng-submit="quandl_import()">
+              <form role="form" ng-submit="callr(import_quandl)">
                 <div class="form-group">
                   <label for="import_quandl_code">Quandl Code</label>
-                  <input type="text" class="form-control" id="import_quandl_code" placeholder="Enter Quandl Code"
-                         ng-model="quandl_code">
+                  <input type="text" class="form-control" id="import_quandl_code" 
+                         ng-model="import_quandl.args.quandl_code">
+
+                  <label for="import_quandl_object">Object Name</label>
+                  <input type="text" class="form-control" id="import_quandl_object" 
+                         ng-model="import_quandl.args.object_name">
+
                 </div>
                 <button type="submit" class="btn btn-default">Import</button>
               </form>

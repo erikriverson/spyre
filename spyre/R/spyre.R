@@ -4,7 +4,7 @@
 ################################################################################
 
 get_selected_env <- function() {
-    if(exists("selected_env", .GlobalEnv)) {
+    if(exists("selected_env", "package:spyre")) {
         selected_env
     } else {
         ".GlobalEnv"
@@ -20,10 +20,6 @@ eval_string <- function(D) {
     jsonlite::toJSON(list(data = list(summary = data)))
 }
 
-rawdata <- function(D) {
-    D1 <- get(D[[1]][[1]])
-    jsonlite::toJSON(list(event = "rawdata", data = list(value = D1)))
-}
 
 `%i%` <- function(object, index_list) {
     if(length(index_list) == 0)

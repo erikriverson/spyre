@@ -1,4 +1,4 @@
-app.controller('rmdController', function($scope, WSService, $sce) {
+spyre.controller('rmdController', function($scope, WSService, $sce) {
     $scope.$on('connected', function() {
         WSService.register_ws_callback('rmd', function(msg) {
             console.log("[rmd] message received");

@@ -10,7 +10,7 @@ var ModalInstanceController = function ($scope, $modalInstance, items) {
     };
 };
 
-app.controller('SessionController', function ($scope, $modal, WSService) {
+spyre.controller('SessionController', function ($scope, $modal, WSService) {
     $scope.get_session_info = function() {
         WSService.r('session', null);
         return(0);

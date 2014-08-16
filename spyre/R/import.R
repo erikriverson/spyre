@@ -6,26 +6,19 @@ import <- function(D) {
     getCurrentObjects("bootstrap", NULL, NULL, NULL)
 }
 
-import_rdata_url <- function(D) {
-    futile.logger::flog.debug(D)
-    load(url(D), envir = .GlobalEnv)
+import_rdata_url <- function(url) {
+    futile.logger::flog.debug(url)
+    load(url(url), envir = .GlobalEnv)
+    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+}
+
+import_quandl <- function(quandl_code, object_name) {
+    assign(object_name, Quandl(quandl_code), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }
 
 
-import_rdata <- function(D) {
-
-    load(readBin(textConnection(D), character()), envir = .GlobalEnv)
-    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
-}
-
-import_quandl <- function(D) {
-    assign("quandl_test_import", Quandl(D), pos = .GlobalEnv)
-    getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
-}
-
-
-import_http_url <- function(D) {
-    assign("something", fromJSON(D), pos = .GlobalEnv)
+import_http_url <- function(url) {
+    assign("something", fromJSON(url), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }

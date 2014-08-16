@@ -1,5 +1,5 @@
-var app = angular.module('spyre', ['ui.bootstrap', 
-                                   'ngGrid', 
-                                   'colorpicker.module', 
-                                   'angularFileUpload',
-                                   'vr.directives.slider']);
+var spyre = angular.module('spyre', ['ui.bootstrap', 
+                                     'ngGrid', 
+                                     'colorpicker.module', 
+                                     'angularFileUpload',
+                                     'vr.directives.slider']);

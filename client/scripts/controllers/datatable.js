@@ -1,4 +1,4 @@
-app.controller('rawController', function($scope, WSService) {
+spyre.controller('rawController', function($scope, WSService) {
 
     $scope.$on('connected', function() {
         WSService.register_ws_callback('rawdata', function(msg) {

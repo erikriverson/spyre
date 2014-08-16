@@ -1,33 +1,22 @@
-app.controller('importController', function($scope, WSService, $upload) {
-    $scope.$on('connected', function() {
-        WSService.register_ws_callback('import', function(msg) {
-            console.log("got import message:");
-            console.log(msg.value);
-        });
-    });
+// let's try re-writing this in new style
 
-    $scope.quandl_import = function(form) {
-        console.log("quandl importer called");
-        WSService.r('import_quandl', $scope.quandl_code);
+spyre.controller('importController', function($scope, WSService) {
+
+    $scope.callr = function(rcall) {
+        WSService.r(rcall);
     };
 
-
-    $scope.import_rdata_url = function() {
-        console.log('hi');
-        WSService.r('import_rdata_url', $scope.rdata_url);
-    };
-
-    $scope.import_http = function() {
-        WSService.r('import_http_url_break', $scope.http_url);
-    };
-
-    $scope.onFileSelect = function($files) {
-        var fileReader = new FileReader();
-        fileReader.readAsBinaryString($files[0]);
-        fileReader.onload = function(e) {
-            WSService.r('import_rdata', fileReader.result);
-
+    $scope.import_rdata_url = 
+        { fun  : 'import_rdata_url', 
+          args : { 'url' : 'http://path.to.rdata.file' 
+                 }
         };
-    };
+
+    $scope.import_quandl = 
+        { fun  : 'import_quandl',
+          args : { quandl_code : 'LBMA/GOLD', 
+                   object_name : 'quandl_object'
+                 }
+        };
 
 });

@@ -1,4 +1,4 @@
-app.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
+spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
 
 //    $scope.selected_object = [];
     $scope.options = {};
