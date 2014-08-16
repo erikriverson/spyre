@@ -47,6 +47,16 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 $scope.envs = msg;
                 $scope.$apply();
             });
+
+
+            WSService.register_ws_callback('message', function(msg) {
+                console.log("Message received:");
+                console.log(msg);
+                
+                $scope.message = msg;
+                $scope.$apply();
+            });
+
         });
 
         $scope.isConnected = true;

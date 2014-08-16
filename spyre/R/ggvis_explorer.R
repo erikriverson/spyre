@@ -1,8 +1,8 @@
 #' @import ggvis
 
-ggvis_explorer <- function(D) {
-    objs <- lapply(D, iget)
-    jsonlite::toJSON(ggvis_spyre(objs, D))
+ggvis_explorer <- function(mv_object) {
+    objs <- lapply(mv_object, iget)
+    jsonlite::toJSON(ggvis_spyre(objs, mv_object))
 }
 
 ggvis_spyre <- function(objs, names, ...) {

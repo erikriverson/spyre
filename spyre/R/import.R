@@ -16,8 +16,7 @@ import_quandl <- function(quandl_code, object_name) {
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }
 
-
-import_http_url <- function(url, object_name) {
+import_http_api <- function(url, object_name) {
     assign(object_name, fromJSON(url), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
 }

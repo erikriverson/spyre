@@ -12,22 +12,22 @@ spyre.controller('mvController', function($scope, WSService) {
         WSService.r(rcall);
     };
 
-    $scope.target = {xvar : "Not Set",
-                     yvar : "Not Set",
-                     fill : "#000000",
-                     stroke : "#000000",
-                     size   : 50
-                     };
+    $scope.ggvis = {props : { xvar : "Not Set",
+                              yvar : "Not Set",
+                              fill : "#000000",
+                              stroke : "#000000",
+                              size   : 50
+                            }
+                   };
 
-    $scope.select = function(event, object) {
-        console.log("this is the event:" + event);
+    $scope.ggvis.set_prop = function(event, object) {
         console.log(object);
-        $scope.target[event] = object;
+        $scope.ggvis.props[event] = object;
     };
     
-    $scope.$watchCollection('target', function(newValue, oldValue) {
+    $scope.$watchCollection('ggvis.props', function(newValue, oldValue) {
         if(newValue !== oldValue) {
-            $scope.mv($scope.target);
+            $scope.mv($scope.ggvis.props);
         }
     });
 
@@ -48,16 +48,16 @@ spyre.controller('mvController', function($scope, WSService) {
             stroke = plot_spec.stroke;
         }
         
-        var mv_object = {xvar : plot_spec.xvar.data.object_index, 
-                         yvar: plot_spec.yvar.data.object_index,
-                         fill: fill,
-                         stroke : stroke,
-                         size   : plot_spec.size};
+        var mv_object = { xvar : plot_spec.xvar.data.object_index, 
+                          yvar: plot_spec.yvar.data.object_index,
+                          fill: fill,
+                          stroke : stroke,
+                          size   : plot_spec.size};
 
         console.log("going to call mv with:");
         console.log(mv_object);
 
-        WSService.r("ggvis_explorer", mv_object);
+        WSService.r({fun:"ggvis_explorer", args : {mv_object : mv_object}});
         return(0);
     };
 
