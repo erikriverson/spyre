@@ -3,6 +3,13 @@
 #   Author:           Erik Iverson <erik@sigmafield.org>
 ################################################################################
 
+fortune_cookie <- function(...) {
+    jsonlite::toJSON(list(event = "message",
+                          data = paste0(capture.output(fortunes::fortune(...)),
+                              collapse = "\n")))
+}
+    
+
 get_selected_env <- function() {
     if(exists("selected_env", "package:spyre")) {
         selected_env

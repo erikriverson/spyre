@@ -18,7 +18,10 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.spyre_server = "ws://localhost:7681";
         WSConnect.connect($scope.spyre_server);
 
+
         WSService.register_ws_callback('open', function() {
+
+
             WSService.register_ws_callback('objects', function(msg) {
                 console.log("Object of Objects:");
                 console.log(msg);
@@ -52,15 +55,23 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
             WSService.register_ws_callback('message', function(msg) {
                 console.log("Message received:");
                 console.log(msg);
-                
-                $scope.message = msg;
-                $scope.$apply();
+                $scope.set_message(msg[0]);
             });
+
+            // for now, this should go with init code elsewhere though.
+            // need to register callback first.
+            WSService.r({fun: "fortune_cookie", args : {}});
+
 
         });
 
         $scope.isConnected = true;
         $scope.$broadcast('connected');
+    };
+
+    $scope.set_message = function(msg) {
+        $scope.message = msg;
+        $scope.$apply();
     };
 
     $scope.selected = function(env) {

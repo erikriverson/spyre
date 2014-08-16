@@ -2,6 +2,15 @@
 
 spyre.controller('importController', function($scope, WSService) {
 
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('import', function(msg) {
+            console.log('reply from import');
+            console.log(msg);
+            $scope.set_message(msg.message[0]);
+        });
+    });
+
+
     $scope.callr = function(rcall) {
         WSService.r(rcall);
     };

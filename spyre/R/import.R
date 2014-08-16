@@ -7,8 +7,10 @@ import <- function(file, object_name) {
 }
 
 import_rdata_url <- function(url) {
-    load(url(url), envir = .GlobalEnv)
+    tmp <- load(url(url), envir = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+    jsonlite::toJSON(list(event = "message",
+                          data = paste(tmp, "loaded!")))
 }
 
 import_quandl <- function(quandl_code, object_name) {

@@ -37,11 +37,16 @@
             <li><a href="#">Active Data: {{selected_data}}</a></li>
           </ul>
 
-          <ul class="nav navbar-nav navbar-left" ng-show="message_bar">
-            <li><a href="#"></a>{{message}}</li>
+          <ul class="nav navbar-nav navbar-left" ng-model="message">
+            <li><a href="#"><pre>{{message}}<pre></a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
+
+            <li ng-controller="MessageController">
+              <a href="#">Messages</a></li>
+
+
 
             <!-- session information -->
             <li ng-controller="SessionController">
@@ -58,6 +63,7 @@
               </script>
               <a href ng-click="get_session_info()" id="session">Session Info</a>
             </li>
+
 
             <li><a href="#">Settings</a></li>
             <li><a href="#">About</a></li>
