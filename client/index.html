@@ -366,6 +366,32 @@
 
             </div>
 
+
+            <div class="panel panel-default col-md-10">
+
+              <div class="panel-heading">
+                <h4>SAS7BDAT</h4>
+              </div>
+              
+              <form ng-submit="callr(import_sas7bdat_url)">
+              <label>URL of SAS7BDAT File</label>
+              <input type="text" ng-model="import_sas7bdat_url.args.url" class="form-control">
+              </input>
+
+              <label for="import_sas7bdat_object">Object Name</label>
+              <input type="text" class="form-control" id="import_sas7bdat_object" 
+                     ng-model="import_sas7bdat_url.args.object_name">
+
+                
+              <button type="submit" class="btn btn-default">Import</button>
+
+              </form>
+
+
+            </div>
+
+
+
           </tab>
 
         </tabset>
