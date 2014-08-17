@@ -55,7 +55,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
             WSService.register_ws_callback('message', function(msg) {
                 console.log("Message received:");
                 console.log(msg);
-                $scope.set_message(msg[0]);
+                $scope.set_message(msg);
             });
 
             // for now, this should go with init code elsewhere though.
@@ -70,7 +70,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     };
 
     $scope.set_message = function(msg) {
-        $scope.message = msg;
+        $scope.message = msg.message[0];
         $scope.$apply();
     };
 

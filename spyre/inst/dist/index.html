@@ -37,16 +37,7 @@
             <li><a href="#">Active Data: {{selected_data}}</a></li>
           </ul>
 
-          <ul class="nav navbar-nav navbar-left" ng-model="message">
-            <li><a href="#"><pre>{{message}}<pre></a></li>
-          </ul>
-
           <ul class="nav navbar-nav navbar-right">
-
-            <li ng-controller="MessageController">
-              <a href="#">Messages</a></li>
-
-
 
             <!-- session information -->
             <li ng-controller="SessionController">
@@ -413,8 +404,16 @@
         </tabset>
       </div>
 
+    <div id="message_stream">
+      <h3>Message Stream</h3>
 
+      <div id="statuscol" 
+           class="col-md-2 pull-right" 
+           role="alert">
+        <pre class="alert alert-info" >{{message}}</pre>
+      </div>
 
+    </div>
       
     </div> <!-- objectlist -->
 

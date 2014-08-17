@@ -4,9 +4,8 @@
 ################################################################################
 
 fortune_cookie <- function(...) {
-    jsonlite::toJSON(list(event = "message",
-                          data = paste0(capture.output(fortunes::fortune(...)),
-                              collapse = "\n")))
+    spyre_message(data = paste0(capture.output(fortunes::fortune(...)),
+                      collapse = "\n"))
 }
     
 

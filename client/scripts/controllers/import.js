@@ -6,7 +6,7 @@ spyre.controller('importController', function($scope, WSService) {
         WSService.register_ws_callback('import', function(msg) {
             console.log('reply from import');
             console.log(msg);
-            $scope.set_message(msg.message[0]);
+            $scope.set_message(msg);
         });
     });
 
