@@ -9,20 +9,23 @@ import <- function(file, object_name) {
 import_rdata_url <- function(url) {
     tmp <- load(url(url), envir = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
-    spyre_message(tmp, "loaded!")
+    spyre_message(tmp, "loaded.", type = "success", title = "Import")
 }
 
 import_quandl <- function(quandl_code, object_name) {
     assign(object_name, Quandl(quandl_code), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+    spyre_message(object_name, "loaded.", type = "success", title = "Import")
 }
 
 import_http_api <- function(url, object_name) {
     assign(object_name, fromJSON(url), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+    spyre_message(object_name, "loaded.", type = "success", title = "Import")
 }
 
 import_sas7bdat_url <- function(url, object_name) {
     assign(object_name, read.sas7bdat(url), pos = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
+    spyre_message(object_name, "loaded.", type = "success", title = "Import")
 }

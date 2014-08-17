@@ -5,7 +5,7 @@
 
 fortune_cookie <- function(...) {
     spyre_message(data = paste0(capture.output(fortunes::fortune(...)),
-                      collapse = "\n"))
+                      collapse = "\n"), title = "Fortune Cookie")
 }
     
 

@@ -2,9 +2,6 @@ table {
     font-size: smaller;
 }
 
-#message_stream {
-    font-size: 10px;
-}
 
 .glyphicon:hover {
     cursor:pointer;
@@ -35,11 +32,22 @@ table {
 }
 
 #object-grid {
-    height: 900px;
+    height: 100%;
     font-size: smaller; 
 }
 
 #raw-container {
     height: 900px;
     font-size: smaller; 
+}
+
+#footer {
+    height:60px;
+    background-color: red;
+}
+
+#message_stream {
+    font-size: 10px;
+    height:100%;
+    overflow: auto;
 }

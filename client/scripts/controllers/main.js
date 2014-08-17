@@ -55,7 +55,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
             WSService.register_ws_callback('message', function(msg) {
                 console.log("Message received:");
                 console.log(msg);
-                $scope.set_message(msg);
+                $scope.add_message(msg);
             });
 
             // for now, this should go with init code elsewhere though.
@@ -69,8 +69,16 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.$broadcast('connected');
     };
 
-    $scope.set_message = function(msg) {
-        $scope.message = msg.message[0];
+    $scope.message_list = [];
+
+    $scope.add_message = function(msg) {
+        var new_msg = { 
+            time : new Date(), 
+            title : msg.title,
+            type : "alert " + "alert-" + msg.type,
+            message : msg.message };
+        
+        $scope.message_list.unshift(new_msg);
         $scope.$apply();
     };
 
@@ -84,8 +92,10 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
 
     $scope.object_level_down = function(object) {
         console.log(object.children);
+
         $scope.objects_tree = object.children;
         $scope.selected_data = object.label;
+        $scope.add_message({title : "Spyre", type : "info", message : object.label + " is now active dataset."});
         $scope.data_is_selected = true;
     };
 

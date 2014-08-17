@@ -252,7 +252,7 @@
                   </div>
                 </div>
 
-<div> some stuff </div>
+                <div> Size </div>
 
                 <div slider ng-model="target.size"
                      floor="30"
@@ -397,25 +397,31 @@
 
             </div>
 
-
-
           </tab>
+          
+      </tabset>
+    </div>
+    
+    <div id="message_stream" class="col-md-2 pull-right">
 
-        </tabset>
-      </div>
+      <h3>Live Feed</h3>
 
-    <div id="message_stream">
-      <h3>Message Stream</h3>
+      <div id="statuscol" ng-repeat="message in message_list" 
+           role="alert" ng-class="message.type">
 
-      <div id="statuscol" 
-           class="col-md-2 pull-right" 
-           role="alert">
-        <pre class="alert alert-info" >{{message}}</pre>
+        <h5>{{message.title}}</h5>
+
+        {{message.time | date:'yyyy-MM-dd hh:mm:ss a'}}
+
+        <pre ng-class="message.type">{{message.message}}</pre>
+
       </div>
 
     </div>
-      
-    </div> <!-- objectlist -->
+    
+    <div id="footer" class="footer navbar-fixed-bottom">
+      Where am I?
+    </div>
 
     <script src="./scripts/bower.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-touch.min.js"></script>
