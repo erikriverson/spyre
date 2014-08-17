@@ -2,7 +2,6 @@ table {
     font-size: smaller;
 }
 
-
 .glyphicon:hover {
     cursor:pointer;
 }
@@ -22,7 +21,7 @@ table {
 }
 
 .navbar-brand {
-    font-size: 24px;
+    font-size: 35px;
 }
 
 #datagrid {
@@ -31,13 +30,32 @@ table {
     height: 600px;
 }
 
-#object-grid {
+html,body
+{
+  height: 100%;
+}
+
+#spyre-container
+{ 
     height: 100%;
-    font-size: smaller; 
+}
+
+#spyre-grid
+{ 
+    height: calc(100% - 85px);
+}
+
+#object-list {
+    height: 100%;
+}
+
+#object-grid {
+    height: 95%;
+    font-size: smaller;
 }
 
 #raw-container {
-    height: 900px;
+    height: 100%;
     font-size: smaller; 
 }
 
@@ -46,8 +64,8 @@ table {
     background-color: red;
 }
 
-#message_stream {
+#messages {
     font-size: 10px;
-    height:100%;
-    overflow: auto;
+    height: 100%;
+    overflow-y: auto;
 }

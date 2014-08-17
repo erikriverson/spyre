@@ -1,0 +1,31 @@
+  <div id="object-list" class="col-md-2"> 
+
+    <div class="btn-group" dropdown >
+      <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled" ng-model="selected_env">
+        {{selected_env}} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="env in envs track by $index" ng-click="selected(env)"><a href="#">{{env}}</a></li>
+      </ul>
+    </div>
+
+    <div class="btn-group" dropdown >
+      <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+        Actions <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="action in actions"><a href="#">{{action}}</a></li>
+      </ul>
+    </div>
+
+    <div id="uplevel" tooltip="{{tt.uplevel}}" class="glyphicon glyphicon-arrow-up" 
+         ng-click="object_level_up()">
+    </div>
+    <div tooltip="{{tt.refresh}}" id="refresh" class="glyphicon glyphicon-refresh" 
+         ng-click="object_list_refresh()">
+    </div>
+    
+    <div id="object-grid" class="gridStyle", ng-grid="gridOptions"></div>
+    
+  </div>
+

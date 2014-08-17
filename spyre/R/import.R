@@ -7,9 +7,16 @@ import <- function(file, object_name) {
 }
 
 import_rdata_url <- function(url) {
-    tmp <- load(url(url), envir = .GlobalEnv)
+    tmp <- load(conn <- url(url), envir = .GlobalEnv)
     getCurrentObjects("bootstrap", NULL, NULL, NULL, spyre)
-    spyre_message(tmp, "loaded.", type = "success", title = "Import")
+    close(conn)
+
+    if(is.data.frame(obj <- get(tmp))) {
+            spyre_message(tmp, "loaded. ", nrow(obj), "rows and ",
+            ncol(obj), "columns")
+    } else {
+        spyre_message(tmp, "loaded.")
+    }
 }
 
 import_quandl <- function(quandl_code, object_name) {

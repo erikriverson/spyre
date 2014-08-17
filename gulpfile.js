@@ -11,6 +11,7 @@ var connect = require('gulp-connect');
 var angularFilesort = require('gulp-angular-filesort');
 var inject = require('gulp-inject');
 var watch  = require('gulp-watch');
+var fileinclude = require('gulp-file-include');
 
 // target for dist files in the R package directory
 var inst_dir = 'spyre/inst/dist';
@@ -81,12 +82,21 @@ gulp.task('js_spyre', function() {
 //        .pipe(angularFilesort())
 });
 
-// process index.html
-gulp.task('html_index', function() {
-    gulp.src('client/index.html')
-        .pipe(gulp.dest(inst_dir))
-        .on('error', gutil.log);
+
+// build index.html from partials
+gulp.task('html_partials', function() {
+    gulp.src('./client/index.html')
+        .pipe(debug())
+        .pipe(fileinclude({prefix :'@@', basepath: '@file'}))
+        .pipe(gulp.dest(inst_dir));
 });
+
+// // process index.html
+// gulp.task('html_index', function() {
+//     gulp.src('client/index.html')
+//         .pipe(gulp.dest(inst_dir))
+//         .on('error', gutil.log);
+// });
 
 // process spyre css
 gulp.task('css_spyre', function() {
@@ -120,7 +130,8 @@ gulp.task('webserver', function() {
 
 // livereload for development
 gulp.task('livereload', function() {
-  gulp.src(['./spyre/inst/dist/scripts/*.js', './spyre/inst/dist/styles/*.css', 
+  gulp.src(['./spyre/inst/dist/scripts/*.js', 
+            './spyre/inst/dist/styles/*.css', 
             './spyre/inst/dist/index.html'])
     .pipe(watch())
     .pipe(connect.reload());
@@ -130,11 +141,12 @@ gulp.task('livereload', function() {
 gulp.task('watch', function() {
     gulp.watch('./client/scripts/**/*.js', ['js_spyre']);
     gulp.watch('./client/styles/**/*.css', ['css_spyre']);
-    gulp.watch('./client/index.html', ['html_index']);
+    gulp.watch(['./client/index.html', './client/views/**/*.html'], 
+               ['html_partials']);
 });
 
 // default task, build
-gulp.task('default', ['html_index', 'font_bower_components',
+gulp.task('default', ['html_partials', 'font_bower_components',
                       'js_bower_components', 'js_vendor', 'js_spyre', 
                       'css_bower_components', 'css_vendor', 'css_spyre']);
 

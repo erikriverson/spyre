@@ -1,23 +1,47 @@
-var app = angular.module('spyre', ['ui.bootstrap', 
-                                   'ngGrid', 
-                                   'colorpicker.module', 
-                                   'angularFileUpload',
-                                   'vr.directives.slider']);
+var spyre = angular.module('spyre', ['ui.bootstrap', 
+                                     'ngGrid', 
+                                     'colorpicker.module', 
+                                     'angularFileUpload',
+                                     'vr.directives.slider']);
 
-app.controller('evalController', function($scope, WSService) {
-    $scope.$on('connected', function() {
-        WSService.register_ws_callback('eval_string', function(msg) {
-            console.log("Console logged: " + msg);
-        });
-    });
 
-    $scope.eval_me = function() {
-        WSService.r("eval_string", $scope.eval_string);
-        $scope.eval_string = ""; 
+
+spyre.controller('consoleController', function($scope, WSService) {
+    // 'console' automatically registered as callback event
+
+    // use 'console' automatically as the event name with rargs,
+    // or include 'console on rargs?
+
+
+    $scope.rcall = { fun  : 'console', 
+                     args : $scope.rargs
+                   };
+
+    // does rcall get the latest version of $scope.rargs?
+    // we may need to make rcall on $scope, and use an ng-model
+    // on the html tab div
+
+    $scope.eval_text = function() {
+        WSService.r($scope.rcall); 
     };
-});
 
-app.controller('rawController', function($scope, WSService) {
+});
+    
+
+// app.controller('evalController', function($scope, WSService) {
+//     $scope.$on('connected', function() {
+//         WSService.register_ws_callback('eval_string', function(msg) {
+//             console.log("Console logged: " + msg);
+//         });
+//     });
+
+//     $scope.eval_me = function() {
+//         WSService.r("eval_string", $scope.eval_string);
+//         $scope.eval_string = ""; 
+//     };
+// });
+
+spyre.controller('rawController', function($scope, WSService) {
 
     $scope.$on('connected', function() {
         WSService.register_ws_callback('rawdata', function(msg) {
@@ -30,7 +54,8 @@ app.controller('rawController', function($scope, WSService) {
     });
 
     $scope.request_raw_data = function() {
-        WSService.r('rawdata', $scope.selected_data);
+        WSService.r({fun: 'rawdata', 
+                     args : {'data' : $scope.selected_data}});
     };
 
     $scope.totalServerItems = 0;
@@ -101,136 +126,9 @@ app.controller('rawController', function($scope, WSService) {
 
 });
 
-app.controller('mvController', function($scope, WSService) {
+spyre.controller('exploreController', function($scope, WSService) {
+
     $scope.$on('connected', function() {
-        WSService.register_ws_callback('mv', function(msg) {
-            console.log('reply from mv');
-            ggvis.getPlot("ggvis_multivariate").
-                parseSpec(JSON.parse(msg.value));
-            $scope.object_summary = msg.summary[0];
-        });
-    });
-
-    $scope.target = {xvar : "Not Set",
-                     yvar : "Not Set",
-                     fill : "#000000",
-                     stroke : "#000000",
-                     size   : 50
-                     };
-
-    $scope.select = function(event, object) {
-        console.log("this is the event:" + event);
-        console.log(object);
-        $scope.target[event] = object;
-    };
-    
-    $scope.$watchCollection('target', function(newValue, oldValue) {
-        if(newValue !== oldValue) {
-            $scope.mv($scope.target);
-        }
-    });
-
-    $scope.mv = function(plot_spec) {
-        console.log(plot_spec);
-        var fill, stroke, size;
-        if(typeof(plot_spec.fill) !== "string") {
-            console.log('think fill is not a string');
-            fill = plot_spec.fill.data.object_index;
-        } else {
-            fill = plot_spec.fill;
-        }                       
-
-        // strings are hex color codes in this case
-        if(typeof(plot_spec.stroke) !== "string") {
-            stroke = plot_spec.stroke.data.object_index;
-        } else {
-            stroke = plot_spec.stroke;
-        }
-        
-        var mv_object = {xvar : plot_spec.xvar.data.object_index, 
-                         yvar: plot_spec.yvar.data.object_index,
-                         fill: fill,
-                         stroke : stroke,
-                         size   : plot_spec.size};
-
-        console.log("going to call mv with:");
-        console.log(mv_object);
-
-        WSService.r("ggvis_explorer", mv_object);
-        return(0);
-    };
-
-    $scope.fill_scaled = 'false';
-    $scope.stroke_scaled = 'false';
-    
-});
-
-app.controller('importController', function($scope, WSService, $upload) {
-    $scope.$on('connected', function() {
-        WSService.register_ws_callback('import', function(msg) {
-            console.log("got import message:");
-            console.log(msg.value);
-        });
-    });
-
-    $scope.quandl_import = function(form) {
-        console.log("quandl importer called");
-        WSService.r('import_quandl', $scope.quandl_code);
-    };
-
-
-    $scope.import_rdata_url = function() {
-        console.log('hi');
-        WSService.r('import_rdata_url', $scope.rdata_url);
-    };
-
-    $scope.import_http = function() {
-        WSService.r('import_http_url_break', $scope.http_url);
-    };
-
-    $scope.onFileSelect = function($files) {
-        var fileReader = new FileReader();
-        fileReader.readAsBinaryString($files[0]);
-        fileReader.onload = function(e) {
-            WSService.r('import_rdata', fileReader.result);
-
-        };
-    };
-
-});
-
-app.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
-
-//    $scope.selected_object = [];
-    $scope.options = {};
-    $scope.options.uv_plot_type = 'density';
-
-
-
-    $scope.selected_env = ".GlobalEnv";
-
-    $scope.toggle_connect = function() {
-        if($scope.isConnected) {
-            WSService.r("CLOSE", {});
-            $scope.isConnected = false;
-            $scope.selected_env = ".GlobalEnv";
-        } else {
-            $scope.connect();
-        }
-    };
-
-    $scope.connect = function() {
-        $scope.spyre_server = "ws://localhost:7681";
-        WSConnect.connect($scope.spyre_server);
-
-        $scope.renderHtml = function(html_code)
-        {
-            var phtml = jQuery.parseHTML(html_code);
-            var bc = $(".breadcrumb", phtml);
-
-            return $sce.trustAsHtml($(".documentation", phtml).
-                   prop('outerHTML'));
-        };
 
         WSService.register_ws_callback('uv', function(msg) {
             console.log(msg);
@@ -262,7 +160,155 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
         });
 
 
+    });
+
+    $scope.$watchCollection('options', function(newValue, oldValue) {
+        if(newValue !== oldValue) {
+            $scope.send_object($scope.selected_object, $scope.options);
+        }
+    });
+
+});
+
+spyre.controller('mvController', function($scope, WSService) {
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('mv', function(msg) {
+            console.log('reply from mv');
+            ggvis.getPlot("ggvis_multivariate").
+                parseSpec(JSON.parse(msg.value));
+            $scope.object_summary = msg.summary[0];
+        });
+    });
+
+    $scope.callr = function(rcall) {
+        WSService.r(rcall);
+    };
+
+    $scope.ggvis = {props : { xvar : "Not Set",
+                              yvar : "Not Set",
+                              fill : "#000000",
+                              stroke : "#000000",
+                              size   : 50
+                            }
+                   };
+
+    $scope.ggvis.set_prop = function(event, object) {
+        console.log(object);
+        $scope.ggvis.props[event] = object;
+    };
+    
+    $scope.$watchCollection('ggvis.props', function(newValue, oldValue) {
+        if(newValue !== oldValue) {
+            $scope.mv($scope.ggvis.props);
+        }
+    });
+
+    $scope.mv = function(plot_spec) {
+        console.log(plot_spec);
+        var fill, stroke, size;
+        if(typeof(plot_spec.fill) !== "string") {
+            console.log('think fill is not a string');
+            fill = plot_spec.fill.data.object_index;
+        } else {
+            fill = plot_spec.fill;
+        }                       
+
+        // strings are hex color codes in this case
+        if(typeof(plot_spec.stroke) !== "string") {
+            stroke = plot_spec.stroke.data.object_index;
+        } else {
+            stroke = plot_spec.stroke;
+        }
+        
+        var mv_object = { xvar : plot_spec.xvar.data.object_index, 
+                          yvar: plot_spec.yvar.data.object_index,
+                          fill: fill,
+                          stroke : stroke,
+                          size   : plot_spec.size};
+
+        console.log("going to call mv with:");
+        console.log(mv_object);
+
+        WSService.r({fun:"ggvis_explorer", args : {mv_object : mv_object}});
+        return(0);
+    };
+
+    $scope.fill_scaled = 'false';
+    $scope.stroke_scaled = 'false';
+    
+});
+
+// let's try re-writing this in new style
+
+spyre.controller('importController', function($scope, WSService) {
+
+    $scope.$on('connected', function() {
+        WSService.register_ws_callback('import', function(msg) {
+            console.log('reply from import');
+            console.log(msg);
+            $scope.add_message(msg);
+        });
+    });
+
+
+    $scope.callr = function(rcall) {
+        WSService.r(rcall);
+    };
+
+    $scope.import_rdata_url = 
+        { fun  : 'import_rdata_url', 
+          args : { 'url' : 'http://cran.ocpu.io/MASS/data/bacteria/rda' 
+                 }
+        };
+
+    $scope.import_quandl = 
+        { fun  : 'import_quandl',
+          args : { quandl_code : 'LBMA/GOLD', 
+                   object_name : 'quandl_data'
+                 }
+        };
+
+    $scope.import_sas7bdat_url = 
+        { fun  : 'import_sas7bdat_url',
+          args : { url : "http://crn.cancer.gov/resources/ctcodes-procedures.sas7bdat", 
+                   object_name : 'sas_data'
+                 }
+        };
+
+
+    $scope.import_http_api = 
+        { fun  : 'import_http_api',
+          args : { url : "http://api.meetup.com/2/cities?page=20", 
+                   object_name : 'http_data'
+                 }
+        };
+
+});
+
+spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
+
+    $scope.selected_env = ".GlobalEnv";
+    $scope.options = {};
+    $scope.options.uv_plot_type = 'density';
+
+    $scope.toggle_connect = function() {
+        if($scope.isConnected) {
+            WSService.r({fun : "CLOSE", args : {}});
+            $scope.isConnected = false;
+            $scope.selected_env = ".GlobalEnv";
+        } else {
+            $scope.connect();
+        }
+    };
+
+    $scope.connect = function() {
+        $scope.spyre_server = "ws://localhost:7681";
+        WSConnect.connect($scope.spyre_server);
+
+
         WSService.register_ws_callback('open', function() {
+
+
             WSService.register_ws_callback('objects', function(msg) {
                 console.log("Object of Objects:");
                 console.log(msg);
@@ -271,9 +317,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
                 $scope.objects_tree = msg;
 
                 // what functions should we call here? 
-                $scope.send_object('object_explorer_connect', $scope.selected_object, 
-                                   $scope.options);
-                
+                $scope.send_object($scope.selected_object, $scope.options);
                 $scope.$apply();
             });
             
@@ -293,29 +337,52 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
                 $scope.envs = msg;
                 $scope.$apply();
             });
+
+
+            WSService.register_ws_callback('message', function(msg) {
+                console.log("Message received:");
+                console.log(msg);
+                $scope.add_message(msg);
+            });
+
+            // for now, this should go with init code elsewhere though.
+            // need to register callback first.
+            WSService.r({fun: "fortune_cookie", args : {}});
+
+
         });
 
         $scope.isConnected = true;
         $scope.$broadcast('connected');
     };
 
+    $scope.message_list = [];
 
+    $scope.add_message = function(msg) {
+        var new_msg = { 
+            time : new Date(), 
+            title : msg.title,
+            type : "alert " + "alert-" + msg.type,
+            message : msg.message };
+        
+        $scope.message_list.unshift(new_msg);
+        $scope.$apply();
+    };
 
     $scope.selected = function(env) {
-        WSService.r("set_selected_env", env);
+        WSService.r({fun : "set_selected_env", args : {env : env}});
         $scope.selected_env = env;
     };
 
-    // really need the app/app.controller stuff.
-    // $scope.isConnected = false;
-    // so tree does not complain about no data
     $scope.objects_tree = [];
     $scope.object_display_level = 1;
 
     $scope.object_level_down = function(object) {
         console.log(object.children);
+
         $scope.objects_tree = object.children;
         $scope.selected_data = object.label;
+        $scope.add_message({title : "Spyre", type : "info", message : object.label + " is now active dataset."});
         $scope.data_is_selected = true;
     };
 
@@ -324,31 +391,20 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
         $scope.selected(".GlobalEnv");
     };
 
-    $scope.tree_control = {};
-
-    $scope.send_object = function(event, object_name, data) {
+    $scope.send_object = function(object_name, options) {
         if(object_name === undefined) {
             return(0);
         }
-        
-        var data_arg = {object: object_name.data.object_index,
-                        data : data};
-
-        WSService.r(event, data_arg);
+        var send_call = {fun :  'object_explorer_connect',
+                         args : { object: object_name.data.object_index,
+                                  options : options}};
+        WSService.r(send_call);
         $scope.selected_object = object_name;
         return(0);
     };
 
-    $scope.$watchCollection('options', function(newValue, oldValue) {
-        if(newValue !== oldValue) {
-            $scope.send_object('object_explorer_connect', $scope.selected_object, $scope.options);
-        }
-    });
-
-
-
     $scope.gridOptions = { data: 'objects_tree',
-                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(\'object_explorer_connect\', row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
+                           rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex() }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell ng-click="send_object(row.entity, options)" ng-dblclick="object_level_down(row.entity)"></div>',
                            enableColumnResize : true,
                            showGroupPanel : false,
                            multiSelect : false,
@@ -371,7 +427,7 @@ app.controller('MainController', function($scope, $sce, WSService, WSConnect, $t
 
 });
 
-app.controller('rmdController', function($scope, WSService, $sce) {
+spyre.controller('rmdController', function($scope, WSService, $sce) {
     $scope.$on('connected', function() {
         WSService.register_ws_callback('rmd', function(msg) {
             console.log("[rmd] message received");
@@ -431,7 +487,7 @@ var ModalInstanceController = function ($scope, $modalInstance, items) {
     };
 };
 
-app.controller('SessionController', function ($scope, $modal, WSService) {
+spyre.controller('SessionController', function ($scope, $modal, WSService) {
     $scope.get_session_info = function() {
         WSService.r('session', null);
         return(0);
@@ -458,7 +514,7 @@ app.controller('SessionController', function ($scope, $modal, WSService) {
     };
 });
 
-app.factory('WSConnect', function() {
+spyre.factory('WSConnect', function() {
     var WSConnect = {};
 
     WSConnect.connect = function(ws_url) {
@@ -473,10 +529,10 @@ app.factory('WSConnect', function() {
     
 });
 
-app.factory('WSService', function(WSConnect) {
+spyre.factory('WSService', function(WSConnect) {
     return {
-        r: function(fun, data) {
-	    return WSConnect.ws.send(fun, data);
+        r: function(rcall) {
+	    return WSConnect.ws.send(rcall);
         },
         register_ws_callback: function(event, callback) {
             return WSConnect.ws.bind(event, callback);

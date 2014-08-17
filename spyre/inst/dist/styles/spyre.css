@@ -3,9 +3,12 @@ table{font-size:smaller}
 .wson{color:green}
 .wsoff{color:red}
 #input_eval{font-family:monospace;background-color:#000;color:#fff}
-.navbar-brand{font-size:24px}
+.navbar-brand{font-size:35px}
 #datagrid{border:0 solid #d4d4d4;width:100%;height:600px}
-#object-grid{height:100%;font-size:smaller}
-#raw-container{height:900px;font-size:smaller}
+#spyre-container,body,html{height:100%}
+#spyre-grid{height:calc(100% - 85px)}
+#object-list{height:100%}
+#object-grid{height:95%;font-size:smaller}
+#raw-container{height:100%;font-size:smaller}
 #footer{height:60px;background-color:red}
-#message_stream{font-size:10px;height:100%;overflow:auto}
+#messages{font-size:10px;height:100%;overflow-y:auto}

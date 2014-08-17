@@ -1,0 +1,144 @@
+<tab heading="Visualize" ng-controller="mvController">
+  <div class="">
+    <h4>Chart Properties</h4>
+
+    <div id="mv-button-container" class="">
+      <form role="form">
+        <div class="form-group">
+          <label for="vis_x_var">X</label>
+          <div class="btn-group" dropdown >
+            <button type="button" class="btn dropdown-toggle" id="vis_x_var"
+                    ng-model="objects_tree">{{ggvis.props.xvar.label}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="object in objects_tree" ng-click="ggvis.set_prop('xvar', object)">
+                <a href="#">{{object.label}}</a></li>
+            </ul>
+          </div>
+        </div>
+
+
+
+        <div class="form-group">
+          <label for="vis_y_var">Y</label>
+          <div class="btn-group" dropdown >
+            <button type="button" id="vis_y_var" 
+                    class="btn dropdown-toggle">{{ggvis.props.yvar.label}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="object in objects_tree" ng-click="ggvis.set_prop('yvar', object)">
+                <a href="#">{{object.label}}</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- fill -->
+        <div class="control-group">
+          <label class="control-label">Fill</label>
+          <div class="controls">
+            <label class="radio">
+              <input type="radio" name="fill" ng-model="fill_scaled" value="false" >
+              Unscaled
+            </label>
+
+            <label class="radio">
+              <input type="radio" name="fill" ng-model="fill_scaled" value="true">
+              Scaled
+            </label>
+          </div>
+        </div>
+
+        <div id="unscaled_fill" ng-hide="fill_scaled">
+          <label>Click to select color</label>
+          <input colorpicker colorpicker-with-input="true" type="text" ng-model="target.fill" />
+        </div>
+
+        <div id="fill_var" ng-show="fill_scaled">
+          <label for="vis_fill_var">Variable</label>
+          <div class="btn-group" dropdown >
+            <button type="button" class="btn dropdown-toggle" id="vis_fill_var"
+                    ng-model="objects_tree">{{ggvis.props.fill.label}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="object in objects_tree" ng-click="ggvis.set_prop('fill', object)">
+                <a href="#">{{object.label}}</a></li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- stroke -->
+        <div class="control-group">
+          <label class="control-label">Border</label>
+          <div class="controls">
+            <label class="radio">
+              <input type="radio" name="stroke" ng-model="stroke_scaled" value="false" >
+              Unscaled
+            </label>
+
+            <label class="radio">
+              <input type="radio" name="stroke" ng-model="stroke_scaled" value="true">
+              Scaled
+            </label>
+          </div>
+        </div>
+
+        <div id="unscaled_stroke" ng-hide="stroke_scaled">
+          <label>Click to select color</label>
+          <input colorpicker colorpicker-with-input="true" type="text" ng-model="ggvis.props.stroke" />
+        </div>
+
+        <div id="stroke_var" ng-show="stroke_scaled">
+          <label for="vis_stroke_var">Variable</label>
+          <div class="btn-group" dropdown >
+            <button type="button" class="btn dropdown-toggle" id="vis_stroke_var"
+                    ng-model="objects_tree">{{ggvis.props.stroke.label}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="object in objects_tree" ng-click="ggvis.set_prop('stroke', object)">
+                <a href="#">{{object.label}}</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div> Size </div>
+
+        <div slider ng-model="target.size"
+             floor="30"
+             ceiling="500"
+             step-width="10">
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+  
+  <div id="plot" class = "">
+
+    <div id="ggvis_multivariate-container" class="ggvis-output-container">
+      <div id="ggvis_multivariate" class="ggvis-output"></div>
+      <div class="plot-gear-icon">
+        <nav class="ggvis-control">
+          <a class="ggvis-dropdown-toggle" title="Controls">⚙</a>
+          <ul class="ggvis-dropdown">
+            <li>
+              Renderer: 
+              <a id="ggvis_multivariate_renderer_svg" class="ggvis-renderer-button" 
+                 data-plot-id="ggvis_univariate" data-renderer="svg">SVG</a>
+              | 
+              <a id="ggvis_multivariate_renderer_canvas" class="ggvis-renderer-button" 
+                 data-plot-id="ggvis_multivariate" data-renderer="canvas">Canvas</a>
+            </li>
+            <li>
+              <a id="ggvis_multivariate_download" class="ggvis-download" 
+                 data-plot-id="ggvis_multivariate">Download</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    
+  </div> <!-- plot -->
+
+</tab>

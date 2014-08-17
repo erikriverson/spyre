@@ -1,0 +1,16 @@
+<div id="messages" class="col-md-2">
+
+  <h3>Live Feed</h3>
+
+  <div id="statuscol" ng-repeat="message in message_list" 
+       role="alert" ng-class="message.type">
+
+    <h5>{{message.title}}</h5>
+
+    {{message.time | date:'yyyy-MM-dd hh:mm:ss a'}}
+
+    <pre ng-class="message.type">{{message.message}}</pre>
+
+  </div>
+
+</div>
