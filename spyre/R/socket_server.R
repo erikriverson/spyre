@@ -37,6 +37,8 @@ spyre_onWSOpen <- function(ws) {
     ws$onMessage(process_data)
     ws$onClose(cleanup)
 
+    ws$send(spyre_message("Connected to Spyre Server", type = "success"))
+
     addTaskCallback(getCurrentObjects)
     futile.logger::flog.debug("added task callback")
     ## initial list

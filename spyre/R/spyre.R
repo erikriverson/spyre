@@ -71,7 +71,6 @@ spyre_call <- function(req) {
         headers = headers,
         body = body)
 
-
 }
 
 CLOSE <- function(D) {
@@ -83,27 +82,63 @@ cleanup <- function() {
     futile.logger::flog.debug("removed task callback function")
 }
 
+spyre_servers <- data.frame(handle = character(0),
+                            name   = character(0),
+                            port   = integer(0),
+                            stringsAsFactors = FALSE)
+
 #' @export
-spyre_start <- function(port = 7681) {
+spyre_start <- function(port = 7681, name = "SpyreServer") {
+    servers <- get("spyre_servers", pos = "package:spyre")
+
+    if(name %in% servers$name) {
+        stop(paste("Spyre Server already running with that name:", name))
+    }
+
+    if(port %in% servers$port) {
+        stop(paste("Spyre Server already running on that port:", port))
+    }
+
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
-    packageStartupMessage(paste("spyre running on port", port))
-    httpuv::startDaemonizedServer("127.0.0.1", port, app = app)
+    handle <- httpuv::startDaemonizedServer("127.0.0.1", port, app = app)
+
+    assign("spyre_servers", rbind(spyre_servers,
+                                  data.frame(handle = handle, name = name,
+                                             port = port,
+                                             stringsAsFactors = FALSE)),
+           pos = "package:spyre")
+
+    packageStartupMessage(paste0("Spyre Server (", name,
+                                 ") now running on port ", port))
+
 }
 
 #' @export
-spyre_stop <- function(handle) {
-    if(missing(handle)) {
-        handle <- get("spyre_handle", pos = "package:spyre")
+spyre_stop <- function(name) {
+    servers <- get("spyre_servers", pos = "package:spyre")
+    if(!missing(name)) {
+        httpuv::stopDaemonizedServer(servers[servers$name == name,
+                                             "handle"])
     }
-    
-    httpuv::stopDaemonizedServer(handle)
+    message(paste0("Spyre Server (", name, ") stopped."))
+}
+
+spyre_list <- function() {
+    get("spyre_servers", pos = "package:spyre")
+}
+
+#' @export
+spyre_stop_all <- function() {
+    servers <- get("spyre_servers", pos = "package:spyre")
+    if(nrow(servers)) {
+        lapply(servers$name, spyre_stop)
+    }
 }
 
 .onAttach <- function(x, y) {
-    handle <- spyre_start()
-    assign("spyre_handle", handle, pos = "package:spyre")
+    spyre_start()
 }
 
 .onDetach <- function(x) {
-    spyre_stop(get("spyre_handle", pos = "package:spyre"))
+    spyre_stop_all()
 }

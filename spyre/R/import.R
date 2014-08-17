@@ -13,9 +13,9 @@ import_rdata_url <- function(url) {
 
     if(is.data.frame(obj <- get(tmp))) {
             spyre_message(tmp, "loaded. ", nrow(obj), "rows and ",
-            ncol(obj), "columns")
+            ncol(obj), "columns", type = "success", title = "Import")
     } else {
-        spyre_message(tmp, "loaded.")
+        spyre_message(tmp, "loaded.", type = "success", title = "Import")
     }
 }
 
