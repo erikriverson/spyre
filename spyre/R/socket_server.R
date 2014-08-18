@@ -1,8 +1,11 @@
-spyre_onWSOpen <- function(ws) {
+spyre_clients <- list()
 
+spyre_onWSOpen <- function(ws) {
     set_selected_env <- function(env) {
         assign("selected_env", env, pos = "package:spyre")
-        getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
+        getCurrentObjects("bootstrap", NULL, NULL, NULL,
+                          get("spyre_clients",
+                              pos = "package:spyre"))
     }
 
     process_data <- function(binary_flag, data) {
@@ -25,24 +28,26 @@ spyre_onWSOpen <- function(ws) {
             ws$send(msg)
     }
 
-    eval_string <- function(string) {
-        ## save the value to return
-        ret <- tryCatch(eval(parse(text = string), env = .GlobalEnv), error =
-                        function(e) as.character(e))
-        ## in case objects get created
-        getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
-        ret
-    }
-
     ws$onMessage(process_data)
     ws$onClose(cleanup)
-
     ws$send(spyre_message("Connected to Spyre Server", type = "success"))
 
+    ## only if it's not already there, right?
+    ## I.e., not on the second client connection?
     addTaskCallback(getCurrentObjects)
+    
     futile.logger::flog.debug("added task callback")
     ## initial list
-    getCurrentObjects("bootstrap", NULL, NULL, NULL, ws)
 
-    assign("spyre", ws,  pos = "package:spyre")
+    spyre_message_all("New client joined!", type = "success")
+
+    assign("spyre_clients", c(get("spyre_clients", pos = "package:spyre"), ws),
+           pos = "package:spyre")
+
+
+
+    getCurrentObjects("bootstrap", NULL, NULL, NULL,
+                      get("spyre_clients", pos = "package:spyre"))
+
+
 }
