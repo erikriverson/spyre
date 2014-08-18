@@ -15,7 +15,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     };
 
     $scope.connect = function() {
-        $scope.spyre_server = "ws://localhost:7681";
+        $scope.spyre_server = "ws://10.0.0.9:7681";
         WSConnect.connect($scope.spyre_server);
 
 

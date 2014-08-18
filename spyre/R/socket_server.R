@@ -39,7 +39,7 @@ spyre_onWSOpen <- function(ws) {
     futile.logger::flog.debug("added task callback")
     ## initial list
 
-    spyre_message_all("New client joined!", type = "success")
+    spyre_message_all("New client joined:", ws$request$REMOTE_ADDR, type = "success")
 
     assign("spyre_clients", c(get("spyre_clients", pos = "package:spyre"), ws),
            pos = "package:spyre")

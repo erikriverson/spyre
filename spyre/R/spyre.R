@@ -78,7 +78,14 @@ CLOSE <- function(D) {
 }
 
 cleanup <- function() {
-    removeTaskCallback(1)
+
+    ## how do we move this ws object from the spyre_clients list?
+    ## we'll probably have to associate a name with each spyre connection
+    
+    if(length(get("spyre_clients", pos = "package:spyre") == 1)) {
+        removeTaskCallback(1)
+    }
+    
     futile.logger::flog.debug("removed task callback function")
 }
 
@@ -100,7 +107,7 @@ spyre_start <- function(port = 7681, name = "SpyreServer") {
     }
 
     app <- list(call = spyre_call, onWSOpen = spyre_onWSOpen)
-    handle <- httpuv::startDaemonizedServer("127.0.0.1", port, app = app)
+    handle <- httpuv::startDaemonizedServer("0.0.0.0", port, app = app)
 
     assign("spyre_servers", rbind(spyre_servers,
                                   data.frame(handle = handle, name = name,
