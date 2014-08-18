@@ -285,7 +285,7 @@ spyre.controller('importController', function($scope, WSService) {
 
 });
 
-spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout) {
+spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, $timeout, $location) {
 
     $scope.selected_env = ".GlobalEnv";
     $scope.options = {};
@@ -302,7 +302,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     };
 
     $scope.connect = function() {
-        $scope.spyre_server = "ws://10.0.0.9:7681";
+        $scope.spyre_server = "ws://" + $location.host() + ":7681";
         WSConnect.connect($scope.spyre_server);
 
 

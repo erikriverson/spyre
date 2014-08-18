@@ -78,13 +78,19 @@ CLOSE <- function(D) {
 }
 
 cleanup <- function() {
-
+    message("here!")
     ## how do we move this ws object from the spyre_clients list?
     ## we'll probably have to associate a name with each spyre connection
-    
-    if(length(get("spyre_clients", pos = "package:spyre") == 1)) {
+
+    if(length(get("spyre_clients", pos = "package:spyre")) == 1) {
         removeTaskCallback(1)
     }
+
+    
+    ## this bad syntax caues an Rcpp::eval_error!
+    ## if(length(get("spyre_clients", pos = "package:spyre") == 1)) {
+    ##     removeTaskCallback(1)
+    ## }
     
     futile.logger::flog.debug("removed task callback function")
 }
