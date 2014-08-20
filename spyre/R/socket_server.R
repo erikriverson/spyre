@@ -1,4 +1,4 @@
-spyre_clients <- list()
+
 
 spyre_onWSOpen <- function(ws) {
     set_selected_env <- function(env) {
@@ -29,7 +29,7 @@ spyre_onWSOpen <- function(ws) {
     }
 
     ws$onMessage(process_data)
-    ws$onClose(cleanup)
+    ws$onClose(client_disconnect_cleanup)
     ws$send(spyre_message("Connected to Spyre Server", type = "success"))
 
     ## only if it's not already there, right?
@@ -41,13 +41,10 @@ spyre_onWSOpen <- function(ws) {
 
     spyre_message_all("New client joined:", ws$request$REMOTE_ADDR, type = "success")
 
-    assign("spyre_clients", c(get("spyre_clients", pos = "package:spyre"), ws),
-           pos = "package:spyre")
-
-
+    lcl <- get("spyre_clients", pos = "package:spyre")
+    assign("spyre_clients", c(lcl, ws), pos = "package:spyre")
 
     getCurrentObjects("bootstrap", NULL, NULL, NULL,
                       get("spyre_clients", pos = "package:spyre"))
-
 
 }

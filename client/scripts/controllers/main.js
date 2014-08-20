@@ -58,10 +58,6 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 $scope.add_message(msg);
             });
 
-            // for now, this should go with init code elsewhere though.
-            // need to register callback first.
-            WSService.r({fun: "fortune_cookie", args : {}});
-
 
         });
 
@@ -136,6 +132,12 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
 
 
     //connect on start, should be an option
-    $timeout(function() { $scope.toggle_connect(); }, 1000);
+    $timeout(function() { 
+        $scope.toggle_connect(); }, 1000);
+    $timeout(function() {
+        // for now, this should go with init code elsewhere though.
+        // need to register callback first.
+        WSService.r({fun: "fortune_cookie", args : {}});
+    }, 3000);
 
 });
