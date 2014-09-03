@@ -7,7 +7,8 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     $scope.objects_tree = [];
     $scope.object_display_level = 1;
     $scope.message_list = [];
-    $scope.selected_data = null; 
+    $scope.selected_data = false; 
+    $scope.data_is_selected = false; 
 
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
@@ -31,10 +32,14 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 console.log(msg);
                 
                 $scope.objects = msg;
-                $scope.objects_tree = msg;
+
+                if(!$scope.data_is_selected) {
+                    $scope.objects_tree = msg;
+                }
 
                 // what functions should we call here? 
                 $scope.send_object($scope.selected_object, $scope.options);
+
                 $scope.$apply();
             });
             
@@ -84,6 +89,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     $scope.selected = function(env) {
         WSService.r({fun : "set_selected_env", args : {env : env}});
         $scope.selected_env = env;
+        $scope.data_is_selected = false;
     };
 
 

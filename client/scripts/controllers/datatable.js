@@ -16,8 +16,6 @@ spyre.controller('rawController', function($scope, WSService, $timeout) {
     $scope.rawGridOptions = { data: 'rawdata',
                               showColumnMenu: true};
 
-
-
     $scope.$watch('selected_data', function(newValue, oldValue) {
 
         get_rawdata = {fun : 'get_rawdata', 
