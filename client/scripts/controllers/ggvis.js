@@ -1,16 +1,19 @@
 spyre.controller('mvController', function($scope, WSService) {
     $scope.$on('connected', function() {
+
         WSService.register_ws_callback('mv', function(msg) {
-            console.log('reply from mv');
             ggvis.getPlot("ggvis_multivariate").
                 parseSpec(JSON.parse(msg.value));
             $scope.object_summary = msg.summary[0];
+
         });
     });
 
     $scope.callr = function(rcall) {
         WSService.r(rcall);
     };
+
+
 
     $scope.ggvis = {props : { xvar : "Not Set",
                               yvar : "Not Set",
@@ -32,10 +35,9 @@ spyre.controller('mvController', function($scope, WSService) {
     });
 
     $scope.mv = function(plot_spec) {
-        console.log(plot_spec);
         var fill, stroke, size;
+
         if(typeof(plot_spec.fill) !== "string") {
-            console.log('think fill is not a string');
             fill = plot_spec.fill.data.object_index;
         } else {
             fill = plot_spec.fill;
@@ -57,7 +59,7 @@ spyre.controller('mvController', function($scope, WSService) {
         console.log("going to call mv with:");
         console.log(mv_object);
 
-        WSService.r({fun:"ggvis_explorer", args : {mv_object : mv_object}});
+        $scope.callr({fun:"ggvis_explorer", args : {mv_object : mv_object}});
         return(0);
     };
 

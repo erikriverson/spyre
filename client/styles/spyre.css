@@ -45,7 +45,7 @@ html,body
     height: calc(100% - 85px);
 }
 
-#object-list {
+#object-list, #tab-list, #tabset, #rawdata {
     height: 100%;
 }
 
@@ -55,7 +55,7 @@ html,body
 }
 
 #raw-container {
-    height: 100%;
+    height: 900px;
     font-size: smaller; 
 }
 

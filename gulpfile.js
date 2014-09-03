@@ -124,7 +124,8 @@ gulp.task('css_vendor', function() {
 
 // start server with livereload support
 gulp.task('webserver', function() {
-    connect.server({livereload : true,
+    connect.server({port : 8081,
+                    livereload : true,
                     root : ['spyre/inst/dist']});
 });
 

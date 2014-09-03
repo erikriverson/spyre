@@ -7,8 +7,8 @@ table{font-size:smaller}
 #datagrid{border:0 solid #d4d4d4;width:100%;height:600px}
 #spyre-container,body,html{height:100%}
 #spyre-grid{height:calc(100% - 85px)}
-#object-list{height:100%}
+#object-list,#rawdata,#tab-list,#tabset{height:100%}
 #object-grid{height:95%;font-size:smaller}
-#raw-container{height:100%;font-size:smaller}
+#raw-container{height:900px;font-size:smaller}
 #footer{height:60px;background-color:red}
 #messages{font-size:10px;height:100%;overflow-y:auto}

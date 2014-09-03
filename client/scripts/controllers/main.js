@@ -3,6 +3,11 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     $scope.selected_env = ".GlobalEnv";
     $scope.options = {};
     $scope.options.uv_plot_type = 'density';
+    $scope.spyre_server = "ws://" + $location.host() + ":7681";
+    $scope.objects_tree = [];
+    $scope.object_display_level = 1;
+    $scope.message_list = [];
+    $scope.selected_data = null; 
 
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
@@ -15,9 +20,8 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     };
 
     $scope.connect = function() {
-        $scope.spyre_server = "ws://" + $location.host() + ":7681";
-        WSConnect.connect($scope.spyre_server);
 
+        WSConnect.connect($scope.spyre_server);
 
         WSService.register_ws_callback('open', function() {
 
@@ -56,16 +60,16 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 console.log("Message received:");
                 console.log(msg);
                 $scope.add_message(msg);
+                $scope.$apply();
             });
 
 
         });
 
+        // NB: change this to run only if successful
         $scope.isConnected = true;
         $scope.$broadcast('connected');
     };
-
-    $scope.message_list = [];
 
     $scope.add_message = function(msg) {
         var new_msg = { 
@@ -75,7 +79,6 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
             message : msg.message };
         
         $scope.message_list.unshift(new_msg);
-        $scope.$apply();
     };
 
     $scope.selected = function(env) {
@@ -83,12 +86,8 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.selected_env = env;
     };
 
-    $scope.objects_tree = [];
-    $scope.object_display_level = 1;
 
     $scope.object_level_down = function(object) {
-        console.log(object.children);
-
         $scope.objects_tree = object.children;
         $scope.selected_data = object.label;
         $scope.add_message({title : "Spyre", type : "info", message : object.label + " is now active dataset."});
@@ -138,6 +137,6 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         // for now, this should go with init code elsewhere though.
         // need to register callback first.
         WSService.r({fun: "fortune_cookie", args : {}});
-    }, 3000);
+    }, 2000);
 
 });

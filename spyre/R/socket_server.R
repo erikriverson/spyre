@@ -28,9 +28,18 @@ spyre_onWSOpen <- function(ws) {
             ws$send(msg)
     }
 
+    ## callback functions
     ws$onMessage(process_data)
     ws$onClose(client_disconnect_cleanup)
-    ws$send(spyre_message("Connected to Spyre Server", type = "success"))
+
+    ## messaging to new/current clients about event
+
+    ## before we add the new client to the list
+    spyre_message_all("New client joined:", ws$request$REMOTE_ADDR, type = "success")
+
+    lcl <- get("spyre_clients", pos = "package:spyre")
+    ws$send(spyre_message("Connected to Spyre Server. There are", length(lcl),
+                          "other clients connected.", type = "success"))
 
     ## only if it's not already there, right?
     ## I.e., not on the second client connection?
@@ -39,9 +48,8 @@ spyre_onWSOpen <- function(ws) {
     futile.logger::flog.debug("added task callback")
     ## initial list
 
-    spyre_message_all("New client joined:", ws$request$REMOTE_ADDR, type = "success")
-
-    lcl <- get("spyre_clients", pos = "package:spyre")
+    ## add the new client to the list
+    
     assign("spyre_clients", c(lcl, ws), pos = "package:spyre")
 
     getCurrentObjects("bootstrap", NULL, NULL, NULL,

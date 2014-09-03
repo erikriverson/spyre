@@ -41,88 +41,36 @@ spyre.controller('consoleController', function($scope, WSService) {
 //     };
 // });
 
-spyre.controller('rawController', function($scope, WSService) {
+spyre.controller('rawController', function($scope, WSService, $timeout) {
+    var get_rawdata; 
 
     $scope.$on('connected', function() {
         WSService.register_ws_callback('rawdata', function(msg) {
-            console.log("got rawdata message:");
-            console.log(msg.value);
             $scope.rawdata = msg.value;
-            $scope.setPagingData(msg.value ,1, 10);
             $scope.$apply();
         });
     });
 
-    $scope.request_raw_data = function() {
-        WSService.r({fun: 'rawdata', 
-                     args : {'data' : $scope.selected_data}});
+    $scope.callr = function(rcall) {
+        console.log(rcall.args);
+        WSService.r(rcall);
     };
 
-    $scope.totalServerItems = 0;
+    $scope.rawGridOptions = { data: 'rawdata',
+                              showColumnMenu: true};
 
-    $scope.pagingOptions = {
-        pageSizes: [10, 50, 100],
-        pageSize: 10,
-        currentPage: 1
-    };	
 
-    $scope.setPagingData = function(data, page, pageSize){	
-        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-        $scope.rawdata = pagedData;
-        $scope.totalServerItems = data.length;
-        if (!$scope.$$phase) {
-            $scope.$apply();
-        }
-    };
 
-    $scope.getPagedDataAsync = function (pageSize, page, searchText) {
-        setTimeout(function () {
-            var data;
-            if (searchText) {
-                var ft = searchText.toLowerCase();
-                $http.get('jsonFiles/largeLoad.json').success(function (largeLoad) {		
-                    data = largeLoad.filter(function(item) {
-                        return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                    });
-                    $scope.setPagingData(data,page,pageSize);
-                });            
-            } else {
-//                WSService.r("rawdata", $scope.recent_branch);
-                console.log("just skip this");
-            }
-        }, 100);
-    };
-	
-//    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-	
-    $scope.$watch('pagingOptions', function (newVal, oldVal) {
-        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
-        }
-    }, true);
-    $scope.$watch('filterOptions', function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
-        }
-    }, true);
-	
-    $scope.gridOptions = { data: 'rawdata',
-                           enableColumnResize : true,
-                           showGroupPanel : true,
-                           showFilter : true,
-                           enablePaging: true, 
-                           showFooter: true,
-                           totalServerItems : 'totalServerItems',
-                           pagingOptions: $scope.pagingOptions, 
-                           filterOptions: $scope.filterOptions,
-                           showColumnMenu: true};
+    $scope.$watch('selected_data', function(newValue, oldValue) {
 
-    $scope.$watch('selected_data', function(newVal, oldVal) {
-        if(newVal !== oldVal) {
-            $scope.request_raw_data();
+        get_rawdata = {fun : 'get_rawdata', 
+                       args : { 'data' : $scope.selected_data}};
+
+        if(newValue !== oldValue) {
+            $scope.callr(get_rawdata);
         }
     });
-        
+
 
 });
 
@@ -172,17 +120,20 @@ spyre.controller('exploreController', function($scope, WSService) {
 
 spyre.controller('mvController', function($scope, WSService) {
     $scope.$on('connected', function() {
+
         WSService.register_ws_callback('mv', function(msg) {
-            console.log('reply from mv');
             ggvis.getPlot("ggvis_multivariate").
                 parseSpec(JSON.parse(msg.value));
             $scope.object_summary = msg.summary[0];
+
         });
     });
 
     $scope.callr = function(rcall) {
         WSService.r(rcall);
     };
+
+
 
     $scope.ggvis = {props : { xvar : "Not Set",
                               yvar : "Not Set",
@@ -204,10 +155,9 @@ spyre.controller('mvController', function($scope, WSService) {
     });
 
     $scope.mv = function(plot_spec) {
-        console.log(plot_spec);
         var fill, stroke, size;
+
         if(typeof(plot_spec.fill) !== "string") {
-            console.log('think fill is not a string');
             fill = plot_spec.fill.data.object_index;
         } else {
             fill = plot_spec.fill;
@@ -229,7 +179,7 @@ spyre.controller('mvController', function($scope, WSService) {
         console.log("going to call mv with:");
         console.log(mv_object);
 
-        WSService.r({fun:"ggvis_explorer", args : {mv_object : mv_object}});
+        $scope.callr({fun:"ggvis_explorer", args : {mv_object : mv_object}});
         return(0);
     };
 
@@ -290,6 +240,11 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     $scope.selected_env = ".GlobalEnv";
     $scope.options = {};
     $scope.options.uv_plot_type = 'density';
+    $scope.spyre_server = "ws://" + $location.host() + ":7681";
+    $scope.objects_tree = [];
+    $scope.object_display_level = 1;
+    $scope.message_list = [];
+    $scope.selected_data = null; 
 
     $scope.toggle_connect = function() {
         if($scope.isConnected) {
@@ -302,9 +257,8 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
     };
 
     $scope.connect = function() {
-        $scope.spyre_server = "ws://" + $location.host() + ":7681";
-        WSConnect.connect($scope.spyre_server);
 
+        WSConnect.connect($scope.spyre_server);
 
         WSService.register_ws_callback('open', function() {
 
@@ -343,16 +297,16 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
                 console.log("Message received:");
                 console.log(msg);
                 $scope.add_message(msg);
+                $scope.$apply();
             });
 
 
         });
 
+        // NB: change this to run only if successful
         $scope.isConnected = true;
         $scope.$broadcast('connected');
     };
-
-    $scope.message_list = [];
 
     $scope.add_message = function(msg) {
         var new_msg = { 
@@ -362,7 +316,6 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
             message : msg.message };
         
         $scope.message_list.unshift(new_msg);
-        $scope.$apply();
     };
 
     $scope.selected = function(env) {
@@ -370,12 +323,8 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         $scope.selected_env = env;
     };
 
-    $scope.objects_tree = [];
-    $scope.object_display_level = 1;
 
     $scope.object_level_down = function(object) {
-        console.log(object.children);
-
         $scope.objects_tree = object.children;
         $scope.selected_data = object.label;
         $scope.add_message({title : "Spyre", type : "info", message : object.label + " is now active dataset."});
@@ -425,7 +374,7 @@ spyre.controller('MainController', function($scope, $sce, WSService, WSConnect, 
         // for now, this should go with init code elsewhere though.
         // need to register callback first.
         WSService.r({fun: "fortune_cookie", args : {}});
-    }, 3000);
+    }, 2000);
 
 });
 

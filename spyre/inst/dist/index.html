@@ -103,7 +103,7 @@
        
          <div id="tab-list" class="col-md-8">
 
-           <tabset>
+           <tabset id="tabset">
 
              <tab heading="Explore" ng-controller="exploreController">
   <h1>{{selected_object.data.object_index[0][0]}}</h1>
@@ -169,8 +169,6 @@
             </ul>
           </div>
         </div>
-
-
 
         <div class="form-group">
           <label for="vis_y_var">Y</label>
@@ -304,8 +302,8 @@
 </tab>
 
 
-             <tab heading="Raw Data" ng-controller="rawController">
-  <div id="raw-container" class="gridStyle", ng-grid="gridOptions"></div>
+             <tab id="raw-div" heading="Raw Data" ng-controller="rawController">
+  <div id="raw-container" class="gridStyle" ng-grid="rawGridOptions"></div>
 </tab>
 
              <tab heading="Import" ng-controller="importController">
