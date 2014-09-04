@@ -1,5 +1,10 @@
 #' @export
 getCurrentObjects <- function(a, b, c, d, ws_list) {
+    express <- as.character(a)
+    if(grepl(".ess_|.ess.", express)) {
+        cat("\nreturning early!\n", file = "/home/erik/testing.txt", append = TRUE)
+        return(TRUE)
+    }
 
     env <- get_selected_env()
     objects <- objects(env)
